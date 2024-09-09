@@ -9,7 +9,6 @@
                             'is-show': key == 2 || (key == 1 && breadCrumb.length == 2)
                         }"
                     >
-                        <!--{{ truncateString(item.name, 15) }}-->
 <!--                        {{ $t(item?.name) }}-->
                         {{item?.name}}
                     </span>
@@ -18,8 +17,7 @@
                         class="!cursor-pointer"
                         @click="changePath(item.route)"
                     >
-                        <!--{{ truncateString(item.name, 15) }}-->
-                        {{ $t(item?.name) }}
+                        <!-- {{ $t(item?.name) }} -->
                     </a>
                 </el-breadcrumb-item>
             </el-breadcrumb>

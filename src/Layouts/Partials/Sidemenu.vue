@@ -1,9 +1,9 @@
 <template>
     <el-aside width="265" class="fixed top-0 bottom-0 left-0 z-[5] !h-full">
         <div class="h-[60px] shadow-md fixed top-0 left-0 z-[10] bg-primary !backdrop-blur-2xl" :class="collapseAside ? 'w-[283px]' : 'w-[55px]'">
-            <Link :href="getRouteRedirect" class="flex items-center h-full w-full gap-2">
+            <router-link :to="{ name: 'system'}" class="flex items-center h-full w-full gap-2">
                 <img :src="collapseAside ? '/images/EPU.png' : '/images/logo-small.png'" alt="logo" class="object-cover" />
-            </Link>
+            </router-link>
         </div>
         <div class="relative h-full bg-primary">
             <!-- Side bar -->
@@ -50,7 +50,7 @@
 </template>
 
 <script>
-import { MASTER_MENUS, APP_MENUS } from '@/Store/Const/menu.js'
+import { MASTER_MENUS } from '@/Store/Const/menu.js'
 import { isArray, isEmpty } from 'lodash'
 
 export default {
@@ -81,11 +81,6 @@ export default {
             this.menus = menuBusiness
         }
         this.openMenus = this.menus.map(menu => menu.pathActive) // Initialize openMenus with all menu paths
-    },
-    computed: {
-        getRouteRedirect() {
-            return this.appRoute('admin.system.index')
-        },
     },
     methods: {
         getCurrentUrl() {

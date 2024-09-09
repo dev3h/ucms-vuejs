@@ -59,19 +59,19 @@
             </div>
         </div>
         <DeleteForm ref="deleteForm" @delete-action="deleteItem" />
-        <ModalSystem ref="modalSystem" :redirectRoute="appRoute('admin.system.index')" />
+        <ModalSystem ref="modalSystem" />
     </AdminLayout>
 </template>
 
 <script>
 import AdminLayout from '@/Layouts/AdminLayout.vue';
-import BreadCrumbComponent from '@/Components/Page/BreadCrumb.vue';
+import BreadCrumbComponent from '@/components/Page/BreadCrumb.vue';
 import { searchMenu } from '@/Mixins/breadcrumb.js'
-import DataTable from '@/Components/Page/DataTable.vue'
+import DataTable from '@/components/Page/DataTable.vue'
 import axios from '@/Plugins/axios'
-import DeleteForm from '@/Components/Page/DeleteForm.vue';
+import DeleteForm from '@/components/Page/DeleteForm.vue';
 import debounce from 'lodash.debounce'
-import ModalSystem from "@/Pages/System/ModalSystem.vue";
+import ModalSystem from "./ModalSystem.vue";
 
 export default {
     components: {ModalSystem, AdminLayout, BreadCrumbComponent, DataTable, DeleteForm },
@@ -79,8 +79,8 @@ export default {
         return {
             items: [],
             filters: {
-                page: Number(this.appRoute().params?.page ?? 1),
-                limit: Number(this.appRoute().query?.limit ?? 10),
+                page: Number(this?.$route?.params?.page ?? 1),
+                limit: Number(this?.$route?.query?.limit ?? 10),
             },
             fields: [
                 { key: 'name', 'min-width': 400, label: this.$t('column.common.name'), align: 'left', headerAlign: 'left' },
@@ -98,13 +98,13 @@ export default {
             return [
                 {
                     name: menuOrigin?.label,
-                    route: this.appRoute('admin.system.index'),
+                    route: 'system',
                 },
             ]
         }
     },
     async created() {
-        await this.fetchData();
+        // await this.fetchData();
     },
     methods: {
         async fetchData(page = 1) {

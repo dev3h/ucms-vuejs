@@ -42,12 +42,12 @@
             </div>
         </div>
         <div class="h-[21px] justify-start items-center inline-flex mt-[21px]">
-            <Link
+            <router-link
                 class="text-center text-zinc-800 text-sm font-bold leading-[21px] cursor-pointer underline"
-                :href="this.appRoute('admin.login.form')"
+                :to="{ name: 'admin-login'}"
             >
                 {{ $t("auth-page.return-to-login") }}
-            </Link>
+            </router-link>
         </div>
     </div>
 </template>
@@ -56,14 +56,7 @@ import form from "@/Mixins/form";
 import axios from "@/Plugins/axios";
 
 export default {
-    name: "Login",
     mixins: [form],
-    props: {
-        overTimeMail: {
-            type: Boolean,
-            default: false,
-        },
-    },
     data() {
         return {
             formData: {
@@ -80,15 +73,6 @@ export default {
             },
             loadingForm: false,
         };
-    },
-    created() {
-        if (this.overTimeMail === true) {
-            this.formData.email = this.appRoute()?.params?.email;
-            this.$message({
-                message: "このパスワードリセットトークンは無効です。",
-                type: "error",
-            });
-        }
     },
     methods: {
         async submit() {

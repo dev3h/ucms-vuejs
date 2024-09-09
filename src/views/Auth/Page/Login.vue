@@ -61,12 +61,12 @@
                                 {{ $t('button.login') }}
                             </el-button>
                             <div class="mt-4">
-                                <div
+                                <router-link
                                     class="text-sm underline cursor-pointer"
-                                    @click="openForgotPasswordForm"
+                                    :to="{ name: 'forgot-password'}"
                                 >
                                     {{ $t('auth-page.click-forgot-password') }}
-                                </div>
+                                </router-link>
                             </div>
                         </div>
                         <div class="mt-10" v-if="pathSub?.[1] === 'admin'">
@@ -98,7 +98,6 @@ export default {
             formData: {
                 email: null,
                 password: null,
-                remember: false,
             },
             rules: {
                 email: baseRuleValidate(this.$t),
@@ -128,7 +127,7 @@ export default {
         async submit() {
             this.loadingForm = true;
             const response = await axios.post(
-                this.appRoute("admin.api.login.handle"),
+                '/auth/login',
                 this.formData
             );
             if(response?.data?.data?.firstLogin) {
@@ -140,10 +139,7 @@ export default {
                 this.$inertia.visit(response?.data?.data);
             }
             this.loadingForm = false;
-        },
-        openForgotPasswordForm() {
-            this.$inertia.visit(this.appRoute("admin.forgot-password.form"));
-        },
+        }
     },
 };
 </script>

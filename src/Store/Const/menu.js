@@ -69,19 +69,10 @@ export const MASTER_MENUS = [
         route: "admin.audit-log.index",
         pathActive: "audit-log",
     },
-    {
-        label: 'sidebar.notification',
-        icon: 'bell-icon.svg',
-        route: 'admin.notification.index',
-        pathActive: 'notification',
-    }
-];
-
-export const APP_MENUS = [
-    {
-        label: "Application",
-        icon: "application-icon.svg",
-        route: "app.application.index",
-        pathActive: "application",
-    },
+    // {
+    //     label: 'sidebar.notification',
+    //     icon: 'bell-icon.svg',
+    //     route: 'admin.notification.index',
+    //     pathActive: 'notification',
+    // }
 ];

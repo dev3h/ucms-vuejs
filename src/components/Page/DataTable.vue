@@ -136,7 +136,7 @@ export default {
     data() {
         return {
             pageSizesOpt,
-            pageSize: Number(this.appRoute().params?.limit || pageSizesOpt[0]),
+            pageSize: Number(this?.$route?.params?.limit || pageSizesOpt[0]),
         }
     },
     computed: {
