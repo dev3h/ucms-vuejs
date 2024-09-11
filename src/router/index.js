@@ -46,17 +46,17 @@ const router = createRouter({
   ]
 })
 
-router.beforeEach((to, from, next) => {
-  // Redirect to login page if not logged in and trying to access a restricted page
-  const publicPages = ['/admin/login', '/sso/login', '/admin/forgot-password']
-  const authRequired = !publicPages.includes(to.path)
-  const loggedIn = localStorage.getItem('user')
+// router.beforeEach((to, from, next) => {
+//   // Redirect to login page if not logged in and trying to access a restricted page
+//   const publicPages = ['/admin/login', '/sso/login', '/admin/forgot-password']
+//   const authRequired = !publicPages.includes(to.path)
+//   const loggedIn = localStorage.getItem('user')
 
-  if (authRequired && !loggedIn) {
-    return next('/admin/login')
-  }
+//   if (authRequired && !loggedIn) {
+//     return next('/admin/login')
+//   }
 
-  next()
-})
+//   next()
+// })
 
 export default router

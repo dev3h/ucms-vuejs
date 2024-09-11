@@ -1,5 +1,5 @@
 <template>
-    <div class="flex items-center min-h-screen bg-grayF5 bg-gray-50">
+    <div class="flex items-center min-h-screen bg-grayF5 bg-gray-50 my-10 overflow-hidden">
         <el-card class="!max-w-[500px] w-full py-9 mx-auto">
             <div class="w-full flex flex-col">
                 <div class="text-blueDark rounded-lg">

@@ -104,14 +104,14 @@ export default {
         }
     },
     async created() {
-        // await this.fetchData();
+        await this.fetchData();
     },
     methods: {
         async fetchData(page = 1) {
             this.loadForm = true
             this.filters.page = page
             let params = { ...this.filters }
-            await axios.get(this.appRoute("admin.api.system.index", params)).then(response => {
+            await axios.get('/system', params).then(response => {
                 this.items = response?.data?.data
                 this.paginate = response?.data?.meta
                 this.loadForm = false
