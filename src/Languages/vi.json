@@ -93,7 +93,8 @@
             "start-date": "Ngày bắt đầu",
             "end-date": "Ngày kết thúc"
         },
-        "content": "Nội dung"
+        "content": "Nội dung",
+        "redirect-uri": "Địa chỉ URL chuyển hướng"
     },
     "validate": {
         "required": "Trường này là bắt buộc",
@@ -153,7 +154,8 @@
         "last": "Trang cuối"
     },
     "breadcrumb": {
-        "create-user": "Tạo người dùng"
+        "create-user": "Tạo người dùng",
+        "create-system": "Tạo hệ thống"
     },
     "pop-menu": {
         "profile": "Hồ sơ",

@@ -100,7 +100,7 @@ export default {
             this.$emit('zoom-out-sidebar', this.collapseAside)
         },
         onMenuClick(menu) {
-            this.$inertia.visit(this.appRoute(menu.route), {replace: true})
+            this.$router.push({name: menu.route})
         },
         checkActive(pathActive) {
             if (isArray(pathActive) && !isEmpty(pathActive)) {

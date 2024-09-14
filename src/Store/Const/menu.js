@@ -14,7 +14,7 @@ export const MASTER_MENUS = [
             {
                 label: 'sidebar.system',
                 icon: "system-icon.svg",
-                route: "admin.system.index",
+                route: "system",
                 pathActive: "/admin/system-components/system",
             },
             {
@@ -46,7 +46,7 @@ export const MASTER_MENUS = [
             {
                 label: 'sidebar.user',
                 icon: "user-icon.svg",
-                route: "admin.user.index",
+                route: "user",
                 pathActive: "/admin/user-management/user",
             },
             {

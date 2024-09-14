@@ -79,23 +79,24 @@
         "import": "Import"
     },
     "input": {
-        "common": {
-            "email": "Email",
-            "password": "Password",
-            "new-password": "New password",
-            "confirm-new-password": "New password (re-enter)",
-            "initial-password": "Initial password",
-            "current-password": "Current password",
-            "select": "Select"
-        },
-        "recovery-code": "Recovery code",
-        "publish": {
-            "now": "Now",
-            "schedule": "Schedule",
-            "start-date": "Start date",
-            "end-date": "End date"
-        },
-        "content": "Content"
+      "common": {
+        "email": "Email",
+        "password": "Password",
+        "new-password": "New password",
+        "confirm-new-password": "New password (re-enter)",
+        "initial-password": "Initial password",
+        "current-password": "Current password",
+        "select": "Select"
+      },
+      "recovery-code": "Recovery code",
+      "publish": {
+        "now": "Now",
+        "schedule": "Schedule",
+        "start-date": "Start date",
+        "end-date": "End date"
+      },
+      "content": "Content",
+      "redirect-uri": "Redirect URI"
     },
     "validate": {
         "required": "This field is required",
@@ -155,7 +156,8 @@
         "last": "Last"
     },
     "breadcrumb": {
-        "create-user": "Create User"
+      "create-user": "Create User",
+      "create-system": "Create System"
     },
     "pop-menu": {
         "profile": "Profile",

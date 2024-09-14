@@ -9,15 +9,14 @@
                             'is-show': key == 2 || (key == 1 && breadCrumb.length == 2)
                         }"
                     >
-<!--                        {{ $t(item?.name) }}-->
-                        {{item?.name}}
+                       {{ item?.isNoTranslate ? item?.name : $t(item?.name) }}
                     </span>
                     <a
                         v-else
                         class="!cursor-pointer"
                         @click="changePath(item.route)"
                     >
-                        <!-- {{ $t(item?.name) }} -->
+                        {{  $t(item?.name) }}
                     </a>
                 </el-breadcrumb-item>
             </el-breadcrumb>
@@ -34,10 +33,10 @@ export default {
             default: () => {},
         },
     },
-    methods: {
+    methods: { 
         changePath(value) {
             if (value) {
-                this.$inertia.visit(value)
+                this.$router.push({name: value})
             }
         },
         truncateString(str, maxLength) {

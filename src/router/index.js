@@ -18,14 +18,29 @@ const router = createRouter({
           component: () => import('@/views/Auth/Page/Password/ForgotPassword.vue')
         },
         {
-          path: 'system',
-          name: 'system',
-          component: () => import('@/views/System/Index.vue')
+          path: 'system-components',
+          children: [
+            {
+              path: 'system',
+              name: 'system',
+              component: () => import('@/views/System/Index.vue')
+            },
+            {
+              path: 'system/create',
+              name: 'system-create',
+              component: () => import('@/views/System/Create.vue')
+            }
+          ]
         },
         {
-          path: 'user',
-          name: 'user',
-          component: () => import('@/views/User/Index.vue')
+          path: 'user-management',
+          children: [
+            {
+              path: 'user',
+              name: 'user',
+              component: () => import('@/views/User/Index.vue')
+            }
+          ]
         }
       ]
     },
