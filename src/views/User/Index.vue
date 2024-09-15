@@ -10,7 +10,7 @@
           <div class="flex flex-wrap gap-2">
             <el-input
               v-model="filters.search"
-              class="!w-80"
+              class="!w-[200px]"
               size="large"
               :placeholder="$t('input.common.search')"
               clearable
@@ -22,7 +22,7 @@
             </el-input>
             <el-select
               v-model="filters.role_id"
-              class="!w-[240px]"
+              class="!w-[200px]"
               size="large"
               :placeholder="$t('sidebar.role')"
               clearable
@@ -35,14 +35,14 @@
               type="date"
               :placeholder="$t('column.common.created-at')"
               size="large"
-              class="!w-[240px]"
+              class="!w-[200px]"
               value-format="YYYY-MM-DD"
               format="YYYY/MM/DD"
               @change="filterData"
             />
           </div>
           <div>
-            <el-button size="large" @click="openImport()">{{ $t('button.import-csv') }}</el-button>
+            <!-- <el-button size="large" @click="openImport()">{{ $t('button.import-csv') }}</el-button> -->
             <el-button type="primary" size="large" @click="openCreate()">{{
               $t('button.add')
             }}</el-button>
@@ -59,7 +59,15 @@
           footer-center
           paginate-background
           @page-change="changePage"
+          @size-change="changeSize"
         >
+         <template #roles="{ row }">
+           <div class="flex gap-1">
+             <span v-for="(role, index) in row?.roles" :key="index" class="bg-gray-200 rounded-full px-2 py-1 text-sm mr-2">
+               {{ role }}
+             </span>
+            </div>
+          </template>
           <template #activity="{ row }">
             <div class="flex justify-center">
               <div
@@ -108,7 +116,8 @@ export default {
     return {
       items: [],
       filters: {
-        page: Number(this?.route?.params?.page ?? 1)
+        page: Number(this?.route?.params?.page ?? 1),
+        limit: Number(this?.$route?.query?.limit ?? 10)
       },
       fields: [
         {
@@ -126,26 +135,26 @@ export default {
           headerAlign: 'left'
         },
         {
-          key: 'role_name',
-          width: 200,
+          key: 'roles',
+          'min-width': 200,
           label: this.$t('sidebar.role'),
           align: 'left',
           headerAlign: 'left'
         },
-        {
-          key: 'last_seen',
-          width: 200,
-          label: this.$t('column.last-seen'),
-          align: 'left',
-          headerAlign: 'left'
-        },
-        {
-          key: 'activity',
-          width: 200,
-          label: this.$t('column.activity'),
-          align: 'center',
-          headerAlign: 'left'
-        },
+        // {
+        //   key: 'last_seen',
+        //   width: 150,
+        //   label: this.$t('column.last-seen'),
+        //   align: 'left',
+        //   headerAlign: 'left'
+        // },
+        // {
+        //   key: 'activity',
+        //   width: 150,
+        //   label: this.$t('column.activity'),
+        //   align: 'center',
+        //   headerAlign: 'left'
+        // },
         {
           key: 'created_at',
           width: 200,
@@ -179,7 +188,7 @@ export default {
     }
   },
   async created() {
-    // await this.fetchData()
+    await this.fetchData()
   },
   methods: {
     async fetchData(page = 1) {
@@ -187,7 +196,7 @@ export default {
       this.filters.page = page
       let params = { ...this.filters }
       await axios
-        .get(this?.$route('admin.api.user.index', params))
+        .get('user', {params})
         .then((response) => {
           this.items = response?.data?.data
           this.paginate = response?.data?.meta
@@ -206,7 +215,7 @@ export default {
       this.fetchData()
     }, 500),
     openCreate() {
-      this.$inertia.visit(this?.$route('admin.user.create'))
+      this.$router.push({name: 'user-create'})
     },
     openImport() {
       this.$refs.modalImport.open()
@@ -226,7 +235,12 @@ export default {
         })
     },
     openShow(id) {
-      this.$inertia.visit(this?.$route('admin.user.show', id))
+      this.$router.push({name: 'user-show', params: {id}})
+    },
+    changeSize(value) {
+      this.filters.page = 1
+      this.filters.limit = value
+      this.fetchData()
     }
   }
 }

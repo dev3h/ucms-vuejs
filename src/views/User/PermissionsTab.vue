@@ -37,6 +37,7 @@
         footer-center
         paginate-background
         @page-change="changePage"
+        @size-change="changeSize"
       >
         <template #action="{ row }">
           <div class="flex justify-center items-center gap-x-[12px]">
@@ -53,30 +54,22 @@
 </template>
 
 <script>
-import AdminLayout from '@/Layouts/AdminLayout.vue'
-import BreadCrumbComponent from '@/components/Page/BreadCrumb.vue'
 import DataTable from '@/components/Page/DataTable.vue'
 import axios from '@/Plugins/axios'
 import DeleteForm from '@/components/Page/DeleteForm.vue'
 import debounce from 'lodash.debounce'
-import ModalAssign from '@/Pages/User/ModalAssign.vue'
-import ModalIgnore from '@/Pages/User/ModalIgnore.vue'
+import ModalAssign from './ModalAssign.vue'
+import ModalIgnore from './ModalIgnore.vue'
 export default {
-  components: { ModalIgnore, ModalAssign, AdminLayout, BreadCrumbComponent, DataTable, DeleteForm },
-  props: {
-    id: {
-      type: Number,
-      default: null
-    }
-  },
+  components: { ModalIgnore, ModalAssign, DataTable, DeleteForm },
   data() {
     return {
       items: [],
       filters: {
-        name: null,
-        role: null,
-        page: Number(this.appRoute().params?.page ?? 1)
+        page: Number(this.$route.params?.page ?? 1),
+        limit: Number(this?.$route?.query?.limit ?? 10)
       },
+      id: this.$route.params?.id,
       fields: [
         {
           key: 'name',
@@ -114,12 +107,7 @@ export default {
       this.filters.page = page
       let params = { ...this.filters }
       await axios
-        .get(
-          this.appRoute('admin.api.user.all-permission', {
-            id: this.id,
-            ...params
-          })
-        )
+        .get(`user/${this.id}/all-permissions`, {params})
         .then((response) => {
           this.items = response?.data?.data
           this.paginate = response?.data?.meta
@@ -146,12 +134,10 @@ export default {
     },
     async deleteItem(permissionId) {
       await axios
-        .delete(
-          this.appRoute('admin.api.role.revoke-permission', {
-            id: this.id,
-            permission_id: permissionId
-          })
-        )
+        .delete('user-revoke-permission', {
+          id: this.id,
+          permission_id: permissionId
+        })
         .then((response) => {
           this.$message.success(response?.data?.message)
           this.fetchData()
@@ -160,8 +146,10 @@ export default {
           this.$message.error(error?.response?.data?.message)
         })
     },
-    openShow(id) {
-      this.$inertia.visit(this.appRoute('admin.role.show', id))
+    changeSize(value) {
+      this.filters.page = 1
+      this.filters.limit = value
+      this.fetchData()
     }
   }
 }

@@ -54,12 +54,11 @@
 import AdminLayout from '@/Layouts/AdminLayout.vue'
 import BreadCrumbComponent from '@/components/Page/BreadCrumb.vue'
 import { searchMenu } from '@/Mixins/breadcrumb.js'
-import axios from '@/Plugins/axios'
 import form from '@/Mixins/form.js'
-import GeneralTab from '@/Pages/User/GeneralTab.vue'
+import GeneralTab from './GeneralTab.vue'
+import PermissionsTab from './PermissionsTab.vue'
+import UserLogsTab from './UserLogsTab.vue'
 
-import PermissionsTab from '@/Pages/User/PermissionsTab.vue'
-import UserLogsTab from '@/Pages/User/UserLogsTab.vue'
 export default {
   components: { UserLogsTab, PermissionsTab, GeneralTab, AdminLayout, BreadCrumbComponent },
   mixins: [form],
@@ -83,29 +82,30 @@ export default {
       return [
         {
           name: menuOrigin?.label,
-          route: this.appRoute('admin.user.index')
+          route: 'user'
         },
         {
           name: this.id,
-          route: ''
+          route: '',
+          isNoTranslate: true
         }
       ]
     }
   },
   methods: {
     goBack() {
-      this.$inertia.visit(this.appRoute('admin.role.index'))
+      this.$router.push({ name: 'user' })
     },
-    async fetchRoleTemplate() {
-      await axios
-        .get(this.appRoute('admin.api.role.template-permission', this.id))
-        .then((response) => {
-          this.templatePermission = response?.data?.data
-        })
-        .catch((error) => {
-          this.$message.error(error?.response?.data?.message)
-        })
-    },
+    // async fetchRoleTemplate() {
+    //   await axios
+    //     .get(this.appRoute('admin.api.role.template-permission', this.id))
+    //     .then((response) => {
+    //       this.templatePermission = response?.data?.data
+    //     })
+    //     .catch((error) => {
+    //       this.$message.error(error?.response?.data?.message)
+    //     })
+    // },
     handleCheckChange(action) {
       if (!this.actions.includes(action)) {
         this.actions.push(action)

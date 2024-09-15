@@ -42,16 +42,11 @@
 </template>
 
 <script>
-import AdminLayout from '@/Layouts/AdminLayout.vue'
-import BreadCrumbComponent from '@/components/Page/BreadCrumb.vue'
 import DataTable from '@/components/Page/DataTable.vue'
 import axios from '@/Plugins/axios'
-import DeleteForm from '@/components/Page/DeleteForm.vue'
 import debounce from 'lodash.debounce'
-import ModalAssign from '@/Pages/User/ModalAssign.vue'
-import ModalIgnore from '@/Pages/User/ModalIgnore.vue'
 export default {
-  components: { ModalIgnore, ModalAssign, AdminLayout, BreadCrumbComponent, DataTable, DeleteForm },
+  components: { DataTable },
   props: {
     id: {
       type: Number,
