@@ -161,7 +161,8 @@ export default {
           this.loadForm = false
         })
         .catch((error) => {
-          this.$message.error(error?.response?.data?.message)
+          this.loadForm = false
+          this.$message.error(error?.response?.data?.message || this.$t('message.something-wrong'))
         })
     },
     changePage(page) {

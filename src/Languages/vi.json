@@ -164,6 +164,7 @@
     },
     "message": {
         "invalid-csv-file": "Vui lòng tải lên một tệp CSV hoặc Excel hợp lệ",
-        "invalid-csv-data": "Dữ liệu trong tệp CSV không hợp lệ"
+        "invalid-csv-data": "Dữ liệu trong tệp CSV không hợp lệ",
+        "something-wrong": "Có lỗi xảy ra vui lòng thử lại sau"
     }
 }

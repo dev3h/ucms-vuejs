@@ -23,12 +23,12 @@ const router = createRouter({
             {
               path: 'system',
               name: 'system',
-              component: () => import('@/views/System/Index.vue')
+              component: () => import('@/views/App/System/Index.vue')
             },
             {
               path: 'system/create',
               name: 'system-create',
-              component: () => import('@/views/System/Create.vue')
+              component: () => import('@/views/App/System/Create.vue')
             }
           ]
         },
@@ -38,12 +38,12 @@ const router = createRouter({
             {
               path: 'user',
               name: 'user',
-              component: () => import('@/views/User/Index.vue')
+              component: () => import('@/views/App/User/Index.vue')
             },
             {
               path: 'user/:id',
               name: 'user-show',
-              component: () => import('@/views/User/Show.vue')
+              component: () => import('@/views/App/User/Show.vue')
             }
           ]
         }
@@ -55,7 +55,20 @@ const router = createRouter({
         {
           path: 'login',
           name: 'sso-login',
-          component: () => import('@/views/Auth/Page/Login.vue')
+          component: () => import('@/views/Auth/Page/Login.vue'),
+          // beforeEnter: (to, from, next) => {
+          //   const { redirect_uri, client_id, system_code } = to.query
+          //   if (!redirect_uri || !client_id || !system_code) {
+          //     next({ name: 'error-login' })
+          //   } else {
+          //     next()
+          //   }
+          // }
+        }, 
+        {
+          path: 'error-login',
+          name: 'error-login',
+          component: () => import('@/views/Auth/Page/ErrorLogin.vue')
         }
       ]
     },

@@ -63,7 +63,7 @@
       </div>
     </div>
   </el-header>
-  <NotificationPopup ref="notificationPopup" @update-unread="handleUpdateUnread" />
+  <!-- <NotificationPopup ref="notificationPopup" @update-unread="handleUpdateUnread" /> -->
 </template>
 
 <script>
@@ -90,7 +90,7 @@ export default {
   },
   computed: {
     user() {
-      return this.$page?.props?.auth?.user ?? {}
+      return {}
     }
   },
   methods: {

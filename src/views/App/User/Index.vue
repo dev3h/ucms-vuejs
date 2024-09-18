@@ -203,7 +203,7 @@ export default {
           this.loadForm = false
         })
         .catch((error) => {
-          this.$message.error(error?.response?.data?.message)
+          this.$message.error(error?.response?.data?.message || this.$t('message.something-wrong'))
           this.loadForm = false
         })
     },

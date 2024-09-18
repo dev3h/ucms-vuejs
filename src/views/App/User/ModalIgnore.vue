@@ -120,7 +120,7 @@ export default {
     async open(id) {
       if (id) {
         this.current_id = id
-        await this.getRoleOfUser()
+        await this.fetchData()
       }
       this.isShowModal = true
     },
@@ -155,19 +155,15 @@ export default {
         this.$message.error(err?.response?.data?.message)
       }
     },
-    async fetchData(role_id) {
+    async fetchData() {
       try {
-        const { data } = await axios.get(
-          this.appRoute('admin.api.user.role.all-permission', {
-            role_id: role_id,
-            user_id: this.current_id
-          })
-        )
+        const { data } = await axios.get(`/user/${this.current_id}/role-permissions`)
         if (data?.data?.length > 0) {
           this.originalData = data?.data
           this.data = [...this.originalData]
         }
       } catch (e) {
+      console.log(e)
         this.$message.error(e?.response?.data?.message)
       }
     },

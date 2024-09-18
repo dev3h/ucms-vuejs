@@ -196,7 +196,6 @@ export default {
       try {
         if (this.formType === 'permission') {
           const { data } = await axios.get(`/user/${this.current_id}/rest-available-permissions`)
-          console.log(data)
           if (data?.data?.length > 0) {
             this.data = this.newTree(data?.data)
           }
