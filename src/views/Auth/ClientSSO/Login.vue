@@ -1,0 +1,113 @@
+<template>
+  <div class="flex items-center min-h-screen bg-grayF5 bg-gray-50">
+    <el-card class="!max-w-[1000px] w-full my-10 mx-auto rounded-lg p-10">
+      <div class="text-blueDark flex justify-between">
+        <div class="w-[300px]">
+          <div class="relative">
+            <div class="logo mb-6">
+              <img src="/images/logo.svg" alt="logo" class="h-[100px]" />
+            </div>
+          </div>
+          <div
+            class="text-zinc-800 text-2xl font-bold uppercase leading-[28.80px] mb-9"
+          >
+            {{ $t('auth-page.login-title') }}
+          </div>
+        </div>
+        <div class="px-5 w-1/2">
+          <el-form
+            ref="form"
+            :model="formData"
+            :rules="rules"
+            label-position="top"
+            @keypress.enter.prevent="doSubmit"
+            class="form-login"
+          >
+            <el-form-item
+              :label="$t('input.common.email')"
+              prop="email"
+              :inline-message="hasError('email')"
+              :error="getError('email')"
+            >
+              <el-input v-model="formData.email" size="large" clearable />
+            </el-form-item>
+            <div>
+              <router-link
+                class="text-sm underline cursor-pointer"
+                :to="{ name: 'forgot-password' }"
+              >
+                {{ $t('auth-page.click-forgot-password') }}
+              </router-link>
+            </div>
+          </el-form>
+
+          <div class="text-center">
+            <el-button
+              type="primary"
+              :loading="loadingForm"
+              class="w-full mt-3 btn-gradient"
+              size="large"
+              @click.prevent="doSubmit"
+            >
+              {{ $t('button.login') }}
+            </el-button>
+          </div>
+        </div>
+      </div>
+    </el-card>
+  </div>
+</template>
+<script>
+import form from '@/Mixins/form'
+import axios from '@/Plugins/axios.js'
+import baseRuleValidate from '@/Store/Const/baseRuleValidate.js'
+
+export default {
+  name: 'admin-login',
+  mixins: [form],
+  data() {
+    return {
+      formData: {
+        email: null,
+        password: null
+      },
+      rules: {
+        email: baseRuleValidate(this.$t),
+        password: baseRuleValidate(this.$t)
+      },
+      loadingForm: false,
+      errors: null,
+      pathSub: window.location.pathname.split('/')
+    }
+  },
+  watch: {
+    '$page.props.errors': {
+      immediate: true,
+      handler(value) {
+        if (value && Object.keys(value).length > 0) {
+          this.$message.error(Object.values(value).join(', '))
+        }
+      }
+    }
+  },
+  methods: {
+    async submit() {
+      this.loadingForm = true
+      const response = await axios.post('/auth/login', this.formData)
+      if (response?.data?.data?.firstLogin) {
+        this.$inertia.visit(this.appRoute('admin.first-login.form'))
+      } else if (response?.data?.data?.twoFactor) {
+        this.$inertia.visit(this.appRoute('admin.two-factor.form'))
+      } else {
+        this.$inertia.visit(response?.data?.data)
+      }
+      this.loadingForm = false
+    }
+  }
+}
+</script>
+<style>
+.form-login .el-form-item {
+  margin-bottom: 1.7rem !important;
+}
+</style>

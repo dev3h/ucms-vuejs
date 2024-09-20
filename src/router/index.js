@@ -55,7 +55,7 @@ const router = createRouter({
         {
           path: 'login',
           name: 'sso-login',
-          component: () => import('@/views/Auth/Page/Login.vue'),
+          component: () => import('@/views/Auth/ClientSSO/Login.vue'),
           // beforeEnter: (to, from, next) => {
           //   const { redirect_uri, client_id, system_code } = to.query
           //   if (!redirect_uri || !client_id || !system_code) {
