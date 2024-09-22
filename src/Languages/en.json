@@ -1,6 +1,7 @@
 {
     "auth-page": {
         "login-title": "Login",
+        "welcome-title": "Welcome",
         "admin-login-title": "Administrator Login",
         "sign-in-with-google": "Sign in with Google",
         "click-forgot-password": "Click here if you have forgotten your password",
@@ -76,7 +77,8 @@
         "import-csv": "Import from csv",
         "download-csv-template": "Download csv template",
         "upload-csv": "Upload csv",
-        "import": "Import"
+        "import": "Import",
+        "next": "Next"
     },
     "input": {
       "common": {
@@ -92,7 +94,7 @@
       "publish": {
         "now": "Now",
         "schedule": "Schedule",
-        "start-date": "Start date",
+        "start-date": "Sutart date",
         "end-date": "End date"
       },
       "content": "Content",

@@ -22,14 +22,14 @@
         <TextInput
           id="code"
           ref="codeInput"
-          v-model="form.code"
+          v-model="formData.code"
           type="text"
           inputmode="numeric"
           class="mt-1 block w-full"
           autofocus
           autocomplete="one-time-code"
         />
-        <InputError class="mt-2" :message="form.errors.code" />
+        <InputError class="mt-2" :message="form?.errors?.code" />
       </div>
 
       <div v-else>
@@ -37,19 +37,19 @@
         <TextInput
           id="recovery_code"
           ref="recoveryCodeInput"
-          v-model="form.recovery_code"
+          v-model="formData.recovery_code"
           type="text"
           class="mt-1 block w-full"
           autocomplete="one-time-code"
         />
-        <InputError class="mt-2" :message="form.errors.recovery_code" />
+        <InputError class="mt-2" :message="form?.errors?.recovery_code" />
       </div>
 
       <div class="flex flex-col justify-center mt-9 gap-4">
         <el-button
           type="primary"
-          :class="{ 'opacity-25': form.processing }"
-          :disabled="form.processing"
+          :class="{ 'opacity-25': form?.processing }"
+          :disabled="form?.processing"
           @click="submit"
           >{{ $t('button.verify') }}</el-button
         >
@@ -70,40 +70,47 @@
   </AuthenticationCard>
 </template>
 
-<script setup>
-import { nextTick, ref } from 'vue'
-import { Head, useForm } from '@inertiajs/vue3'
+<script>
 import AuthenticationCard from '@/components/Page/AuthenticationCard.vue'
-import InputError from '@/components/InputError.vue'
-import InputLabel from '@/components/InputLabel.vue'
+import InputError from '@/components/Page/InputError.vue'
+import InputLabel from '@/components/Page/InputLabel.vue'
 import TextInput from '@/components/Page/TextInput.vue'
-import PrimaryButton from '@/components/Page/PrimaryButton.vue'
 
-const recovery = ref(false)
+export default {
+  components: {
+    AuthenticationCard,
+    InputError,
+    InputLabel,
+    TextInput
+  },
+  data() {
+    return {
+      recovery: false,
+      formData: {
+        code: '',
+        recovery_code: ''
+      },
+      recoveryCodeInput: null,
+      codeInput: null
+    }
+  },
+  methods: {
+    async toggleRecovery() {
+      this.recovery = !this.recovery
 
-const form = useForm({
-  code: '',
-  recovery_code: ''
-})
+      await this.$nextTick()
 
-const recoveryCodeInput = ref(null)
-const codeInput = ref(null)
-
-const toggleRecovery = async () => {
-  recovery.value ^= true
-
-  await nextTick()
-
-  if (recovery.value) {
-    recoveryCodeInput.value.focus()
-    form.code = ''
-  } else {
-    codeInput.value.focus()
-    form.recovery_code = ''
+      if (this.recovery) {
+        this.$refs.recoveryCodeInput.focus()
+        this.form.code = ''
+      } else {
+        this.$refs.codeInput.focus()
+        this.form.recovery_code = ''
+      }
+    },
+    submit() {
+      this.form.post(this.route('two-factor.login'))
+    }
   }
-}
-
-const submit = () => {
-  form.post(route('two-factor.login'))
 }
 </script>

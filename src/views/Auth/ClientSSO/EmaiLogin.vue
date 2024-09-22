@@ -31,7 +31,7 @@
             >
               <el-input v-model="formData.email" size="large" clearable />
             </el-form-item>
-            <div>
+            <div class="-mt-2">
               <router-link
                 class="text-sm underline cursor-pointer"
                 :to="{ name: 'forgot-password' }"
@@ -41,7 +41,7 @@
             </div>
           </el-form>
 
-          <div class="text-center">
+          <div class="text-center mt-5">
             <el-button
               type="primary"
               :loading="loadingForm"
@@ -49,7 +49,7 @@
               size="large"
               @click.prevent="doSubmit"
             >
-              {{ $t('button.login') }}
+              {{ $t('button.next') }}
             </el-button>
           </div>
         </div>
@@ -68,12 +68,10 @@ export default {
   data() {
     return {
       formData: {
-        email: null,
-        password: null
+        email: null
       },
       rules: {
         email: baseRuleValidate(this.$t),
-        password: baseRuleValidate(this.$t)
       },
       loadingForm: false,
       errors: null,
@@ -93,13 +91,9 @@ export default {
   methods: {
     async submit() {
       this.loadingForm = true
-      const response = await axios.post('/auth/login', this.formData)
-      if (response?.data?.data?.firstLogin) {
-        this.$inertia.visit(this.appRoute('admin.first-login.form'))
-      } else if (response?.data?.data?.twoFactor) {
-        this.$inertia.visit(this.appRoute('admin.two-factor.form'))
-      } else {
-        this.$inertia.visit(response?.data?.data)
+      const response = await axios.post('/auth/check-email-exist', this.formData)
+      if(response?.data?.data) {
+        this.$router.push({ name: 'sso-login-password', query: { email: response?.data?.data } })
       }
       this.loadingForm = false
     }

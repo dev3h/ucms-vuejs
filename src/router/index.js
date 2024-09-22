@@ -53,9 +53,9 @@ const router = createRouter({
       path: '/sso',
       children: [
         {
-          path: 'login',
-          name: 'sso-login',
-          component: () => import('@/views/Auth/ClientSSO/Login.vue'),
+          path: 'login/identifier',
+          name: 'sso-login-email',
+          component: () => import('@/views/Auth/ClientSSO/EmaiLogin.vue')
           // beforeEnter: (to, from, next) => {
           //   const { redirect_uri, client_id, system_code } = to.query
           //   if (!redirect_uri || !client_id || !system_code) {
@@ -64,7 +64,38 @@ const router = createRouter({
           //     next()
           //   }
           // }
-        }, 
+        },
+        {
+          path: 'login/challenge/pwd',
+          name: 'sso-login-password',
+          component: () => import('@/views/Auth/ClientSSO/PasswordLogin.vue')
+          // beforeEnter: (to, from, next) => {
+          //   const { redirect_uri, client_id, system_code, email } = to.query
+          //   if (!redirect_uri || !client_id || !system_code || !email) {
+          //     next({ name: 'error-login' })
+          //   } else {
+          //     next()
+          //   }
+          // }
+        },
+        {
+          path: 'login/oauth/id',
+          name: 'sso-login-confirm',
+          component: () => import('@/views/Auth/ClientSSO/OauthConfirmLogin.vue')
+          // beforeEnter: (to, from, next) => {
+          //   const { redirect_uri, client_id, system_code, email } = to.query
+          //   if (!redirect_uri || !client_id || !system_code || !email) {
+          //     next({ name: 'error-login' })
+          //   } else {
+          //     next()
+          //   }
+          // }
+        },
+        {
+          path: 'login/two-factor-challenge',
+          name: 'sso-login-two-factor-challenge',
+          component: () => import('@/views/Auth/Page/TwoFactorChallenge.vue')
+        },
         {
           path: 'error-login',
           name: 'error-login',

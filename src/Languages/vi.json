@@ -1,6 +1,7 @@
 {
     "auth-page": {
         "login-title": "Đăng nhập",
+        "welcome-title": "Chào mừng",
         "admin-login-title": "Đăng nhập quản trị",
         "sign-in-with-google": "Đăng nhập bằng Google",
         "click-forgot-password": "Nhấn vào đây nếu bạn quên mật khẩu",
@@ -73,7 +74,8 @@
         "import-csv": "Nhập từ csv",
         "download-csv-template": "Tải xuống mẫu csv",
         "upload-csv": "Tải lên csv",
-        "import": "Nhập"
+        "import": "Nhập",
+        "next": "Tiếp theo"
     },
     "input": {
         "common": {
