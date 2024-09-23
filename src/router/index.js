@@ -92,6 +92,16 @@ const router = createRouter({
           // }
         },
         {
+          path: 'login/setup-totp-mfa',
+          name: 'sso-login-setup-totp-mfa',
+          component: () => import('@/views/Auth/TotpMFA/SetupTotpMfa.vue')
+        },
+        {
+          path: 'login/totp-mfa-qrcode',
+          name: 'sso-login-totp-mfa-qrcode',
+          component: () => import('@/views/Auth/TotpMFA/TotpQrcode.vue')
+        },
+        {
           path: 'login/two-factor-challenge',
           name: 'sso-login-two-factor-challenge',
           component: () => import('@/views/Auth/Page/TwoFactorChallenge.vue')

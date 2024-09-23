@@ -89,6 +89,7 @@ export default {
                 this.setErrors({});
                 await this.submit();
             } catch (error) {
+                console.log(error);
                 let message =
                     error.response?.data?.message ??
                     "An error has occurred. please try again.";

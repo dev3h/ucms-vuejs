@@ -1,4 +1,5 @@
 import axios from 'axios'
+import { useAuthStore } from '@/stores/auth'
 
 /**
  * Axios default config
@@ -47,6 +48,20 @@ export function provideAxios(options = {}) {
   // Setting up axios
   instance.interceptors.request.use(
     function (requestConfig) {
+      const authStore = useAuthStore()
+      const userToken = authStore.getUserAccessToken
+      const adminToken = authStore.getAdminAccessToken
+
+      if (requestConfig.url.includes('/admin')) {
+        if (adminToken) {
+          requestConfig.headers['Authorization'] = `Bearer ${adminToken}`
+        }
+      } else {
+        if (userToken) {
+          requestConfig.headers['Authorization'] = `Bearer ${userToken}`
+        }
+      }
+
       return requestConfig
     },
     function (error) {

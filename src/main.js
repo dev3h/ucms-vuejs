@@ -26,7 +26,8 @@ const i18n = createI18n({
   fallbackLocale: 'en',
   messages: messages
 })
-app.use(createPinia())
+const pinia = createPinia()
+app.use(pinia)
 app.use(ElementPlus)
 app.use(CKEditor)
 app.use(i18n)
