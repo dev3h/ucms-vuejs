@@ -8,9 +8,7 @@
               <img src="/images/logo.svg" alt="logo" class="h-[100px]" />
             </div>
           </div>
-          <div
-            class="text-zinc-800 text-2xl font-bold uppercase leading-[28.80px] mb-9"
-          >
+          <div class="text-zinc-800 text-2xl font-bold uppercase leading-[28.80px] mb-9">
             {{ $t('auth-page.login-title') }}
           </div>
         </div>
@@ -71,7 +69,7 @@ export default {
         email: null
       },
       rules: {
-        email: baseRuleValidate(this.$t),
+        email: baseRuleValidate(this.$t)
       },
       loadingForm: false,
       errors: null,
@@ -91,9 +89,18 @@ export default {
   methods: {
     async submit() {
       this.loadingForm = true
-      const response = await axios.post('/auth/check-email-exist', this.formData)
-      if(response?.data?.data) {
-        this.$router.push({ name: 'sso-login-password', query: { email: response?.data?.data } })
+      const response = await axios.post('/auth/check-email-exist', this.formData, {
+        params: { client_id: this.$route.query.client_id, redirect_uri: this.$route.query.redirect_uri }
+      })
+      if (response?.data?.data) {
+        const resData = response?.data?.data
+        const query = {
+          email: resData?.email,
+          session_token: resData?.sessionToken,
+          client_id: resData?.client_id,
+          redirect_uri: resData?.redirect_uri
+        }
+        this.$router.push({ name: 'sso-login-password', query })
       }
       this.loadingForm = false
     }
