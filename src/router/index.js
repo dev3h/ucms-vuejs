@@ -55,15 +55,22 @@ const router = createRouter({
         {
           path: 'login/identifier',
           name: 'sso-login-email',
-          component: () => import('@/views/Auth/ClientSSO/EmaiLogin.vue')
-          // beforeEnter: (to, from, next) => {
-          //   const { redirect_uri, client_id, system_code } = to.query
-          //   if (!redirect_uri || !client_id || !system_code) {
-          //     next({ name: 'error-login' })
-          //   } else {
-          //     next()
-          //   }
-          // }
+          component: () => import('@/views/Auth/ClientSSO/EmaiLogin.vue'),
+          beforeEnter: (to, from, next) => {
+            const { redirect_uri, client_id } = to.query
+            if (!redirect_uri || !client_id) {
+              let message = 'Missing required parameters: '
+              if (!client_id) {
+                message += 'client_id '
+              }
+              else if (!redirect_uri) {
+                message += 'redirect_uri '
+              }
+              next({ name: 'error-login', query: { authError: message.trim() } })
+            } else {
+              next()
+            }
+          }
         },
         {
           path: 'login/challenge/pwd',
@@ -107,7 +114,7 @@ const router = createRouter({
           component: () => import('@/views/Auth/Page/TwoFactorChallenge.vue')
         },
         {
-          path: 'error-login',
+          path: 'login/error',
           name: 'error-login',
           component: () => import('@/views/Auth/Page/ErrorLogin.vue')
         }

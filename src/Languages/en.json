@@ -24,7 +24,8 @@
       "title": "Enter your verify code provided by authenticator app.",
       "title-recovery": "Enter one of your emergency recovery codes."
     },
-    "return to login": "Return to login screen"
+    "return to login": "Return to login screen",
+    "authorization-error": "Authorization Error"
   },
   "my-page": {
     "change-password": "Change password",

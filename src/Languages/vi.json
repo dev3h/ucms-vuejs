@@ -24,7 +24,8 @@
       "title": "Nhập mã xác minh được cung cấp bởi ứng dụng xác thực.",
       "title-recovery": "Nhập một trong các mã khôi phục khẩn cấp của bạn."
     },
-    "return-to-login": "Quay lại màn hình đăng nhập"
+    "return-to-login": "Quay lại màn hình đăng nhập",
+    "authorization-error": "Lỗi ủy quyền"
   },
   "my-page": {
     "change-password": "Thay đổi mật khẩu",
