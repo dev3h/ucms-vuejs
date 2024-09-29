@@ -1,4 +1,25 @@
+import axios from '@/Plugins/axios'
 import { createRouter, createWebHistory } from 'vue-router'
+
+const checkRequiredParams = async (to, from, next) => {
+  const { redirect_uri, client_id } = to.query
+  if (!redirect_uri || !client_id) {
+    let message = 'Missing required parameters: '
+    if (!client_id) {
+      message += 'client_id '
+    } else if (!redirect_uri) {
+      message += 'redirect_uri '
+    }
+    next({ name: 'error-login', query: { authError: btoa(message.trim()) } })
+  } else {
+    try {
+      const response = await axios.post('/system/check-data-system', { ...to.query })
+      if (response?.data?.data) next()
+    } catch (error) {
+      next({ name: 'error-login', query: { authError: error.response?.data?.message } })
+    }
+  }
+}
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -56,47 +77,19 @@ const router = createRouter({
           path: 'login/identifier',
           name: 'sso-login-email',
           component: () => import('@/views/Auth/ClientSSO/EmaiLogin.vue'),
-          beforeEnter: (to, from, next) => {
-            const { redirect_uri, client_id } = to.query
-            if (!redirect_uri || !client_id) {
-              let message = 'Missing required parameters: '
-              if (!client_id) {
-                message += 'client_id '
-              }
-              else if (!redirect_uri) {
-                message += 'redirect_uri '
-              }
-              next({ name: 'error-login', query: { authError: message.trim() } })
-            } else {
-              next()
-            }
-          }
+          beforeEnter: checkRequiredParams
         },
         {
           path: 'login/challenge/pwd',
           name: 'sso-login-password',
-          component: () => import('@/views/Auth/ClientSSO/PasswordLogin.vue')
-          // beforeEnter: (to, from, next) => {
-          //   const { redirect_uri, client_id, system_code, email } = to.query
-          //   if (!redirect_uri || !client_id || !system_code || !email) {
-          //     next({ name: 'error-login' })
-          //   } else {
-          //     next()
-          //   }
-          // }
+          component: () => import('@/views/Auth/ClientSSO/PasswordLogin.vue'),
+          beforeEnter: checkRequiredParams
         },
         {
           path: 'login/oauth/id',
           name: 'sso-login-confirm',
-          component: () => import('@/views/Auth/ClientSSO/OauthConfirmLogin.vue')
-          // beforeEnter: (to, from, next) => {
-          //   const { redirect_uri, client_id, system_code, email } = to.query
-          //   if (!redirect_uri || !client_id || !system_code || !email) {
-          //     next({ name: 'error-login' })
-          //   } else {
-          //     next()
-          //   }
-          // }
+          component: () => import('@/views/Auth/ClientSSO/OauthConfirmLogin.vue'),
+          beforeEnter: checkRequiredParams
         },
         {
           path: 'login/setup-totp-mfa',

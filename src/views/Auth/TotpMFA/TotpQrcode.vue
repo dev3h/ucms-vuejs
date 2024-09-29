@@ -59,6 +59,7 @@ export default {
   data() {
     return {
       qrCode: '',
+      query: this.$route.query
     };
   },
   created() {
@@ -67,7 +68,9 @@ export default {
   methods: {
     async generateTotpQrcode() {
       try {
-        const response = await axios.post('/2fa/generate', {}, { responseType: 'arraybuffer' });
+        const response = await axios.post('/2fa/generate', {
+          data: this.query
+        }, { responseType: 'arraybuffer' });
         const blob = new Blob([response.data], { type: 'image/png' });
         this.qrCode = URL.createObjectURL(blob);
       } catch (error) {

@@ -25,12 +25,19 @@
 <script>
 export default {
   data() {
-    return {
-      errorAuth: this.$route?.query?.authError
+    let errorAuth = null
+    try {
+      const authError = this.$route?.query?.authError
+      if (authError) {
+        errorAuth = atob(authError)
+      }
+    } catch (e) {
+      errorAuth = null
     }
-  },
-  created() {
-    console.log(this.$route)
+
+    return {
+      errorAuth
+    }
   }
 }
 </script>

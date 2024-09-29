@@ -70,6 +70,7 @@ export default {
         email: this.$route.query.email,
         password: null
       },
+      query: this.$route.query,
       rules: {
         password: baseRuleValidate(this.$t)
       },
@@ -91,13 +92,25 @@ export default {
   methods: {
     async submit() {
       this.loadingForm = true
-      this.formData.username = 'namnd@yopmail.com'
-      const response = await axios.post('/auth/login-ucms', this.formData)
+      const response = await axios.post('/auth/oauth-ucms/login', this.formData, {
+        params: this.query
+      })
       if (response?.data?.data) {
-        if (response?.data?.data?.twoFactor) {
-          this.$router.push({ name: 'sso-login-two-factor-challenge' })
+        const resData = response?.data?.data
+        const query = {
+          email: resData?.email,
+          consent_token: resData?.consentToken,
+          client_id: resData?.client_id,
+          redirect_uri: resData?.redirect_uri
+        }
+        if (resData?.two_factor_enable) {
+          if(resData?.is_two_factor_secret) {
+            this.$router.push({ name: 'sso-login-two-factor-challenge', query })
+          } else {
+            this.$router.push({ name: 'sso-login-setup-totp-mfa', query })
+          }
         } else {
-          this.$router.push({ name: 'sso-login-confirm' })
+          this.$router.push({ name: 'sso-login-confirm', query })
         }
       }
       this.loadingForm = false

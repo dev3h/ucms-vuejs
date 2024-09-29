@@ -59,9 +59,14 @@
 <script>
 export default {
   name: 'SetupAuthenticatorApp',
+  data() {
+    return {
+      query: this.$route.query
+    }
+  },
   methods: {
     openTotpCodeForm() {
-      this.$router.push({ name: 'sso-login-totp-mfa-qrcode' })
+      this.$router.push({ name: 'sso-login-totp-mfa-qrcode', query: this.query})
     }
   }
 }
