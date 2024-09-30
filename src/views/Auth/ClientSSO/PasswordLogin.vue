@@ -103,8 +103,9 @@ export default {
           client_id: resData?.client_id,
           redirect_uri: resData?.redirect_uri
         }
-        if (resData?.two_factor_enable) {
-          if(resData?.is_two_factor_secret) {
+        const twoFactor = resData?.two_factor
+        if (twoFactor?.enable) {
+          if(twoFactor?.is_secret_token && twoFactor?.is_confirmed) {
             this.$router.push({ name: 'sso-login-two-factor-challenge', query })
           } else {
             this.$router.push({ name: 'sso-login-setup-totp-mfa', query })

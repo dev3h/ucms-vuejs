@@ -28,7 +28,15 @@
             </div>
           </div>
           <div>
-            <el-input />
+            <el-form ref="form" :model="formData" :rules="rules" label-position="top">
+              <el-form-item
+                prop="totpCode"
+                :inline-message="hasError('totpCode')"
+                :error="getError('totpCode')"
+              >
+                <el-input v-model="formData.totpCode" size="large" clearable />
+              </el-form-item>
+            </el-form>
           </div>
         </div>
 
@@ -43,7 +51,7 @@
       </div>
       <div class="flex justify-end pr-10">
         <el-button type="info" size="large" class="w-[160px]">{{ $t('button.back') }}</el-button>
-        <el-button type="primary" size="large" class="w-[160px]">{{
+        <el-button @click="doSubmit" type="primary" size="large" class="w-[160px]">{{
           $t('button.submit')
         }}</el-button>
       </div>
@@ -52,32 +60,71 @@
 </template>
 
 <script>
-import axios from "@/Plugins/axios.js";
+import axios from '@/Plugins/axios.js'
+import form from '@/Mixins/form'
 
 export default {
-  name: 'SetupAuthenticatorApp',
+  mixins: [form],
   data() {
     return {
       qrCode: '',
-      query: this.$route.query
-    };
+      query: this.$route.query,
+      formData: {
+        totpCode: null
+      },
+      rules: {
+        totpCode: [
+          {
+            required: true,
+            message: this.$t('validate.required'),
+            trigger: ['blur', 'change']
+          }
+        ]
+      },
+      loadingForm: false
+    }
   },
   created() {
-    this.generateTotpQrcode();
+    this.generateTotpQrcode()
   },
   methods: {
     async generateTotpQrcode() {
       try {
-        const response = await axios.post('/2fa/generate', {
-          data: this.query
-        }, { responseType: 'arraybuffer' });
-        const blob = new Blob([response.data], { type: 'image/png' });
-        this.qrCode = URL.createObjectURL(blob);
+        const response = await axios.post(
+          '/2fa/generate',
+          {
+            ...this.query
+          },
+          { responseType: 'arraybuffer' }
+        )
+        const blob = new Blob([response.data], { type: 'image/png' })
+        this.qrCode = URL.createObjectURL(blob)
       } catch (error) {
-        this.$message.error(error.response.data.message || this.$t('something-wrong'));
+        console.log(error)
+        let errorMessage = this.$t('message.something-wrong')
+        if (error.response && error.response.data) {
+          try {
+            const text = new TextDecoder().decode(new Uint8Array(error.response.data))
+            const json = JSON.parse(text)
+            errorMessage = json.message || errorMessage
+          } catch (e) {
+            this.$message.error(errorMessage)
+          }
+        }
+        this.$message.error(errorMessage)
       }
     },
-  },
+    async submit() {
+      this.loadingForm = true
+      const response = await axios.post('/2fa/authenticate', {
+        ...this.formData,
+        ...this.query
+      })
+      console.log(response)
+      this.$message({ message: data?.message, type: 'success' })
+      this.loadingForm = false
+    }
+  }
 }
 </script>
 
