@@ -50,6 +50,11 @@ const router = createRouter({
               path: 'system/create',
               name: 'system-create',
               component: () => import('@/views/App/System/Create.vue')
+            },
+            {
+              path: 'system/show/:id',
+              name: 'system-show',
+              component: () => import('@/views/App/System/Show.vue')
             }
           ]
         },

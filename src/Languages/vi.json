@@ -144,7 +144,9 @@
     "publish-at": "Ngày gửi",
     "all-users": "Tất cả người dùng",
     "specific-users": "Người dùng cụ thể",
-    "title": "Tiêu đề"
+    "title": "Tiêu đề",
+    "client-id": "Client ID",
+    "client-secret": "Client secret"
   },
   "sidebar": {
     "dashboard": "Bảng điều khiển",
@@ -189,6 +191,7 @@
   "message": {
     "invalid-csv-file": "Vui lòng tải lên một tệp CSV hoặc Excel hợp lệ",
     "invalid-csv-data": "Dữ liệu trong tệp CSV không hợp lệ",
-    "something-wrong": "Có lỗi xảy ra vui lòng thử lại sau"
+    "something-wrong": "Có lỗi xảy ra vui lòng thử lại sau",
+    "copy-success": "Sao chép vào clipboard thành công"
   }
 }

@@ -114,6 +114,13 @@ export default {
           headerAlign: 'left'
         },
         {
+          key: 'client_id',
+          'min-width': 300,
+          label: this.$t('column.client-id'),
+          align: 'left',
+          headerAlign: 'left'
+        },
+        {
           key: 'created_at',
           width: 200,
           label: this.$t('column.common.created-at'),
@@ -192,7 +199,7 @@ export default {
         })
     },
     openShow(id) {
-      this.$inertia.visit(this.appRoute('admin.account.show', id))
+      this.$router.push({ name: 'system-show', params: { id } })
     },
     changeSize(value) {
       this.filters.page = 1

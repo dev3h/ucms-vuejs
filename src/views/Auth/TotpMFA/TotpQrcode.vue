@@ -74,7 +74,7 @@ export default {
         const blob = new Blob([response.data], { type: 'image/png' });
         this.qrCode = URL.createObjectURL(blob);
       } catch (error) {
-        this.$message.error(error.response.data.message || 'Something went wrong');
+        this.$message.error(error.response.data.message || this.$t('something-wrong'));
       }
     },
   },
