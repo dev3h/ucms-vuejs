@@ -61,6 +61,9 @@
       "line-4": "Can't scan the QR? View manual code"
     }
   },
+  "sso-ucms-confirm-page": {
+    "line-1": "If you continue, UCMS will share your name, email address, language preference, and profile photo with"
+  },
   "common": {},
   "button": {
     "login": "Login",

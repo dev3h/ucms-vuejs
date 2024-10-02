@@ -14,8 +14,7 @@
         </div>
         <div class="px-5 w-1/2">
           <div>
-            Nếu bạn tiếp tục, UCMS sẽ chia sẻ tên, địa chỉ email, lựa chọn ưu tiên về ngôn ngữ và
-            ảnh hồ sơ của bạn với Hệ thống 1
+            {{ $t('sso-ucms-confirm-page.line-1') }}
           </div>
         </div>
       </div>
@@ -37,26 +36,20 @@
   </div>
 </template>
 <script>
-import form from '@/Mixins/form'
 import axios from '@/Plugins/axios.js'
 
 export default {
-  name: 'admin-login',
-  mixins: [form],
   data() {
     return {
       loadingForm: false,
-      errors: null,
-      pathSub: window.location.pathname.split('/')
+      query: this.$route.query
     }
   },
   methods: {
     async submit() {
       this.loadingForm = true
-      const response = await axios.post('/auth/check-email-exist', this.formData)
-      if (response?.data?.data) {
-        this.$router.push({ name: 'sso-login-password', query: { email: response?.data?.data } })
-      }
+      const response = await axios.post('/auth/sso-ucms/confirm', this.query)
+      console.log(response)
       this.loadingForm = false
     }
   }

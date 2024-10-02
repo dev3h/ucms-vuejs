@@ -61,6 +61,9 @@
       "line-4": "Không thể quét mã QR? Xem mã hướng dẫn"
     }
   },
+  "sso-ucms-confirm-page": {
+    "line-1": "Nếu bạn tiếp tục, UCMS sẽ chia sẻ tên, địa chỉ email, lựa chọn ưu tiên về ngôn ngữ và ảnh hồ sơ của bạn với"
+  },
   "button": {
     "login": "Đăng nhập",
     "logout": "Đăng xuất",

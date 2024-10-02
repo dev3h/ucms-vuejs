@@ -120,8 +120,11 @@ export default {
         ...this.formData,
         ...this.query
       })
-      console.log(response)
-      this.$message({ message: data?.message, type: 'success' })
+      if (response.data?.status_code === 200) {
+        this.$router.push({ name: 'sso-login-confirm', query: this.query })
+      } else {
+        this.$message.error(response.data?.message || this.$t('message.something-wrong'))
+      }
       this.loadingForm = false
     }
   }

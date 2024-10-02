@@ -16,33 +16,49 @@
       </template>
     </div>
 
-    <form @submit.prevent="submit">
+    <el-form
+      ref="form"
+      :model="formData"
+      :rules="rules"
+      label-position="top"
+      @submit.prevent="submit"
+    >
       <div v-if="!recovery">
-        <InputLabel for="code" :value="$t('column.common.code')" />
-        <TextInput
-          id="code"
-          ref="codeInput"
-          v-model="formData.code"
-          type="text"
-          inputmode="numeric"
-          class="mt-1 block w-full"
-          autofocus
-          autocomplete="one-time-code"
-        />
-        <InputError class="mt-2" :message="form?.errors?.code" />
+        <el-form-item
+          label="Code"
+          prop="code"
+          :inline-message="hasError('code')"
+          :error="getError('code')"
+        >
+          <el-input
+            id="code"
+            ref="codeInput"
+            v-model="formData.code"
+            type="text"
+            inputmode="numeric"
+            class="mt-1 block w-full"
+            autofocus
+            autocomplete="one-time-code"
+          />
+        </el-form-item>
       </div>
 
       <div v-else>
-        <InputLabel for="recovery_code" :value="$t('input.recovery-code')" />
-        <TextInput
-          id="recovery_code"
-          ref="recoveryCodeInput"
-          v-model="formData.recovery_code"
-          type="text"
-          class="mt-1 block w-full"
-          autocomplete="one-time-code"
-        />
-        <InputError class="mt-2" :message="form?.errors?.recovery_code" />
+        <el-form-item
+          label="Recovery Code"
+          prop="recovery_code"
+          :inline-message="hasError('recovery_code')"
+          :error="getError('recovery_code')"
+        >
+          <el-input
+            id="recovery_code"
+            ref="recoveryCodeInput"
+            v-model="formData.recovery_code"
+            type="text"
+            class="mt-1 block w-full"
+            autocomplete="one-time-code"
+          />
+        </el-form-item>
       </div>
 
       <div class="flex flex-col justify-center mt-9 gap-4">
@@ -51,8 +67,9 @@
           :class="{ 'opacity-25': form?.processing }"
           :disabled="form?.processing"
           @click="submit"
-          >{{ $t('button.verify') }}</el-button
         >
+          {{ $t('button.verify') }}
+        </el-button>
         <el-button
           class="text-sm text-gray-600 hover:text-gray-900 cursor-pointer !ml-0"
           @click.prevent="toggleRecovery"
@@ -60,13 +77,12 @@
           <template v-if="!recovery">
             {{ $t('button.recovery-code') }}
           </template>
-
           <template v-else>
             {{ $t('button.auth-code') }}
           </template>
         </el-button>
       </div>
-    </form>
+    </el-form>
   </AuthenticationCard>
 </template>
 
@@ -75,8 +91,11 @@ import AuthenticationCard from '@/components/Page/AuthenticationCard.vue'
 import InputError from '@/components/Page/InputError.vue'
 import InputLabel from '@/components/Page/InputLabel.vue'
 import TextInput from '@/components/Page/TextInput.vue'
+import axios from '@/Plugins/axios.js'
+import form from '@/Mixins/form'
 
 export default {
+  mixins: [form],
   components: {
     AuthenticationCard,
     InputError,
@@ -90,8 +109,25 @@ export default {
         code: '',
         recovery_code: ''
       },
+      query: this.$route.query,
       recoveryCodeInput: null,
-      codeInput: null
+      codeInput: null,
+      rules: {
+        code: [
+          {
+            required: true,
+            message: this.$t('validate.required'),
+            trigger: ['blur', 'change']
+          }
+        ],
+        recovery_code: [
+          {
+            required: true,
+            message: this.$t('validate.required'),
+            trigger: ['blur', 'change']
+          }
+        ]
+      }
     }
   },
   methods: {
@@ -108,8 +144,19 @@ export default {
         this.form.recovery_code = ''
       }
     },
-    submit() {
-      this.form.post(this.route('two-factor.login'))
+    async submit() {
+      this.loadingForm = true
+      const response = await axios.post('/2fa/challenge', {
+        ...this.formData,
+        ...this.query
+      })
+      console.log(response)
+      // if (response.data?.status_code === 200) {
+      //   this.$router.push({ name: 'sso-login-confirm', query: this.query })
+      // } else {
+      //   this.$message.error(response.data?.message || this.$t('message.something-wrong'))
+      // }
+      this.loadingForm = false
     }
   }
 }
