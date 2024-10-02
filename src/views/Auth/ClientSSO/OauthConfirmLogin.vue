@@ -27,7 +27,7 @@
           :loading="loadingForm"
           class="w-full mt-3"
           size="large"
-          @click.prevent="doSubmit"
+          @click.prevent="submit"
         >
           {{ $t('button.next') }}
         </el-button>
@@ -47,10 +47,22 @@ export default {
   },
   methods: {
     async submit() {
-      this.loadingForm = true
-      const response = await axios.post('/auth/sso-ucms/confirm', this.query)
-      console.log(response)
+      try {
+        this.loadingForm = true
+      const response = await axios.post('/auth/sso-ucms/confirm', this.query, {
+        params: {
+          ...this.query
+        }
+      })
+      if(response?.data?.status_code === 200) {
+        const accessToken = response?.data?.data
+        const redirectUrl = `${this.query.redirect_uri}?access_token=${accessToken}`
+        window.location.href = redirectUrl
+      }
       this.loadingForm = false
+      } catch (err) {
+        this.$message.error(err.response.data.message || this.$t('message.something-wrong'))
+      }
     }
   }
 }

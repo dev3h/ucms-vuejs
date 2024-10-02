@@ -88,19 +88,13 @@
 
 <script>
 import AuthenticationCard from '@/components/Page/AuthenticationCard.vue'
-import InputError from '@/components/Page/InputError.vue'
-import InputLabel from '@/components/Page/InputLabel.vue'
-import TextInput from '@/components/Page/TextInput.vue'
 import axios from '@/Plugins/axios.js'
 import form from '@/Mixins/form'
 
 export default {
   mixins: [form],
   components: {
-    AuthenticationCard,
-    InputError,
-    InputLabel,
-    TextInput
+    AuthenticationCard
   },
   data() {
     return {
@@ -150,12 +144,9 @@ export default {
         ...this.formData,
         ...this.query
       })
-      console.log(response)
-      // if (response.data?.status_code === 200) {
-      //   this.$router.push({ name: 'sso-login-confirm', query: this.query })
-      // } else {
-      //   this.$message.error(response.data?.message || this.$t('message.something-wrong'))
-      // }
+      const accessToken = response?.data?.data
+      const redirectUrl = `${this.query.redirect_uri}?access_token=${accessToken}`
+      window.location.href = redirectUrl
       this.loadingForm = false
     }
   }
