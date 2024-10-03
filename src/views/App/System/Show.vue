@@ -5,27 +5,34 @@
         <BreadCrumbComponent :bread-crumb="setbreadCrumbHeader" />
       </div>
       <div class="w-full py-5">
-        <div class="flex flex-col gap-5">
-          <div class="container__item">
-            <h4>{{ $t('column.common.name') }}</h4>
+        <div class="box-content box-content3">
+          <div class="box-content--item">
+            <h3>{{ $t('column.common.name') }}</h3>
             <span>{{ item?.name }}</span>
           </div>
-          <div class="container__item">
-            <h4>{{ $t('column.common.code') }}</h4>
+          <div class="box-content--item">
+            <h3>{{ $t('column.common.code') }}</h3>
             <span>{{ item?.code }}</span>
           </div>
-          <div class="container__item">
-            <h4>{{ $t('column.client-id') }}</h4>
+          <div class="box-content--item">
+            <h3>{{ $t('column.client-id') }}</h3>
             <div class="flex gap-1 items-center">
                 <span>{{ item?.client_id }}</span>
                 <img v-if="item?.client_id" class="cursor-pointer" src="/public/images/svg/copy.svg" alt="" @click="handleCopyToClipboard(item?.client_id)">
             </div>
           </div>
-          <div class="container__item">
-            <h4>{{ $t('column.client-secret') }}</h4>
+          <div class="box-content--item">
+            <h3>{{ $t('column.client-secret') }}</h3>
             <div class="flex gap-1 items-center">
                 <span>{{ item?.client_secret }}</span>
                 <img v-if="item?.client_secret" class="cursor-pointer" src="/public/images/svg/copy.svg" alt="" @click="handleCopyToClipboard(item?.client_secret)">
+            </div>
+          </div>
+           <div class="box-content--item">
+            <h3>{{ $t('input.redirect-uri') }}</h3>
+            <div class="flex gap-1 items-center">
+                <span>{{ item?.redirect_uris }}</span>
+                <img v-if="item?.redirect_uris" class="cursor-pointer" src="/public/images/svg/copy.svg" alt="" @click="handleCopyToClipboard(item?.client_secret)">
             </div>
           </div>
         </div>
@@ -92,14 +99,3 @@ export default {
   }
 }
 </script>
-<style>
-.container__item {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-.container__item h4 {
-  font-size: 16px;
-  font-weight: 600;
-}
-</style>

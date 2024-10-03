@@ -33,13 +33,13 @@
       <div class="mr-5">
         <el-dropdown trigger="click" class="h-full" @command="handleCommand">
           <div class="el-dropdown-link flex items-center justify-center text-white gap-1">
-            <el-avatar :size="32">{{ user?.name?.[0] }}</el-avatar>
-            <span class="mr-2 text-lg text-primary">{{ user?.name }}</span>
+            <el-avatar :size="32">{{ user?.email?.[0] }}</el-avatar>
+            <span class="mr-2 text-lg text-primary">{{ user?.email }}</span>
             <img :src="'/images/svg/down.svg'" class="ml-2" alt="" />
           </div>
           <template #dropdown>
             <el-dropdown-menu class="w-48 !p-4">
-              <el-dropdown-item command="changeProfile">
+              <!-- <el-dropdown-item command="changeProfile">
                 <div class="flex items-center">
                   <img src="/images/svg/profile-icon.svg" class="mr-2" alt="" />
                   <span class="whitespace-nowrap">{{ $t('pop-menu.profile') }}</span>
@@ -50,7 +50,7 @@
                   <img src="/images/svg/application-icon.svg" class="mr-2" alt="" />
                   <span class="whitespace-nowrap">{{ $t('pop-menu.application') }}</span>
                 </div>
-              </el-dropdown-item>
+              </el-dropdown-item> -->
               <el-dropdown-item command="logout">
                 <div class="flex items-center" @click="dialogVisible = true">
                   <img src="/images/svg/log-out-icon.svg" class="mr-2" alt="" />
@@ -67,6 +67,8 @@
 </template>
 
 <script>
+import { useAuthStore } from '@/stores/auth';
+
 // import NotificationPopup from '@/components/Notification/Index.vue'
 
 export default {
@@ -85,12 +87,13 @@ export default {
       filter: {
         page: 1,
         limit: 20
-      }
+      },
+      authStore: useAuthStore(),
     }
   },
   computed: {
     user() {
-      return {}
+      return this.authStore?.adminInfo
     }
   },
   methods: {

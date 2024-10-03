@@ -128,14 +128,15 @@ export default {
   methods: {
     async submit() {
       this.loadingForm = true
-      const response = await axios.post('/auth/login', this.formData)
+      const response = await axios.post('/auth/admin/login', this.formData)
       if (response?.data?.data?.firstLogin) {
         // this.$inertia.visit(this.appRoute('admin.first-login.form'))
       } else if (response?.data?.data?.twoFactor) {
         // this.$inertia.visit(this.appRoute('admin.two-factor.form'))
       } else {
         const accessToken = response?.data?.data?.access_token
-        this.authStore.setUserAccessToken(accessToken)
+        this.authStore.setAdminAccessToken(accessToken)
+        this.$router.push({ name: 'system' })
       }
       this.loadingForm = false
     }

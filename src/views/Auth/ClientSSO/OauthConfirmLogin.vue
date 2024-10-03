@@ -49,17 +49,20 @@ export default {
     async submit() {
       try {
         this.loadingForm = true
-      const response = await axios.post('/auth/sso-ucms/confirm', this.query, {
-        params: {
-          ...this.query
+        const response = await axios.post('/auth/sso-ucms/confirm', this.query, {
+          params: {
+            ...this.query
+          }
+        })
+        if (response?.data?.status_code === 200) {
+          const accessToken = response?.data?.data
+          // Tạo URL với token trong fragment (dấu #)
+          const redirectUrl = `${this.query.redirect_uri}#access_token=${accessToken}`
+
+          // Redirect người dùng về URL mới với access token trong fragment
+          window.location.href = redirectUrl
         }
-      })
-      if(response?.data?.status_code === 200) {
-        const accessToken = response?.data?.data
-        const redirectUrl = `${this.query.redirect_uri}?access_token=${accessToken}`
-        window.location.href = redirectUrl
-      }
-      this.loadingForm = false
+        this.loadingForm = false
       } catch (err) {
         this.$message.error(err.response.data.message || this.$t('message.something-wrong'))
       }

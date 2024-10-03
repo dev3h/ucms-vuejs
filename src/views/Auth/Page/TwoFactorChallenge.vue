@@ -144,9 +144,14 @@ export default {
         ...this.formData,
         ...this.query
       })
-      const accessToken = response?.data?.data
-      const redirectUrl = `${this.query.redirect_uri}?access_token=${accessToken}`
-      window.location.href = redirectUrl
+      if (response?.data?.status_code === 200) {
+        const accessToken = response?.data?.data
+        // Tạo URL với token trong fragment (dấu #)
+        const redirectUrl = `${this.query.redirect_uri}#access_token=${accessToken}`
+
+        // Redirect người dùng về URL mới với access token trong fragment
+        window.location.href = redirectUrl
+      }
       this.loadingForm = false
     }
   }

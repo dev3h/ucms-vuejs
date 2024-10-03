@@ -115,7 +115,7 @@ export default {
       return [
         {
           name: menuOrigin?.label,
-          route: this.appRoute('admin.role.index')
+          route: 'user'
         },
         {
           name: 'breadcrumb.create-user',
@@ -127,16 +127,21 @@ export default {
 
   methods: {
     goBack() {
-      this.$inertia.visit(this.appRoute('admin.user.index'))
+      this.$router.push({name: 'user'})
     },
     async submit() {
       this.loadingForm = true
-      const response = await axios.post(this.appRoute('admin.api.user.store'), this.formData)
-      this.$message({
-        type: response.status === 200 ? 'success' : 'error',
-        message: response.data.message
-      })
-      this.$inertia.visit(this.appRoute('admin.user.index'))
+      await axios.post('/user', this.formData).then(
+        (response) => this.$message({
+          type: response.status === 200 ? 'success' : 'error',
+          message: response.data.message
+        }).then(() => {
+          if(response?.status === 200) {
+            this.$router.push({name: 'user'})
+          }
+        })
+      )
+      
       this.loadingForm = false
     }
   }

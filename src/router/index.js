@@ -1,5 +1,6 @@
 import axios from '@/Plugins/axios'
 import { createRouter, createWebHistory } from 'vue-router'
+import { useAuthStore } from '@/stores/auth'
 
 const checkRequiredParams = async (to, from, next) => {
   const { redirect_uri, client_id } = to.query
@@ -67,6 +68,11 @@ const router = createRouter({
               component: () => import('@/views/App/User/Index.vue')
             },
             {
+              path: 'user/create',
+              name: 'user-create',
+              component: () => import('@/views/App/User/Create.vue')
+            },
+            {
               path: 'user/:id',
               name: 'user-show',
               component: () => import('@/views/App/User/Show.vue')
@@ -125,17 +131,36 @@ const router = createRouter({
   ]
 })
 
-// router.beforeEach((to, from, next) => {
-//   // Redirect to login page if not logged in and trying to access a restricted page
-//   const publicPages = ['/admin/login', '/sso/login', '/admin/forgot-password']
-//   const authRequired = !publicPages.includes(to.path)
-//   const loggedIn = localStorage.getItem('user')
+router.beforeEach(async (to, from, next) => {
+  const adminRoutePattern = /^\/admin\//
+  const authRequired = adminRoutePattern.test(to.path)
+  const authStore = useAuthStore()
+  const loggedIn = authStore.getAdminAccessToken
 
-//   if (authRequired && !loggedIn) {
-//     return next('/admin/login')
-//   }
+  if (to.path === '/admin/login' && loggedIn) {
+    try {
+      await authStore.fetchAdminInfo()
+      return next('/admin/system-components/system')
+    } catch (error) {
+      authStore.clearTokens()
+      return next()
+    }
+  }
 
-//   next()
-// })
+  if (authRequired && !loggedIn && to.name !== 'admin-login') {
+    return next('/admin/login')
+  }
+
+  if (loggedIn) {
+    try {
+      await authStore.fetchAdminInfo()
+    } catch (error) {
+      authStore.clearTokens()
+      return next('/admin/login')
+    }
+  }
+
+  next()
+})
 
 export default router

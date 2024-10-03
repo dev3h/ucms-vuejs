@@ -1,5 +1,5 @@
 import '@/assets/css/app.css';
-import "@/assets/css/_variable.css";
+import "@/assets/css/__variable.css";
 import '@/assets/css/custom.css';
 import "@/assets/css/custom_ckeditor.css";
 
