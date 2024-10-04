@@ -15,6 +15,7 @@ export default {
       colors: {
         primary: "#002147",
         black54: "#545454",
+        grayF5: "#f5f5f5",
       }
     },
   },

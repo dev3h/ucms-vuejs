@@ -142,7 +142,7 @@ router.beforeEach(async (to, from, next) => {
       await authStore.fetchAdminInfo()
       return next('/admin/system-components/system')
     } catch (error) {
-      authStore.clearTokens()
+      authStore.clearAdminToken()
       return next()
     }
   }
@@ -155,7 +155,7 @@ router.beforeEach(async (to, from, next) => {
     try {
       await authStore.fetchAdminInfo()
     } catch (error) {
-      authStore.clearTokens()
+      authStore.clearAdminToken()
       return next('/admin/login')
     }
   }

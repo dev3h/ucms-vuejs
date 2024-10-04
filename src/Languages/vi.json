@@ -111,7 +111,8 @@
       "initial-password": "Mật khẩu ban đầu",
       "current-password": "Mật khẩu hiện tại",
       "search": "Tìm kiếm",
-      "select": "Chọn"
+      "select": "Chọn {name}",
+      "enter": "Nhập {name}"
     },
     "recovery-code": "Mã khôi phục",
     "publish": {
@@ -121,7 +122,11 @@
       "end-date": "Ngày kết thúc"
     },
     "content": "Nội dung",
-    "redirect-uri": "Địa chỉ URL chuyển hướng"
+    "redirect-uri": "Địa chỉ URL chuyển hướng",
+    "type-user": "Loại người dùng",
+    "enable-2fa": "Kích hoạt xác thực hai yếu tố",
+    "admin": "Quản trị viên",
+    "user": "Người dùng"
   },
   "validate": {
     "required": "Trường này là bắt buộc",
@@ -196,5 +201,11 @@
     "invalid-csv-data": "Dữ liệu trong tệp CSV không hợp lệ",
     "something-wrong": "Có lỗi xảy ra vui lòng thử lại sau",
     "copy-success": "Sao chép vào clipboard thành công"
+  },
+  "back-bar": {
+    "create-user": "Tạo mới người dùng",
+    "edit-user": "Chỉnh sửa người dùng",
+    "create-system": "Tạo mới hệ thống",
+    "edit-system": "Chỉnh sửa hệ thống"
   }
 }

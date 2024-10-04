@@ -207,9 +207,8 @@ export default {
           this.loadForm = false
         })
     },
-    changePage(value) {
-      this.filters.page = value
-      this.fetchData()
+    changePage(page) {
+      this.fetchData(page)
     },
     filterData: debounce(function () {
       this.fetchData()

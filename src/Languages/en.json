@@ -121,7 +121,11 @@
       "end-date": "End date"
     },
     "content": "Content",
-    "redirect-uri": "Redirect URI"
+    "redirect-uri": "Redirect URI",
+    "type-user": "Type user",
+    "enable-2fa": "Enable 2FA",
+    "admin": "Admin",
+    "user": "User"
   },
   "validate": {
     "required": "This field is required",
@@ -196,5 +200,11 @@
     "invalid-csv-data": "Invalid data in CSV file",
     "copy-success": "Copied to clipboard successfully",
     "something-wrong": "Something went wrong, try again later"
+  },
+  "back-bar": {
+    "create-user": "Create new user",
+    "edit-user": "Edit user",
+    "create-system": "Create new system",
+    "edit-system": "Edit system"
   }
 }
