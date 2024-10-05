@@ -74,10 +74,11 @@
         </div>
       </div>
       <div class="w-full my-[15px] flex justify-center items-center">
-        <el-button type="danger" size="large" @click="closeModal">{{
+        <el-button type="info" class="w-[110px]" size="large" @click="closeModal">{{
           $t('button.cancel')
         }}</el-button>
         <el-button
+          class="w-[110px]"
           type="primary"
           size="large"
           :disabled="permissionChecked?.length === 0"

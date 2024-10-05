@@ -1,7 +1,7 @@
 <template>
   <AdminLayout>
     <div class="w-full bg-white">
-      <div class="w-full pt-3 pb-2 border-b-[1px] px-4">
+      <div class="w-full pt-3 pb-2 px-4">
         <BreadCrumbComponent :bread-crumb="setbreadCrumbHeader" />
       </div>
       <BackBar route-back="user" :title="titlePage">

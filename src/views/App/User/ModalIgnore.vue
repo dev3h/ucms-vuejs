@@ -67,10 +67,11 @@
         </div>
       </div>
       <div class="w-full my-[15px] flex justify-center items-center">
-        <el-button type="danger" size="large" @click="closeModal">{{
+        <el-button type="info" class="w-[110px]" size="large" @click="closeModal">{{
           $t('button.cancel')
         }}</el-button>
         <el-button
+          class="w-[110px]"
           type="primary"
           size="large"
           @click="handleIgnorePermission"
@@ -163,7 +164,7 @@ export default {
           this.data = [...this.originalData]
         }
       } catch (e) {
-      console.log(e)
+        console.log(e)
         this.$message.error(e?.response?.data?.message)
       }
     },

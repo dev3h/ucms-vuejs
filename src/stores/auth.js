@@ -4,15 +4,10 @@ import { defineStore } from 'pinia'
 
 export const useAuthStore = defineStore('auth', {
   state: () => ({
-    userAccessToken: localStorage.getItem('userAccessToken') || null,
     adminAccessToken: localStorage.getItem('adminAccessToken') || null,
     adminInfo: null
   }),
   actions: {
-    setUserAccessToken(token) {
-      this.userAccessToken = token
-      localStorage.setItem('userAccessToken', token)
-    },
     setAdminAccessToken(token) {
       this.adminAccessToken = token
       localStorage.setItem('adminAccessToken', token)
@@ -38,10 +33,13 @@ export const useAuthStore = defineStore('auth', {
         this.clearAdminToken()
         throw error
       }
+    },
+    async logout() {
+      await axios.post('/auth/admin/logout')
+      this.clearAdminToken()
     }
   },
   getters: {
-    getUserAccessToken: (state) => state.userAccessToken,
     getAdminAccessToken: (state) => state.adminAccessToken,
     getAdminInfo: (state) => state.adminInfo
   }

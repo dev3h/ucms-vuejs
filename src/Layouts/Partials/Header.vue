@@ -67,7 +67,7 @@
 </template>
 
 <script>
-import { useAuthStore } from '@/stores/auth';
+import { useAuthStore } from '@/stores/auth'
 
 // import NotificationPopup from '@/components/Notification/Index.vue'
 
@@ -88,7 +88,7 @@ export default {
         page: 1,
         limit: 20
       },
-      authStore: useAuthStore(),
+      authStore: useAuthStore()
     }
   },
   computed: {
@@ -113,7 +113,15 @@ export default {
       this.$inertia.visit(this.appRoute('admin.form-change-password'))
     },
     async doLogout() {
-      // router.post(this.appRoute('admin.logout'))
+      try {
+        await this.authStore?.logout()
+        this.$router.push({name: 'admin-login'})
+      } catch (error) {
+        this.$message({
+          type: 'error',
+          message: error.response.data.message || this.$t('something-wrong')
+        })
+      }
     },
     handleCommand(command) {
       switch (command) {

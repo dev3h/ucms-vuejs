@@ -49,23 +49,15 @@ export function provideAxios(options = {}) {
   instance.interceptors.request.use(
     function (requestConfig) {
       const authStore = useAuthStore()
-      const userToken = authStore.getUserAccessToken
       const adminToken = authStore.getAdminAccessToken
-
-      if (requestConfig.url.includes('/admin')) {
-        if (adminToken) {
-          requestConfig.headers['Authorization'] = `Bearer ${adminToken}`
-        }
-      } else {
-        if (userToken) {
-          requestConfig.headers['Authorization'] = `Bearer ${userToken}`
-        }
-      }
+      requestConfig.headers['Authorization'] = `Bearer ${adminToken}`
+      
+      requestConfig.headers['Accept-Language'] = 'vi'
 
       return requestConfig
     },
     function (error) {
-      Promise.reject(error)
+      Promise.reject(error) 
     }
   )
 

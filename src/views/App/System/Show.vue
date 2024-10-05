@@ -1,10 +1,12 @@
 <template>
   <AdminLayout>
-    <div class="w-full bg-white px-4">
-      <div class="w-full pt-3 pb-2 border-b-[1px]">
+    <div class="w-full bg-white">
+      <div class="w-full pt-3 pb-2 px-4">
         <BreadCrumbComponent :bread-crumb="setbreadCrumbHeader" />
       </div>
-      <div class="w-full py-5">
+      <BackBar route-back="system" :title="item?.name">
+      </BackBar>
+      <div class="w-full py-5 px-4">
         <div class="box-content box-content3">
           <div class="box-content--item">
             <h3>{{ $t('column.common.name') }}</h3>
@@ -46,9 +48,10 @@ import AdminLayout from '@/Layouts/AdminLayout.vue'
 import BreadCrumbComponent from '@/components/Page/BreadCrumb.vue'
 import { searchMenu } from '@/Mixins/breadcrumb.js'
 import axios from '@/Plugins/axios'
+import BackBar from '@/components/BackBar/Index.vue'
 
 export default {
-  components: { AdminLayout, BreadCrumbComponent },
+  components: { AdminLayout, BreadCrumbComponent, BackBar },
   data() {
     return {
       item: null,

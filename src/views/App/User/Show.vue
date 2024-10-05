@@ -1,10 +1,12 @@
 <template>
   <AdminLayout>
-    <div class="w-full px-4 bg-white">
-      <div class="w-full pt-3 pb-2 border-b-[1px]">
+    <div class="w-full bg-white">
+      <div class="w-full pt-3 pb-2 px-4">
         <BreadCrumbComponent :bread-crumb="setbreadCrumbHeader" />
       </div>
-      <div class="w-full py-[12px] pr-4">
+      <BackBar route-back="user" :title="item?.name || ''">
+      </BackBar>
+      <div class="w-full pb-[12px]">
         <div class="mt-2 border-b-[1px] border-[#8A8A8A] flex gap-[4px]">
           <div
             class="text-center px-[12px] py-[4px] rounded-t-[4px] cursor-pointer"
@@ -16,7 +18,7 @@
           >
             {{ $t('sidebar.permission') }}
           </div>
-          <div
+          <!-- <div
             class="text-center px-[12px] py-[4px] rounded-t-[4px] cursor-pointer"
             :class="{
               'bg-primary text-white': tabActive === 2,
@@ -25,8 +27,8 @@
             @click="changeTab(2)"
           >
             {{ $t('button.user-log') }}
-          </div>
-          <div
+          </div> -->
+          <!-- <div
             class="text-center px-[12px] py-[4px] rounded-t-[4px] cursor-pointer"
             :class="{
               'bg-primary text-white': tabActive === 3,
@@ -35,17 +37,19 @@
             @click="changeTab(3)"
           >
             {{ $t('button.general') }}
-          </div>
+          </div> -->
         </div>
       </div>
-      <div class="w-full" v-if="tabActive === 1">
-        <PermissionsTab :id="id" />
-      </div>
-      <div class="w-full" v-if="tabActive === 2">
-        <UserLogsTab :id="id" />
-      </div>
-      <div class="w-full" v-if="tabActive === 3">
-        <GeneralTab :id="id" />
+      <div class="px-4">
+        <div class="w-full" v-if="tabActive === 1">
+          <PermissionsTab :id="id" />
+        </div>
+        <!-- <div class="w-full" v-if="tabActive === 2">
+          <UserLogsTab :id="id" />
+        </div>
+        <div class="w-full" v-if="tabActive === 3">
+          <GeneralTab :id="id" />
+        </div> -->
       </div>
     </div>
   </AdminLayout>
@@ -58,22 +62,20 @@ import form from '@/Mixins/form.js'
 import GeneralTab from './GeneralTab.vue'
 import PermissionsTab from './PermissionsTab.vue'
 import UserLogsTab from './UserLogsTab.vue'
+import axios from '@/Plugins/axios'
+import BackBar from '@/components/BackBar/Index.vue'
 
 export default {
-  components: { UserLogsTab, PermissionsTab, GeneralTab, AdminLayout, BreadCrumbComponent },
+  components: { UserLogsTab, PermissionsTab, GeneralTab, AdminLayout, BreadCrumbComponent, BackBar },
   mixins: [form],
-  props: {
-    id: {
-      type: Number,
-      default: () => null
-    }
-  },
   data() {
     return {
       templatePermission: null,
       tabActive: 1,
       actions: [],
-      loadingForm: false
+      loadingForm: false,
+      id: this.$route.params.id,
+      item: null
     }
   },
   computed: {
@@ -85,12 +87,15 @@ export default {
           route: 'user'
         },
         {
-          name: this.id,
+          name: this.item?.name,
           route: '',
           isNoTranslate: true
         }
       ]
     }
+  },
+  created() {
+    this.fetchData()
   },
   methods: {
     goBack() {
@@ -112,6 +117,17 @@ export default {
       } else {
         this.actions = this.actions.filter((item) => item !== action)
       }
+    },
+    async fetchData() {
+      await axios
+        .get(`/user/${this.id}`)
+        .then((response) => (this.item = response?.data?.data))
+        .catch((error) => {
+          this.$message({
+            type: 'error',
+            message: error.response.data.message || this.$t('something-wrong')
+          })
+        })
     },
     changeTab(tab) {
       this.tabActive = tab
