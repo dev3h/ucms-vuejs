@@ -34,7 +34,7 @@
             <h3>{{ $t('input.redirect-uri') }}</h3>
             <div class="flex gap-1 items-center">
                 <span>{{ item?.redirect_uris }}</span>
-                <img v-if="item?.redirect_uris" class="cursor-pointer" src="/public/images/svg/copy.svg" alt="" @click="handleCopyToClipboard(item?.client_secret)">
+                <img v-if="item?.redirect_uris" class="cursor-pointer" src="/public/images/svg/copy.svg" alt="" @click="handleCopyToClipboard(item?.redirect_uris)">
             </div>
           </div>
         </div>

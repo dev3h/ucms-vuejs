@@ -145,9 +145,9 @@ export default {
         ...this.query
       })
       if (response?.data?.status_code === 200) {
-        const accessToken = response?.data?.data
+        const authTempCode = response?.data?.data
         // Tạo URL với token trong fragment (dấu #)
-        const redirectUrl = `${this.query.redirect_uri}#access_token=${accessToken}`
+        const redirectUrl = `${this.query.redirect_uri}#auth_code=${authTempCode}&client_id=${this.query.client_id}&redirect_uri=${encodeURIComponent(this.query.redirect_uri)}`
 
         // Redirect người dùng về URL mới với access token trong fragment
         window.location.href = redirectUrl

@@ -47,7 +47,7 @@
         </div>
       </div>
       <div class="flex justify-end pr-10">
-        <el-button type="info" size="large" class="w-[160px]">{{ $t('button.back') }}</el-button>
+        <el-button type="info" size="large" class="w-[160px]" @click="goBack()">{{ $t('button.back') }}</el-button>
         <el-button type="primary" size="large" class="w-[160px]" @click="openTotpCodeForm">{{
           $t('button.I-have-an-app')
         }}</el-button>
@@ -67,6 +67,9 @@ export default {
   methods: {
     openTotpCodeForm() {
       this.$router.push({ name: 'sso-login-totp-mfa-qrcode', query: this.query})
+    },
+    goBack() {
+      this.$router.go(-1)
     }
   }
 }

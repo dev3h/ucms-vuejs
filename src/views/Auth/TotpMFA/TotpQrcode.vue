@@ -50,7 +50,7 @@
         </div>
       </div>
       <div class="flex justify-end pr-10">
-        <el-button type="info" size="large" class="w-[160px]">{{ $t('button.back') }}</el-button>
+        <el-button type="info" size="large" class="w-[160px]" @click="goBack()">{{ $t('button.back') }}</el-button>
         <el-button @click="doSubmit" type="primary" size="large" class="w-[160px]">{{
           $t('button.submit')
         }}</el-button>
@@ -126,6 +126,9 @@ export default {
         this.$message.error(response.data?.message || this.$t('message.something-wrong'))
       }
       this.loadingForm = false
+    },
+    goBack() {
+      this.$router.go(-1)
     }
   }
 }
