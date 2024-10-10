@@ -74,7 +74,7 @@
       </div>
     </div>
     <DeleteForm ref="deleteForm" @delete-action="deleteItem" />
-    <ModalSubSystem ref="modalSubSystem" :redirectRoute="appRoute('admin.subsystem.index')" />
+    <!-- <ModalSubSystem ref="modalSubSystem" :redirectRoute="subsystem" /> -->
   </AdminLayout>
 </template>
 <script>
@@ -92,7 +92,8 @@ export default {
     return {
       items: [],
       filters: {
-        page: Number(this.appRoute().params?.page ?? 1)
+        page: Number(this?.$route?.params?.page ?? 1),
+        limit: Number(this?.$route?.query?.limit ?? 10)
       },
       fields: [
         {
@@ -136,7 +137,7 @@ export default {
       return [
         {
           name: menuOrigin?.label,
-          route: this.appRoute('admin.subsystem.index')
+          route: 'subsystem'
         }
       ]
     }
@@ -150,14 +151,16 @@ export default {
       this.filters.page = page
       let params = { ...this.filters }
       await axios
-        .get(this.appRoute('admin.api.subsystem.index', params))
+        .get('/subsystem', { params })
         .then((response) => {
           this.items = response?.data?.data
           this.paginate = response?.data?.meta
           this.loadForm = false
         })
         .catch((error) => {
-          this.$message.error(error?.response?.data?.message)
+          console.log(error)
+          this.loadForm = false
+          this.$message.error(error?.response?.data?.message || this.$t('message.something-wrong'))
         })
     },
     changePage(page) {

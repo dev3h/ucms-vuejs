@@ -74,7 +74,7 @@
       </div>
     </div>
     <DeleteForm ref="deleteForm" @delete-action="deleteItem" />
-    <ModalAction ref="modalAction" :redirectRoute="appRoute('admin.action.index')" />
+    <!-- <ModalAction ref="modalAction" :redirectRoute="appRoute('admin.action.index')" /> -->
   </AdminLayout>
 </template>
 <script>
@@ -100,7 +100,8 @@ export default {
       filters: {
         name: null,
         role: null,
-        page: Number(this.appRoute().params?.page ?? 1)
+        page: Number(this?.$route?.params?.page ?? 1),
+        limit: Number(this?.$route?.query?.limit ?? 10)
       },
       fields: [
         {
@@ -144,7 +145,7 @@ export default {
       return [
         {
           name: menuOrigin?.label,
-          route: this.appRoute('admin.action.index')
+          route: 'action'
         }
       ]
     }
@@ -158,13 +159,14 @@ export default {
       this.filters.page = page
       let params = { ...this.filters }
       await axios
-        .get(this.appRoute('admin.api.action.index', params))
+        .get('/action', { params })
         .then((response) => {
           this.items = response?.data?.data
           this.paginate = response?.data?.meta
           this.loadForm = false
         })
         .catch((error) => {
+          this.loadForm = false
           this.$message.error(error?.response?.data?.message)
         })
     },

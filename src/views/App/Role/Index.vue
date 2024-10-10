@@ -54,7 +54,7 @@
       </div>
     </div>
     <DeleteForm ref="deleteForm" @delete-action="deleteItem" />
-    <ModalRole ref="modalRole" :redirectRoute="appRoute('admin.role.index')" />
+    <!-- <ModalRole ref="modalRole" :redirectRoute="appRoute('admin.role.index')" /> -->
   </AdminLayout>
 </template>
 <script>
@@ -80,7 +80,8 @@ export default {
       filters: {
         name: null,
         role: null,
-        page: Number(this.appRoute().params?.page ?? 1)
+        page: Number(this?.$route?.params?.page ?? 1),
+        limit: Number(this?.$route?.query?.limit ?? 10)
       },
       fields: [
         {
@@ -138,19 +139,19 @@ export default {
       this.filters.page = page
       let params = { ...this.filters }
       await axios
-        .get(this.appRoute('admin.api.role.index', params))
+        .get('/role', { params })
         .then((response) => {
           this.items = response?.data?.data
           this.paginate = response?.data?.meta
           this.loadForm = false
         })
         .catch((error) => {
-          console.log(error)
+          this.loadForm = false
+          this.$message.error(error?.response?.data?.message || this.$t('message.something-wrong'))
         })
     },
-    changePage(value) {
-      this.filters.page = value
-      this.fetchData()
+    changePage(page) {
+      this.fetchData(page)
     },
     filterData: debounce(function () {
       this.fetchData()

@@ -95,7 +95,8 @@ export default {
       items: [],
       filters: {
         name: null,
-        page: Number(this.appRoute().params?.page ?? 1)
+        page: Number(this?.$route?.params?.page ?? 1),
+        limit: Number(this?.$route?.query?.limit ?? 10)
       },
       fields: [
         {
@@ -146,14 +147,15 @@ export default {
       this.filters.page = page
       let params = { ...this.filters }
       await axios
-        .get(this.appRoute('admin.api.permission.index', params))
+        .get('/permission', { params })
         .then((response) => {
           this.items = response?.data?.data
           this.paginate = response?.data?.meta
           this.loadForm = false
         })
         .catch((error) => {
-          this.$message.error(error?.response?.data?.message)
+          this.loadForm = false
+          this.$message.error(error?.response?.data?.message || this.$t('message.something-wrong'))
         })
     },
     changePage(page) {

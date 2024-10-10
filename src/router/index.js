@@ -56,6 +56,21 @@ const router = createRouter({
               path: 'system/show/:id',
               name: 'system-show',
               component: () => import('@/views/App/System/Show.vue')
+            },
+            {
+              path: 'subsystem',
+              name: 'subsystem',
+              component: () => import('@/views/App/SubSystem/Index.vue')
+            },
+            {
+              path: 'module',
+              name: 'module',
+              component: () => import('@/views/App/Module/Index.vue')
+            },
+            {
+              path: 'action',
+              name: 'action',
+              component: () => import('@/views/App/Action/Index.vue')
             }
           ]
         },
@@ -76,6 +91,16 @@ const router = createRouter({
               path: 'user/:id',
               name: 'user-show',
               component: () => import('@/views/App/User/Show.vue')
+            },
+            {
+              path: 'role',
+              name: 'role',
+              component: () => import('@/views/App/Role/Index.vue')
+            },
+            {
+              path: 'permission',
+              name: 'permission',
+              component: () => import('@/views/App/Permission/Index.vue')
             }
           ]
         }

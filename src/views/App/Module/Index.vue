@@ -26,7 +26,6 @@
               <el-date-picker
                 :placeholder="$t('column.common.created-at')"
                 type="date"
-                placeholder="Created at"
                 size="large"
                 class="!w-[185px]"
                 value-format="YYYY-MM-DD"
@@ -74,7 +73,7 @@
       </div>
     </div>
     <DeleteForm ref="deleteForm" @delete-action="deleteItem" />
-    <ModalModule ref="modalModule" :redirectRoute="appRoute('admin.module.index')" />
+    <!-- <ModalModule ref="modalModule" :redirectRoute="appRoute('admin.module.index')" /> -->
   </AdminLayout>
 </template>
 <script>
@@ -92,7 +91,8 @@ export default {
     return {
       items: [],
       filters: {
-        page: Number(this.appRoute().params?.page ?? 1)
+        page: Number(this?.$route?.params?.page ?? 1),
+        limit: Number(this?.$route?.query?.limit ?? 10)
       },
       fields: [
         {
@@ -136,7 +136,7 @@ export default {
       return [
         {
           name: menuOrigin?.label,
-          route: this.appRoute('admin.module.index')
+          route: 'module'
         }
       ]
     }
@@ -150,7 +150,7 @@ export default {
       this.filters.page = page
       let params = { ...this.filters }
       await axios
-        .get(this.appRoute('admin.api.module.index', params))
+        .get('/module', { params })
         .then((response) => {
           this.items = response?.data?.data
           this.paginate = response?.data?.meta
@@ -158,7 +158,7 @@ export default {
         })
         .catch((error) => {
           this.loadForm = false
-          this.$message.error(error?.response?.data?.message)
+          this.$message.error(error?.response?.data?.message || this.$t('message.something-wrong'))
         })
     },
     changePage(page) {
