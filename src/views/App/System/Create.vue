@@ -38,7 +38,12 @@
               :error="getError('name')"
               :inline-message="hasError('name')"
             >
-              <el-input size="large" v-model="formData.name" clearable />
+              <el-input
+                :placeholder="$t('input.common.enter', { name: $t('column.common.name') })"
+                size="large"
+                v-model="formData.name"
+                clearable
+              />
             </el-form-item>
           </div>
 
@@ -50,18 +55,60 @@
               :error="getError('code')"
               :inline-message="hasError('code')"
             >
-              <el-input size="large" v-model="formData.code" clearable />
+              <el-input
+                :placeholder="$t('input.common.enter', { name: $t('column.common.code') })"
+                size="large"
+                v-model="formData.code"
+                clearable
+              />
             </el-form-item>
           </div>
+
           <div class="col-span-1">
-            <el-form-item
-              :label="$t('input.redirect-uri')"
-              class="title--bold"
-              prop="redirect_uris"
-              :error="getError('redirect_uris')"
-              :inline-message="hasError('redirect_uris')"
-            >
-              <el-input size="large" v-model="formData.redirect_uris" clearable />
+            <el-form-item :label="$t('input.redirect-uri')" class="title--bold">
+              <template #label>
+                <div>{{ $t('input.redirect-uri') }}<span class="text-red-400 ml-1">*</span> </div>
+              </template>
+              <div class="flex flex-col w-full">
+                <div
+                  v-for="(uri, index) in formData.redirect_uris"
+                  :key="index"
+                  class="flex items-start gap-1 w-full"
+                >
+                  <el-form-item
+                    style="margin-bottom: 8px !important"
+                    class="w-full"
+                    :prop="'redirect_uris.' + index"
+                    :rules="[
+                      {
+                        required: true,
+                        message: $t('validate.required'),
+                        trigger: ['blur', 'change']
+                      },
+                      { type: 'url', message: $t('validate.url'), trigger: ['blur', 'change'] }
+                    ]"
+                  >
+                    <el-input
+                      size="large"
+                      v-model="formData.redirect_uris[index]"
+                      clearable
+                      :placeholder="$t('input.common.enter', { name: $t('input.redirect-uri') })"
+                    />
+                  </el-form-item>
+                  <span
+                    v-if="index > 0"
+                    @click="removeRedirectUri(index)"
+                    class="w-3 cursor-pointer text-2xl text-red-400"
+                    >x</span
+                  >
+                </div>
+                <span
+                  @click="addRedirectUri"
+                  class="w-fit cursor-pointer text-2xl text-primary font-bold"
+                >
+                  +
+                </span>
+              </div>
             </el-form-item>
           </div>
         </el-form>
@@ -93,13 +140,12 @@ export default {
       formData: {
         name: null,
         code: null,
-        redirect_uris: null
+        redirect_uris: ['']
       },
       actions: [],
       rules: {
         name: baseRuleValidate(this.$t),
-        code: baseRuleValidate(this.$t),
-        redirect_uris: baseRuleValidate(this.$t)
+        code: baseRuleValidate(this.$t)
       },
       loadingForm: false
     }
@@ -122,10 +168,15 @@ export default {
       return this.isEdit ? this.$t('back-bar.edit-system') : this.$t('back-bar.create-system')
     }
   },
-
   methods: {
     goBack() {
       this.$router.push({ name: 'system' })
+    },
+    addRedirectUri() {
+      this.formData.redirect_uris.push('')
+    },
+    removeRedirectUri(index) {
+      this.formData.redirect_uris.splice(index, 1)
     },
     async submit() {
       this.loadingForm = true

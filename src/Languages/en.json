@@ -130,7 +130,8 @@
   "validate": {
     "required": "This field is required",
     "email": "Invalid email address",
-    "password": "Password must be at least 6 characters long"
+    "password": "Password must be at least 6 characters long",
+    "url": "Invalid URL"
   },
   "column": {
     "common": {

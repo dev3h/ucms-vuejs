@@ -19,7 +19,7 @@
         </div>
       </div>
       <div class="flex text-center mt-5">
-        <el-button type="info" class="w-full mt-3" size="large">
+        <el-button type="info" class="w-full mt-3" size="large" @click="handleCancel">
           {{ $t('button.cancel') }}
         </el-button>
         <el-button

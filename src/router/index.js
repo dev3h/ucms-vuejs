@@ -58,6 +58,10 @@ const router = createRouter({
               component: () => import('@/views/App/System/Show.vue')
             },
             {
+              path: 'system/test',
+              component: () => import('@/views/App/System/Test.vue')
+            },
+            {
               path: 'subsystem',
               name: 'subsystem',
               component: () => import('@/views/App/SubSystem/Index.vue')
@@ -91,6 +95,11 @@ const router = createRouter({
               path: 'user/:id',
               name: 'user-show',
               component: () => import('@/views/App/User/Show.vue')
+            },
+            {
+              path: 'user/:id/assign-permission',
+              name: 'user-assign-permission',
+              component: () => import('@/views/App/User/AssignPermission.vue')
             },
             {
               path: 'role',
