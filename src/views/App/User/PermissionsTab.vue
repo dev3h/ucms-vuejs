@@ -15,7 +15,7 @@
               <img src="/images/svg/search-icon.svg" alt="" />
             </template>
           </el-input>
-          <el-button type="primary" size="large">Xem dưới dạng cây</el-button>
+          <!-- <el-button type="primary" size="large">Xem dưới dạng cây</el-button> -->
         </div>
         <div class="flex justify-end w-full">
           <el-button type="warning" size="large" @click="openIgnore(id)">{{
@@ -79,14 +79,14 @@ export default {
           align: 'left',
           headerAlign: 'left'
         },
-        {
-          key: 'action',
-          label: '',
-          align: 'center',
-          headerAlign: 'center',
-          fixed: 'right',
-          width: 200
-        }
+        // {
+        //   key: 'action',
+        //   label: '',
+        //   align: 'center',
+        //   headerAlign: 'center',
+        //   fixed: 'right',
+        //   width: 200
+        // }
       ],
       paginate: {},
       loadForm: false

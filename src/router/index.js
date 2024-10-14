@@ -62,6 +62,10 @@ const router = createRouter({
               component: () => import('@/views/App/System/Test.vue')
             },
             {
+              path: 'system/test1',
+              component: () => import('@/views/App/System/Test1.vue')
+            },
+            {
               path: 'subsystem',
               name: 'subsystem',
               component: () => import('@/views/App/SubSystem/Index.vue')

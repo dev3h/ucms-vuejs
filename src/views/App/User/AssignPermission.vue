@@ -13,45 +13,48 @@
             :props="defaultProps"
             :filter-node-method="filterNode"
             @node-click="handleNodeClick"
-            ref="tree"
+            ref="treeRef"
             default-expand-all
             highlight-current
+            :expand-on-click-node="false"
           />
         </el-aside>
-        <el-table
-          v-if="currentPermissions.length > 0"
-          :data="currentPermissions"
-          class="flex-1"
-          style="width: 100%"
-        >
-          <el-table-column
-            type="selection"
-            v-model="selectedPermissionIds"
-            width="55"
-          ></el-table-column>
-          <el-table-column prop="action_name" label="Action Name" width="180" />
-          <el-table-column prop="code" label="Permission Code" />
-          <el-table-column label="Status" width="100">
-            <template v-slot="scope">
-              <el-tag v-if="scope.row.granted" type="success">Granted</el-tag>
-              <el-tag v-else type="danger">Missing</el-tag>
-            </template>
-          </el-table-column>
-          <el-table-column label="Actions" width="100">
-            <template v-slot="scope">
-              <el-button v-if="!scope.row.granted" @click="grantPermission(scope.row)" size="small"
-                >Grant</el-button
-              >
-              <el-button
-                v-if="scope.row.granted"
-                @click="revokePermission(scope.row)"
-                size="small"
-                type="danger"
-                >Revoke</el-button
-              >
-            </template>
-          </el-table-column>
-        </el-table>
+        <div class="DataTable w-full">
+          <el-table v-if="tableData.length > 0" :data="tableData" class="flex-1" style="width: 100%">
+            <!-- Dòng đầu tiên: Tên của Module -->
+            <el-table-column
+              label="Module"
+              prop="module_name"
+              :span-method="spanMethod"
+            ></el-table-column>
+  
+            <!-- Các dòng sau: Tên và checkbox của Action -->
+            <el-table-column v-for="(action, index) in actionColumns" :key="index" :label="action">
+              <template v-slot="scope">
+                <el-checkbox
+                  v-if="scope.row.actions[index] !== undefined"
+                  v-model="scope.row.actions[index]"
+                  @change="
+                    updateCheckboxState(scope.row.module_name, index, scope.row.actions[index])
+                  "
+                ></el-checkbox>
+              </template>
+            </el-table-column>
+  
+            <!-- Checkbox để chọn tất cả action của một module -->
+            <el-table-column label="Select All">
+              <template v-slot="scope">
+                <el-checkbox
+                  :indeterminate="isIndeterminate(scope.row)"
+                  :checked="isAllChecked(scope.row)"
+                  @change="toggleAll(scope.row)"
+                >
+                  Select All
+                </el-checkbox>
+              </template>
+            </el-table-column>
+          </el-table>
+        </div>
       </div>
     </div>
   </AdminLayout>
@@ -61,59 +64,49 @@
 import AdminLayout from '@/Layouts/AdminLayout.vue'
 import BreadCrumbComponent from '@/components/Page/BreadCrumb.vue'
 import { searchMenu } from '@/Mixins/breadcrumb.js'
-import axios from '@/Plugins/axios'
 import BackBar from '@/components/BackBar/Index.vue'
-
+import { treeData as dataList } from './fakeData'
 export default {
   components: { AdminLayout, BreadCrumbComponent, BackBar },
   data() {
     return {
-      item: null,
-      id: this.$route.params.id,
       filterText: '',
-      treeData: [
-        {
-          label: 'System A',
-          children: [
-            {
-              label: 'Subsystem A1',
-              children: [
-                {
-                  label: 'Module M1',
-                  permission: [
-                    { action_name: 'Action 1', granted: true, code: 'systemA-subsystemA1-moduleM1-action1' },
-                    { action_name: 'Action 2', granted: false, code: 'systemA-subsystemA1-moduleM1-action2' }
-                  ]
-                },
-                {
-                  label: 'Module M2',
-                  permission: [
-                    { action_name: 'Action 3', granted: false, code: 'systemA-subsystemA1-moduleM2-action3' }
-                  ]
-                }
-              ]
-            },
-            {
-              label: 'Subsystem A2',
-              children: [
-                {
-                  label: 'Module M3',
-                  permission: [
-                    { action_name: 'Action 4', granted: false, code: 'systemA-subsystemA2-moduleM3-action4' }
-                  ]
-                }
-              ]
-            }
-          ]
-        }
-      ],
+      treeData: [],
       defaultProps: {
         children: 'children',
         label: 'label'
       },
-      currentPermissions: [],
-      selectedPermissionIds: []
+      treeRef: null,
+      tableData: [], // Dữ liệu bảng hiển thị cho subsystem
+      actionColumns: [], // Cột action
+      checkboxState: {} // Trạng thái của các checkbox
     }
+  },
+  created() {
+    const tree = dataList.map((system) => {
+      return {
+        label: system?.name,
+        type: system?.type,
+        code: system?.code,
+        children: system?.children?.map((subsystem) => {
+          return {
+            label: subsystem?.name,
+            type: subsystem?.type,
+            code: subsystem?.code
+          }
+        })
+      }
+    })
+    this.treeData = tree
+
+    // Select the first subsystem by default
+    this.$nextTick(() => {
+      const firstSubsystem = this.treeData[0]?.children[0]
+      if (firstSubsystem) {
+        this.$refs.treeRef.setCurrentKey(firstSubsystem.code)
+        this.populateTable(firstSubsystem)
+      }
+    })
   },
   computed: {
     setbreadCrumbHeader() {
@@ -121,7 +114,7 @@ export default {
       return [
         {
           name: menuOrigin?.label,
-          route: 'user-show'
+          route: 'system'
         },
         {
           name: this.item?.name,
@@ -131,105 +124,83 @@ export default {
       ]
     }
   },
-  created() {
-    this.fetchData()
+  watch: {
+    filterText(val) {
+      this.$refs.treeRef.filter(val)
+    }
   },
   methods: {
-    goBack() {
-      this.$router.push({ name: 'system' })
+    // Xử lý khi nhấp vào Subsystem
+    handleNodeClick(nodeData) {
+      if (nodeData.type === 'subsystem') {
+        this.populateTable(nodeData)
+      }
     },
-     async fetchData() {
-      try {
-        const response = await axios.get(`/user/${this.id}/rest-available-permissions`)
-        const data = response?.data?.data
+    filterNode(value, data) {
+      if (!value) return true
+      return data.label.toLowerCase().includes(value.toLowerCase())
+    },
+    // Hàm để xử lý việc hiển thị các action trong bảng
+    populateTable(subsystem) {
+      this.tableData = []
+      this.actionColumns = []
 
-        // Transform the data into the desired treeData format
-        this.treeData = this.transformData(data);
+      const subsystemData = dataList
+        .find((system) => system.children.some((sub) => sub.code === subsystem.code))
+        ?.children.find((sub) => sub.code === subsystem.code)
 
-        this.item = data
-      } catch (error) {
-        this.$message({
-          type: 'error',
-          message: error.response.data.message || this.$t('something-wrong')
+      if (subsystemData) {
+        subsystemData.children.forEach((module) => {
+          const moduleData = {
+            module_name: module.name,
+            actions: new Array(this.actionColumns.length).fill(undefined)
+          }
+
+          module.permissions.forEach((perm) => {
+            if (!this.actionColumns.includes(perm.name)) {
+              this.actionColumns.push(perm.name)
+            }
+            const actionIndex = this.actionColumns.indexOf(perm.name)
+            moduleData.actions[actionIndex] =
+              this.checkboxState[module.name]?.[actionIndex] ?? perm.granted
+          })
+
+          this.tableData.push(moduleData)
         })
       }
     },
-    transformData(data) {
-      return data.map(system => ({
-        label: system.name,
-        children: system.subsystems.map(subsystem => ({
-          label: subsystem.name,
-          children: subsystem.modules.map(module => ({
-            label: module.name,
-            permission: module.actions.map(action => ({
-              action_name: action.name,
-              granted: action.granted,
-              code: action.code
-            }))
-          }))
-        }))
-      }));
-    },
-    filterNode(value, data) {
-      if (!value) return true;
-      return data.label.toLowerCase().includes(value.toLowerCase());
-    },
-    handleNodeClick(nodeData) {
-      // Xóa danh sách quyền đã chọn khi nhấp vào một node khác
-      this.selectedPermissionIds = [];
-
-      // Hiển thị tất cả quyền trong node system
-      if (nodeData.children && nodeData.children.length) {
-        this.currentPermissions = [];
-        nodeData.children.forEach((subsystem) => {
-          if (subsystem.children) {
-            subsystem.children.forEach((module) => {
-              if (module.permission) {
-                this.currentPermissions.push(...module.permission);
-              }
-            });
-          } else if (subsystem.permission) {
-            this.currentPermissions.push(...subsystem.permission);
-          }
-        });
+    // Cập nhật trạng thái của checkbox
+    updateCheckboxState(moduleName, actionIndex, value) {
+      if (!this.checkboxState[moduleName]) {
+        this.checkboxState[moduleName] = {}
       }
-      // Khi nhấp vào subsystem, hiển thị tất cả quyền của tất cả các mô-đun trong subsystem đó
-      else if (nodeData.children) {
-        this.currentPermissions = [];
-        nodeData.children.forEach((module) => {
-          if (module.permission) {
-            this.currentPermissions.push(...module.permission);
-          }
-        });
-      }
-      // Khi nhấp vào một mô-đun, hiển thị tất cả quyền trong module đó
-      else if (nodeData.permission) {
-        this.currentPermissions = nodeData.permission;
-      } else {
-        this.currentPermissions = [];
+      this.checkboxState[moduleName][actionIndex] = value
+    },
+    // Hàm span để dòng đầu tiên là tên của module
+    spanMethod({ row, column, rowIndex, columnIndex }) {
+      if (columnIndex === 0 && rowIndex === 0) {
+        return [1, this.actionColumns.length + 2] // span toàn bộ cột
       }
     },
-    grantPermission(permission) {
-      permission.granted = true;
-      this.$message.success(`Granted permission: ${permission.code}`);
+    // Kiểm tra checkbox "Select All" có được chọn không
+    isAllChecked(row) {
+      return row.actions.every((action) => action)
     },
-    revokePermission(permission) {
-      permission.granted = false;
-      this.$message.success(`Revoked permission: ${permission.code}`);
+    // Kiểm tra trạng thái indeterminate của checkbox "Select All"
+    isIndeterminate(row) {
+      const checkedCount = row.actions.filter(Boolean).length
+      return checkedCount > 0 && checkedCount < row.actions.length
     },
-    grantSelectedPermissions() {
-      this.selectedPermissionIds.forEach((code) => {
-        const permission = this.currentPermissions.find((p) => p.code === code);
-        if (permission) {
-          permission.granted = true;
-        }
-      });
-      this.$message.success('Granted selected permissions');
-      this.selectedPermissionIds = []; // Reset after granting
+    // Toggle chọn tất cả action của module
+    toggleAll(row) {
+      const allChecked = this.isAllChecked(row)
+      row.actions = row.actions.map(() => !allChecked)
+      this.updateCheckboxState(row.module_name, null, !allChecked)
     }
   }
 }
 </script>
+
 <style>
 .el-tree {
   height: calc(100vh - 50px);
