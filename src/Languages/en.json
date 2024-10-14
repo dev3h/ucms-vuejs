@@ -1,6 +1,7 @@
 {
   "auth-page": {
     "login-title": "Login",
+    "confirm-login-title": "Login to {name}",
     "welcome-title": "Welcome",
     "admin-login-title": "Administrator Login",
     "sign-in-with-google": "Sign in with Google",
@@ -62,7 +63,7 @@
     }
   },
   "sso-ucms-confirm-page": {
-    "line-1": "If you continue, UCMS will share your name, email address, language preference, and profile photo with"
+    "line-1": "If you continue, UCMS will share your name, email address, language preference, and profile photo with {name}"
   },
   "common": {},
   "button": {
@@ -200,7 +201,8 @@
     "invalid-csv-file": "Please upload a valid CSV or Excel file",
     "invalid-csv-data": "Invalid data in CSV file",
     "copy-success": "Copied to clipboard successfully",
-    "something-wrong": "Something went wrong, try again later"
+    "something-wrong": "Something went wrong, try again later",
+    "login-ucms-fail": "Login UCMS fail"
   },
   "back-bar": {
     "create-user": "Create new user",

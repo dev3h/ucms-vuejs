@@ -1,16 +1,18 @@
 <template>
-  <div class="flex items-center min-h-screen bg-grayF5 bg-gray-50">
+  <div class="flex items-center min-h-screen bg-grayF5">
     <el-card class="!max-w-[1000px] w-full my-10 mx-auto rounded-lg p-10">
       <div class="text-blueDark flex justify-between">
         <div class="w-[300px]">
           <div class="relative">
             <div class="logo mb-6">
-              <img src="/images/logo.svg" alt="logo" class="h-[100px]" />
+              <img src="/images/logo.svg" alt="logo" class="h-[50px]" />
             </div>
           </div>
-          <div class="text-zinc-800 text-2xl font-bold uppercase leading-[28.80px] mb-9">
-            {{ $t('auth-page.login-title') }}
-          </div>
+        </div>
+      </div>
+      <div class="flex justify-between">
+        <div class="text-zinc-800 text-[40px] font-bold uppercase leading-[28.80px]">
+          {{ $t('auth-page.login-title') }}
         </div>
         <div class="px-5 w-1/2">
           <el-form
@@ -90,7 +92,10 @@ export default {
     async submit() {
       this.loadingForm = true
       const response = await axios.post('/auth/check-email-exist', this.formData, {
-        params: { client_id: this.$route.query.client_id, redirect_uri: this.$route.query.redirect_uri }
+        params: {
+          client_id: this.$route.query.client_id,
+          redirect_uri: this.$route.query.redirect_uri
+        }
       })
       if (response?.data?.data) {
         const resData = response?.data?.data

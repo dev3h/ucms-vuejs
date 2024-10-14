@@ -2,10 +2,10 @@
   <div>
     <div class="w-full">
       <div class="w-full flex justify-between items-center my-2">
-        <div class="w-80">
+        <div class="flex gap-1">
           <el-input
             v-model="filters.search"
-            class="w-full"
+            class="!w-[250px]"
             size="large"
             :placeholder="$t('input.common.search')"
             clearable
@@ -15,6 +15,7 @@
               <img src="/images/svg/search-icon.svg" alt="" />
             </template>
           </el-input>
+          <el-button type="primary" size="large">Xem dưới dạng cây</el-button>
         </div>
         <div class="flex justify-end w-full">
           <el-button type="warning" size="large" @click="openIgnore(id)">{{
@@ -39,13 +40,13 @@
         @page-change="changePage"
         @size-change="changeSize"
       >
-        <template #action="{ row }">
+        <!-- <template #action="{ row }">
           <div class="flex justify-center items-center gap-x-[12px]">
             <div class="cursor-pointer" @click="openDeleteForm(row?.id)">
               <img src="/images/svg/trash-icon.svg" />
             </div>
           </div>
-        </template>
+        </template> -->
       </DataTable>
     </div>
     <ModalAssign ref="modalAssign" @assign-success="fetchData" />
@@ -71,13 +72,6 @@ export default {
       },
       id: this.$route.params?.id,
       fields: [
-        {
-          key: 'name',
-          'min-width': 400,
-          label: this.$t('column.common.name'),
-          align: 'left',
-          headerAlign: 'left'
-        },
         {
           key: 'code',
           'min-width': 400,

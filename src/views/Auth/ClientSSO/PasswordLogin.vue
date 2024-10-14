@@ -5,54 +5,58 @@
         <div class="w-[300px]">
           <div class="relative">
             <div class="logo mb-6">
-              <img src="/images/logo.svg" alt="logo" class="h-[100px]" />
+              <img src="/images/logo.svg" alt="logo" class="h-[50px]" />
             </div>
-          </div>
-          <div class="text-zinc-800 text-2xl font-bold uppercase leading-[28.80px] mb-2">
-            {{ $t('auth-page.welcome-title') }}
-          </div>
-          <div>
-            {{ formData?.email }}
-          </div>
-        </div>
-        <div class="px-5 w-1/2">
-          <el-form
-            ref="form"
-            :model="formData"
-            :rules="rules"
-            label-position="top"
-            @keypress.enter.prevent="doSubmit"
-            class="form-login"
-          >
-            <el-form-item
-              :label="$t('input.common.password')"
-              prop="password"
-              :inline-message="hasError('password')"
-              :error="getError('password')"
-            >
-              <el-input
-                v-model="formData.password"
-                size="large"
-                type="password"
-                show-password
-                clearable
-              />
-            </el-form-item>
-          </el-form>
-
-          <div class="text-center mt-5">
-            <el-button
-              type="primary"
-              :loading="loadingForm"
-              class="w-full mt-3 btn-gradient"
-              size="large"
-              @click.prevent="doSubmit"
-            >
-              {{ $t('button.next') }}
-            </el-button>
           </div>
         </div>
       </div>
+        <div class="flex justify-between">
+          <div>
+            <div class="text-zinc-800 text-[40px] font-bold uppercase leading-[28.80px] mb-2">
+              {{ $t('auth-page.welcome-title') }}
+            </div>
+            <div>
+              {{ formData?.email }}
+            </div>
+          </div>
+          <div class="px-5 w-1/2">
+            <el-form
+              ref="form"
+              :model="formData"
+              :rules="rules"
+              label-position="top"
+              @keypress.enter.prevent="doSubmit"
+              class="form-login"
+            >
+              <el-form-item
+                :label="$t('input.common.password')"
+                prop="password"
+                :inline-message="hasError('password')"
+                :error="getError('password')"
+              >
+                <el-input
+                  v-model="formData.password"
+                  size="large"
+                  type="password"
+                  show-password
+                  clearable
+                />
+              </el-form-item>
+            </el-form>
+  
+            <div class="text-center mt-5">
+              <el-button
+                type="primary"
+                :loading="loadingForm"
+                class="w-full mt-3 btn-gradient"
+                size="large"
+                @click.prevent="doSubmit"
+              >
+                {{ $t('button.next') }}
+              </el-button>
+            </div>
+          </div>
+        </div>
     </el-card>
   </div>
 </template>
@@ -101,7 +105,8 @@ export default {
           email: resData?.email,
           consent_token: resData?.consentToken,
           client_id: resData?.client_id,
-          redirect_uri: resData?.redirect_uri
+          redirect_uri: resData?.redirect_uri,
+          sy: encodeURIComponent(resData?.system_name)
         }
         const twoFactor = resData?.two_factor
         if (twoFactor?.enable) {
