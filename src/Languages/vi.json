@@ -203,7 +203,8 @@
     "invalid-csv-data": "Dữ liệu trong tệp CSV không hợp lệ",
     "something-wrong": "Có lỗi xảy ra vui lòng thử lại sau",
     "copy-success": "Sao chép vào clipboard thành công",
-    "login-ucms-fail": "Đăng nhập UCMS thất bại"
+    "login-ucms-fail": "Đăng nhập UCMS thất bại",
+    "miss-param": "Thiếu tham số {name}"
   },
   "back-bar": {
     "create-user": "Tạo mới người dùng",

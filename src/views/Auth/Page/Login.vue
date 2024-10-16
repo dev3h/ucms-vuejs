@@ -66,7 +66,7 @@
               </div>
             </div>
             <div class="mt-10" v-if="pathSub?.[1] === 'admin'">
-              <h2 class="uppercase text-center font-bold text-3xl">{{ $t('auth-page.or') }}</h2>
+              <h2 class="uppercase text-center font-bold text-xl">{{ $t('auth-page.or') }}</h2>
               <div class="border mt-4">
                 <a
                   href=""

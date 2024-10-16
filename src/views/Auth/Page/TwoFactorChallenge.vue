@@ -26,14 +26,14 @@
       <div v-if="!recovery">
         <el-form-item
           label="Code"
-          prop="code"
-          :inline-message="hasError('code')"
-          :error="getError('code')"
+          prop="totpCode"
+          :inline-message="hasError('totpCode')"
+          :error="getError('totpCode')"
         >
           <el-input
             id="code"
             ref="codeInput"
-            v-model="formData.code"
+            v-model="formData.totpCode"
             type="text"
             inputmode="numeric"
             class="mt-1 block w-full"
@@ -70,7 +70,7 @@
         >
           {{ $t('button.verify') }}
         </el-button>
-        <el-button
+        <!-- <el-button
           class="text-sm text-gray-600 hover:text-gray-900 cursor-pointer !ml-0"
           @click.prevent="toggleRecovery"
         >
@@ -80,7 +80,7 @@
           <template v-else>
             {{ $t('button.auth-code') }}
           </template>
-        </el-button>
+        </el-button> -->
       </div>
     </el-form>
   </AuthenticationCard>
@@ -100,14 +100,14 @@ export default {
     return {
       recovery: false,
       formData: {
-        code: '',
+        totpCode: '',
         recovery_code: ''
       },
       query: this.$route.query,
       recoveryCodeInput: null,
       codeInput: null,
       rules: {
-        code: [
+        totpCode: [
           {
             required: true,
             message: this.$t('validate.required'),
@@ -132,7 +132,7 @@ export default {
 
       if (this.recovery) {
         this.$refs.recoveryCodeInput.focus()
-        this.form.code = ''
+        this.form.totpCode = ''
       } else {
         this.$refs.codeInput.focus()
         this.form.recovery_code = ''

@@ -7,7 +7,11 @@
       <BackBar route-back="system" :title="item?.name"> </BackBar>
       <div class="w-full py-5 px-4 flex">
         <el-aside width="300px" style="background-color: #f5f7fa">
-          <el-input v-model="filterText" placeholder="Search system/module..." clearable></el-input>
+          <el-input
+            v-model="filterText"
+            :placeholder="$t('input.common.enter')"
+            clearable
+          ></el-input>
           <el-tree
             :data="treeData"
             :props="defaultProps"
@@ -19,15 +23,20 @@
             :expand-on-click-node="false"
           />
         </el-aside>
-        <div class="DataTable w-full">
-          <el-table v-if="tableData.length > 0" :data="tableData" class="flex-1" style="width: 100%">
+        <div class="DataTable permission-table w-full">
+          <el-table
+            v-if="tableData.length > 0"
+            :data="tableData"
+            class="flex-1"
+            style="width: 100%"
+          >
             <!-- Dòng đầu tiên: Tên của Module -->
             <el-table-column
               label="Module"
               prop="module_name"
               :span-method="spanMethod"
             ></el-table-column>
-  
+
             <!-- Các dòng sau: Tên và checkbox của Action -->
             <el-table-column v-for="(action, index) in actionColumns" :key="index" :label="action">
               <template v-slot="scope">
@@ -40,7 +49,7 @@
                 ></el-checkbox>
               </template>
             </el-table-column>
-  
+
             <!-- Checkbox để chọn tất cả action của một module -->
             <el-table-column label="Select All">
               <template v-slot="scope">
@@ -66,6 +75,8 @@ import BreadCrumbComponent from '@/components/Page/BreadCrumb.vue'
 import { searchMenu } from '@/Mixins/breadcrumb.js'
 import BackBar from '@/components/BackBar/Index.vue'
 import { treeData as dataList } from './fakeData'
+import axios from '@/Plugins/axios'
+
 export default {
   components: { AdminLayout, BreadCrumbComponent, BackBar },
   data() {
@@ -83,30 +94,7 @@ export default {
     }
   },
   created() {
-    const tree = dataList.map((system) => {
-      return {
-        label: system?.name,
-        type: system?.type,
-        code: system?.code,
-        children: system?.children?.map((subsystem) => {
-          return {
-            label: subsystem?.name,
-            type: subsystem?.type,
-            code: subsystem?.code
-          }
-        })
-      }
-    })
-    this.treeData = tree
-
-    // Select the first subsystem by default
-    this.$nextTick(() => {
-      const firstSubsystem = this.treeData[0]?.children[0]
-      if (firstSubsystem) {
-        this.$refs.treeRef.setCurrentKey(firstSubsystem.code)
-        this.populateTable(firstSubsystem)
-      }
-    })
+    this.getPermission()
   },
   computed: {
     setbreadCrumbHeader() {
@@ -131,6 +119,44 @@ export default {
   },
   methods: {
     // Xử lý khi nhấp vào Subsystem
+    async getPermission() {
+      try {
+        this.loadingForm = true
+        const response = await axios.get(`/user/${this.$route.params.id}/user-permissions`)
+        this.transformTree(response?.data?.data)
+
+        this.loadingForm = false
+      } catch (err) {
+        this.loadingForm = false
+        this.$message.error(err?.response?.data?.message || this.$t('message.something-wrong'))
+      }
+    },
+    transformTree(data) {
+      const tree = data?.map((system) => {
+        return {
+          label: system?.name,
+          type: system?.type,
+          code: system?.code,
+          children: system?.children?.map((subsystem) => {
+            return {
+              label: subsystem?.name,
+              type: subsystem?.type,
+              code: subsystem?.code
+            }
+          })
+        }
+      })
+      this.treeData = tree
+
+      // Select the first subsystem by default
+      this.$nextTick(() => {
+        const firstSubsystem = this.treeData[0]?.children[0]
+        if (firstSubsystem) {
+          this.$refs.treeRef.setCurrentKey(firstSubsystem.code)
+          this.populateTable(firstSubsystem)
+        }
+      })
+    },
     handleNodeClick(nodeData) {
       if (nodeData.type === 'subsystem') {
         this.populateTable(nodeData)
@@ -205,8 +231,5 @@ export default {
 .el-tree {
   height: calc(100vh - 50px);
   overflow-y: auto;
-}
-.el-table {
-  margin-top: 20px;
 }
 </style>

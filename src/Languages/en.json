@@ -202,7 +202,8 @@
     "invalid-csv-data": "Invalid data in CSV file",
     "copy-success": "Copied to clipboard successfully",
     "something-wrong": "Something went wrong, try again later",
-    "login-ucms-fail": "Login UCMS fail"
+    "login-ucms-fail": "Login UCMS fail",
+    "miss-param": "Missing parameter {name}"
   },
   "back-bar": {
     "create-user": "Create new user",

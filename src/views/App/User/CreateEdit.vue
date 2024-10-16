@@ -57,7 +57,7 @@
                 />
               </el-form-item>
             </div>
-            <div>
+            <div v-if="!isEdit">
               <el-form-item
                 :label="$t('input.common.password')"
                 prop="password"
@@ -87,6 +87,7 @@
                   :placeholder="$t('input.common.select', { name: $t('sidebar.role') })"
                   size="large"
                   clearable
+                  :disabled="isEdit"
                 >
                   <el-option
                     v-for="role in roles"
@@ -147,20 +148,19 @@ export default {
       type: Array,
       default: () => []
     },
-    isEdit: {
-      type: Boolean,
-      default: false
-    }
   },
   data() {
     return {
       formData: {
+        id: this.$route.params?.id,
         name: null,
         role_id: null,
         type: null,
         two_factor_enable: false,
         password: null
       },
+      isEdit: false,
+      currentId: this.$route.params?.id,
       actions: [],
       roles: [],
       rules: {
@@ -192,6 +192,10 @@ export default {
     }
   },
   created() {
+    if(this.$route.params?.id) {
+      this.isEdit = true
+      this.fetchData()
+    }
     this.fetchRoles()
   },
   methods: {
@@ -200,7 +204,8 @@ export default {
     },
     async submit() {
       this.loadingForm = true
-      await axios.post('/user', this.formData).then((response) => {
+      const { method, url } = this.prepareSubmit()
+      await axios?.[method](url, this.formData).then((response) => {
         this.$message({
           type: response?.data?.status_code === 200 ? 'success' : 'error',
           message: response.data.message
@@ -211,6 +216,12 @@ export default {
         this.loadingForm = false
       })
     },
+    prepareSubmit() {
+      return {
+        method: this.isEdit ? 'put' : 'post',
+        url: this.isEdit ? `user/${this.currentId}` : 'user',
+      }
+    },
     async fetchRoles() {
       await axios
         .get('role', { params: { noPagination: true } })
@@ -219,6 +230,26 @@ export default {
         })
         .catch((error) => {
           this.$message.error(error?.response?.data?.message || this.$t('message.something-wrong'))
+        })
+    },
+    async fetchData() {
+      this.loadForm = true
+      await axios
+        await axios.get(`user/${this.currentId}`)
+        .then((response) => {
+          this.formData = {
+            id: response?.data?.data?.id,
+            name: response?.data?.data?.name,
+            email: response?.data?.data?.email,
+            type: response?.data?.data?.type,
+            two_factor_enable: response?.data?.data?.two_factor_enable,
+            role_id: response?.data?.data?.role_ids[0]  
+          }
+          this.loadForm = false
+        })
+        .catch((error) => {
+          this.$message.error(error?.response?.data?.message || this.$t('message.something-wrong'))
+          this.loadForm = false
         })
     }
   }

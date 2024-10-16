@@ -11,7 +11,7 @@ const checkRequiredParams = async (to, from, next) => {
     } else if (!redirect_uri) {
       message += 'redirect_uri '
     }
-    next({ name: 'error-login', query: { authError: btoa(message.trim()) } })
+    next({ name: 'error-login', query: { authError: encodeURIComponent (message.trim()) } })
   } else {
     try {
       const response = await axios.post('/system/check-data-system', { ...to.query })
@@ -93,7 +93,12 @@ const router = createRouter({
             {
               path: 'user/create',
               name: 'user-create',
-              component: () => import('@/views/App/User/Create.vue')
+              component: () => import('@/views/App/User/CreateEdit.vue')
+            },
+            {
+              path: 'user/:id/edit',
+              name: 'user-edit',
+              component: () => import('@/views/App/User/CreateEdit.vue')
             },
             {
               path: 'user/:id',

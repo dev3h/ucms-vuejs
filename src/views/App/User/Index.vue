@@ -81,6 +81,9 @@
               <div class="cursor-pointer" @click="openShow(row?.id)">
                 <img src="/images/svg/eye-icon.svg" />
               </div>
+                <div class="cursor-pointer" @click="openEdit(row?.id)">
+                <img src="/images/svg/pen-icon.svg" alt="" />
+              </div>
               <div class="cursor-pointer" @click="openDeleteForm(row?.id)">
                 <img src="/images/svg/trash-icon.svg" />
               </div>
@@ -215,6 +218,9 @@ export default {
     }, 500),
     openCreate() {
       this.$router.push({name: 'user-create'})
+    },
+    openEdit(id) {
+      this.$router.push({name: 'user-edit', params: {id}})
     },
     openImport() {
       this.$refs.modalImport.open()

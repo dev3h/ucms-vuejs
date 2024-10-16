@@ -364,7 +364,7 @@ button.el-button--danger:hover {
 
 .DataTable .el-table {
     height: auto !important;
-    //--el-table-border: none;
+    /* --el-table-border: none; */
     max-height: calc(100vh - 250px);
     overflow: auto;
 }
@@ -451,7 +451,7 @@ button.el-button--danger:hover {
 }
 
 .DataTable.is-never-shadow {
-    //border: none;
+    /* border: none; */
 }
 
 .el-table thead {
@@ -502,4 +502,7 @@ button.el-button--danger:hover {
 
 .DataTable .select-option .el-select__placeholder.is-transparent {
     color: var(--el-input-text-color, var(--el-text-color-regular));
+}
+.DataTable .el-table.is-scrolling-none th.el-table-fixed-column--right {
+    background-color: var(--tw-primary) !important;
 }
