@@ -74,7 +74,6 @@ import AdminLayout from '@/Layouts/AdminLayout.vue'
 import BreadCrumbComponent from '@/components/Page/BreadCrumb.vue'
 import { searchMenu } from '@/Mixins/breadcrumb.js'
 import BackBar from '@/components/BackBar/Index.vue'
-import { treeData as dataList } from './fakeData'
 import axios from '@/Plugins/axios'
 
 export default {
@@ -90,7 +89,8 @@ export default {
       treeRef: null,
       tableData: [], // Dữ liệu bảng hiển thị cho subsystem
       actionColumns: [], // Cột action
-      checkboxState: {} // Trạng thái của các checkbox
+      checkboxState: {}, // Trạng thái của các checkbox
+      dataList: []
     }
   },
   created() {
@@ -122,9 +122,9 @@ export default {
     async getPermission() {
       try {
         this.loadingForm = true
-        const response = await axios.get(`/user/${this.$route.params.id}/user-permissions`)
+        const response = await axios.get(`/user/${this.$route.params.id}/rest-permissions`)
         this.transformTree(response?.data?.data)
-
+        this.transformDataList(response?.data?.data)
         this.loadingForm = false
       } catch (err) {
         this.loadingForm = false
@@ -134,13 +134,15 @@ export default {
     transformTree(data) {
       const tree = data?.map((system) => {
         return {
+          id: system?.id,
           label: system?.name,
-          type: system?.type,
+          type: 'system',
           code: system?.code,
-          children: system?.children?.map((subsystem) => {
+          children: system?.subsystems?.map((subsystem) => {
             return {
+              id: subsystem?.id,
               label: subsystem?.name,
-              type: subsystem?.type,
+              type: 'subsystem',
               code: subsystem?.code
             }
           })
@@ -157,7 +159,43 @@ export default {
         }
       })
     },
+    transformDataList(data) {
+      const transformDataList = data?.map((system) => {
+        return {
+          id: `SYSTEM_${system?.id}`,
+          name: system?.name,
+          type: 'system',
+          code: system?.code,
+          children: system?.subsystems?.map((subsystem) => {
+            return {
+              id: `SUBSYSTEM_${subsystem?.id}`,
+              name: subsystem?.name,
+              type: 'subsystem',
+              code: subsystem?.code,
+              children: subsystem?.modules?.map((module) => {
+                return {
+                  id: `MODULE_${module?.id}`,
+                  name: module?.name,
+                  type: 'module',
+                  code: module?.code,
+                  permissions: module?.actions?.map((action) => {
+                    return {
+                      id: `ACTION_${action?.id}`,
+                      name: action?.name,
+                      code: action?.code,
+                      granted: action?.granted
+                    }
+                  })
+                }
+              })
+            }
+          })
+        }
+      })
+      this.dataList = transformDataList
+    },
     handleNodeClick(nodeData) {
+      console.log(nodeData)
       if (nodeData.type === 'subsystem') {
         this.populateTable(nodeData)
       }
@@ -171,7 +209,7 @@ export default {
       this.tableData = []
       this.actionColumns = []
 
-      const subsystemData = dataList
+      const subsystemData = this.dataList
         .find((system) => system.children.some((sub) => sub.code === subsystem.code))
         ?.children.find((sub) => sub.code === subsystem.code)
 
