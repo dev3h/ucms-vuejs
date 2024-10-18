@@ -99,8 +99,8 @@ export default {
         password: null
       },
       rules: {
-        email: baseRuleValidate(this.$t),
-        password: baseRuleValidate(this.$t)
+        email: baseRuleValidate(this.$t)(this.$t('input.common.email')),
+        password: baseRuleValidate(this.$t)(this.$t('input.common.password'))
       },
       loadingForm: false,
       errors: null,

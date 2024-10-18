@@ -65,9 +65,15 @@
           </div>
 
           <div class="col-span-1">
-            <el-form-item :label="$t('input.redirect-uri')" class="title--bold">
+            <el-form-item
+              :label="$t('input.redirect-uri')"
+              class="title--bold"
+              prop="redirect_uris"
+              :error="getError('redirect_uris')"
+              :inline-message="hasError('redirect_uris')"
+            >
               <template #label>
-                <div>{{ $t('input.redirect-uri') }}<span class="text-red-400 ml-1">*</span> </div>
+                <div>{{ $t('input.redirect-uri') }}<span class="text-red-400 ml-1">*</span></div>
               </template>
               <div class="flex flex-col w-full">
                 <div
@@ -75,18 +81,18 @@
                   :key="index"
                   class="flex items-start gap-1 w-full"
                 >
+                  <!--  :rules="[
+                      {
+                      required: true,
+                      message: $t('validate.required', { column: $t('input.redirect-uri') }),
+                      trigger: ['blur', 'change']
+                      },
+                      { type: 'url', message: $t('validate.url'), trigger: ['blur', 'change'] }
+                    ]" -->
                   <el-form-item
                     style="margin-bottom: 8px !important"
                     class="w-full"
                     :prop="'redirect_uris.' + index"
-                    :rules="[
-                      {
-                        required: true,
-                        message: $t('validate.required'),
-                        trigger: ['blur', 'change']
-                      },
-                      { type: 'url', message: $t('validate.url'), trigger: ['blur', 'change'] }
-                    ]"
                   >
                     <el-input
                       size="large"
@@ -144,8 +150,8 @@ export default {
       },
       actions: [],
       rules: {
-        name: baseRuleValidate(this.$t),
-        code: baseRuleValidate(this.$t)
+        name: baseRuleValidate(this.$t)(this.$t('column.common.name')),
+        code: baseRuleValidate(this.$t)(this.$t('column.common.code'))
       },
       loadingForm: false
     }

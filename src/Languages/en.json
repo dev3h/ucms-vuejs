@@ -129,7 +129,7 @@
     "user": "User"
   },
   "validate": {
-    "required": "This field is required",
+    "required": "{column} is required",
     "email": "Invalid email address",
     "password": "Password must be at least 6 characters long",
     "url": "Invalid URL"

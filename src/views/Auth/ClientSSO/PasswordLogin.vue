@@ -76,7 +76,7 @@ export default {
       },
       query: this.$route.query,
       rules: {
-        password: baseRuleValidate(this.$t)
+        password: baseRuleValidate(this.$t)(this.$t('input.common.password'))
       },
       loadingForm: false,
       errors: null,

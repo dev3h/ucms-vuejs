@@ -71,7 +71,7 @@ export default {
         email: null
       },
       rules: {
-        email: baseRuleValidate(this.$t)
+        email: baseRuleValidate(this.$t)(this.$t('input.common.email'))
       },
       loadingForm: false,
       errors: null,

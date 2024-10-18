@@ -130,7 +130,7 @@
     "user": "Người dùng"
   },
   "validate": {
-    "required": "Trường này là bắt buộc",
+    "required": "{column} không được để trống",
     "email": "Địa chỉ email không hợp lệ",
     "password": "Mật khẩu phải có ít nhất 6 ký tự",
     "url": "URL không đúng định dạng"

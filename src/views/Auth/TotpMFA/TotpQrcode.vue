@@ -62,6 +62,7 @@
 <script>
 import axios from '@/Plugins/axios.js'
 import form from '@/Mixins/form'
+import baseRuleValidate from '@/Store/Const/baseRuleValidate';
 
 export default {
   mixins: [form],
@@ -73,13 +74,7 @@ export default {
         totpCode: null
       },
       rules: {
-        totpCode: [
-          {
-            required: true,
-            message: this.$t('validate.required'),
-            trigger: ['blur', 'change']
-          }
-        ]
+        totpCode: baseRuleValidate(this.$t)(this.$t('column.code'))
       },
       loadingForm: false
     }
