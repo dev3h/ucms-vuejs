@@ -230,7 +230,7 @@ export default {
     },
     async deleteAccount(id) {
       await axios
-        .delete(this?.$route('admin.api.user.destroy', id))
+        .delete(`user/${id}`)
         .then((response) => {
           this.$message.success(response?.data?.message)
           this.fetchData()

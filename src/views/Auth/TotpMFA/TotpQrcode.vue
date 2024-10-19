@@ -34,7 +34,7 @@
                 :inline-message="hasError('totpCode')"
                 :error="getError('totpCode')"
               >
-                <el-input v-model="formData.totpCode" size="large" clearable />
+                <el-input v-model="formData.totpCode" size="large"  :placeholder="$t('input.common.enter', { name: $t('column.common.code') })" clearable />
               </el-form-item>
             </el-form>
           </div>
@@ -74,7 +74,7 @@ export default {
         totpCode: null
       },
       rules: {
-        totpCode: baseRuleValidate(this.$t)(this.$t('column.code'))
+        totpCode: baseRuleValidate(this.$t)(this.$t('column.common.code'))
       },
       loadingForm: false
     }

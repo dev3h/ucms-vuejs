@@ -190,6 +190,7 @@
   },
   "breadcrumb": {
     "create-user": "Create User",
+    "edit-user": "Edit User",
     "create-system": "Create System"
   },
   "pop-menu": {

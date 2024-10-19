@@ -164,11 +164,11 @@ export default {
       actions: [],
       roles: [],
       rules: {
-        name: baseRuleValidate(this.$t),
-        email: baseRuleValidate(this.$t),
-        role_id: baseRuleValidate(this.$t),
-        type: baseRuleValidate(this.$t),
-        password: baseRuleValidate(this.$t)
+        name: baseRuleValidate(this.$t)(this.$t('column.common.name')),
+        email: baseRuleValidate(this.$t)(this.$t('input.common.email')),
+        role_id: baseRuleValidate(this.$t)(this.$t('sidebar.role')),
+        type: baseRuleValidate(this.$t)(this.$t('input.type-user')),
+        password: baseRuleValidate(this.$t)(this.$t('input.common.password'))
       },
       loadingForm: false
     }
@@ -182,7 +182,7 @@ export default {
           route: 'user'
         },
         {
-          name: 'breadcrumb.create-user',
+          name: this.isEdit ? 'breadcrumb.edit-user' : 'breadcrumb.create-user',
           route: ''
         }
       ]

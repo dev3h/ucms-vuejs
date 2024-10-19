@@ -25,7 +25,7 @@
     >
       <div v-if="!recovery">
         <el-form-item
-          label="Code"
+          :label="$t('column.common.code')"
           prop="totpCode"
           :inline-message="hasError('totpCode')"
           :error="getError('totpCode')"
@@ -39,6 +39,7 @@
             class="mt-1 block w-full"
             autofocus
             autocomplete="one-time-code"
+            clearable
           />
         </el-form-item>
       </div>
@@ -64,9 +65,8 @@
       <div class="flex flex-col justify-center mt-9 gap-4">
         <el-button
           type="primary"
-          :class="{ 'opacity-25': form?.processing }"
-          :disabled="form?.processing"
-          @click="submit"
+          :loading="loadingForm"
+          @click.prevent="doSubmit"
         >
           {{ $t('button.verify') }}
         </el-button>
@@ -90,6 +90,7 @@
 import AuthenticationCard from '@/components/Page/AuthenticationCard.vue'
 import axios from '@/Plugins/axios.js'
 import form from '@/Mixins/form'
+import baseRuleValidate from '@/Store/Const/baseRuleValidate';
 
 export default {
   mixins: [form],
@@ -107,13 +108,7 @@ export default {
       recoveryCodeInput: null,
       codeInput: null,
       rules: {
-        totpCode: [
-          {
-            required: true,
-            message: this.$t('validate.required'),
-            trigger: ['blur', 'change']
-          }
-        ],
+        totpCode: baseRuleValidate(this.$t)(this.$t('column.common.code')),
         recovery_code: [
           {
             required: true,
