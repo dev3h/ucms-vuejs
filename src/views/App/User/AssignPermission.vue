@@ -4,32 +4,46 @@
       <div class="w-full pt-3 pb-2 px-4">
         <BreadCrumbComponent :bread-crumb="setbreadCrumbHeader" />
       </div>
-      <BackBar route-back="system" :title="item?.name"> </BackBar>
+      <BackBar route-back="system" :title="item?.name">
+       <template #actionBackBar>
+          <div>
+            <el-button class="w-[120px]" type="info" size="large" @click="goBack()">{{
+              $t('button.cancel')
+            }}</el-button>
+            <el-button
+              class="w-[120px]"
+              type="primary"
+              size="large"
+              @click="updatePermission"
+              :loading="loading"
+            >
+              {{ $t('button.update') }}
+            </el-button>
+          </div>
+        </template>  
+      </BackBar>
       <div class="w-full py-5 px-4 flex">
-        <el-aside width="300px" style="background-color: #f5f7fa">
-          <el-input
-            v-model="filterText"
-            :placeholder="$t('input.common.enter')"
-            clearable
-          ></el-input>
-          <el-tree
-            :data="treeData"
-            :props="defaultProps"
-            :filter-node-method="filterNode"
-            @node-click="handleNodeClick"
-            ref="treeRef"
-            default-expand-all
-            highlight-current
-            :expand-on-click-node="false"
-          />
-        </el-aside>
-        <div class="DataTable permission-table w-full">
-          <el-table
-            v-if="tableData.length > 0"
-            :data="tableData"
-            class="flex-1"
-            style="width: 100%"
-          >
+        <div class="w-[300px]">
+          <el-aside class="w-full" style="background-color: #f5f7fa">
+            <el-input
+              v-model="filterText"
+              :placeholder="$t('input.common.enter')"
+              clearable
+            ></el-input>
+            <el-tree
+              :data="treeData"
+              :props="defaultProps"
+              :filter-node-method="filterNode"
+              @node-click="handleNodeClick"
+              ref="treeRef"
+              default-expand-all
+              highlight-current
+              :expand-on-click-node="false"
+            />
+          </el-aside>
+        </div>
+        <div class="DataTable permission-table !flex-1">
+          <el-table v-if="tableData.length > 0" :data="tableData" class="flex-1">
             <!-- Dòng đầu tiên: Tên của Module -->
             <el-table-column
               label="Module"
@@ -86,6 +100,7 @@ export default {
         children: 'children',
         label: 'label'
       },
+      loading: false,
       treeRef: null,
       tableData: [], // Dữ liệu bảng hiển thị cho subsystem
       actionColumns: [], // Cột action
@@ -118,6 +133,9 @@ export default {
     }
   },
   methods: {
+     goBack() {
+      this.$router.push({ name: 'user' })
+    },
     // Xử lý khi nhấp vào Subsystem
     async getPermission() {
       try {
@@ -183,7 +201,9 @@ export default {
                       id: `ACTION_${action?.id}`,
                       name: action?.name,
                       code: action?.code,
-                      granted: action?.granted
+                      granted: action?.granted,
+                      status: action?.status,
+                      is_direct: action?.is_direct
                     }
                   })
                 }
@@ -260,6 +280,9 @@ export default {
       const allChecked = this.isAllChecked(row)
       row.actions = row.actions.map(() => !allChecked)
       this.updateCheckboxState(row.module_name, null, !allChecked)
+    },
+    updatePermission() {
+      console.log(this.actionColumns)
     }
   }
 }
@@ -269,5 +292,9 @@ export default {
 .el-tree {
   height: calc(100vh - 50px);
   overflow-y: auto;
+}
+.permission-table .el-table {
+  width: 100% !important;
+  max-width: 100% !important;
 }
 </style>
