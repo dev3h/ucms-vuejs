@@ -102,7 +102,8 @@
     "next": "Next",
     "back": "Back",
     "I-have-an-app": "I have an app",
-    "submit": "Submit"
+    "submit": "Submit",
+    "add-client-secret": "Add client secret"
   },
   "input": {
     "common": {
@@ -139,8 +140,10 @@
       "name": "Name",
       "code": "Code",
       "created-at": "Created at",
-      "actions": "Action"
+      "actions": "Action",
+      "status": "Status"
     },
+    "url": "URL",
     "last-seen": "Last seen",
     "activity": "Activity",
     "time": "Time",

@@ -16,6 +16,7 @@ export default {
         primary: "#002147",
         black54: "#545454",
         grayF5: "#f5f5f5",
+        grayF0: "#f0f0f0",
       }
     },
   },

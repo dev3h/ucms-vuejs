@@ -101,7 +101,8 @@
     "next": "Tiếp theo",
     "back": "Quay lại",
     "I-have-an-app": "Tôi đã có ứng dụng",
-    "submit": "Gửi"
+    "submit": "Gửi",
+    "add-client-secret": "Thêm client secret"
   },
   "input": {
     "common": {
@@ -140,8 +141,10 @@
       "name": "Tên",
       "code": "Mã",
       "created-at": "Ngày tạo",
-      "action": "Hành động"
+      "action": "Hành động",
+      "status": "Trạng thái"
     },
+    "url": "Địa chỉ URL",
     "last-seen": "Đăng nhâp lần cuối",
     "activity": "Trạng thái hoạt động",
     "time": "Thời gian",
