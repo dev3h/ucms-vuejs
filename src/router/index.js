@@ -11,7 +11,7 @@ const checkRequiredParams = async (to, from, next) => {
     } else if (!redirect_uri) {
       message += 'redirect_uri '
     }
-    next({ name: 'error-login', query: { authError: encodeURIComponent (message.trim()) } })
+    next({ name: 'error-login', query: { authError: encodeURIComponent(message.trim()) } })
   } else {
     try {
       const response = await axios.post('/system/check-data-system', { ...to.query })
@@ -20,6 +20,32 @@ const checkRequiredParams = async (to, from, next) => {
       next({ name: 'error-login', query: { authError: error.response?.data?.message } })
     }
   }
+}
+
+const setDeviceIdentifier = async () => {
+  try {
+    let deviceId = getCookie('device_identifier')
+    if (!deviceId) {
+      const response = await axios.post('/auth/generate-device-id')
+      deviceId = response.data.data
+      const domain = window.location.hostname
+      setCookie('device_identifier', deviceId, 365, domain)
+    }
+  } catch (error) {
+    console.log(error)
+  }
+}
+
+function setCookie(name, value, days, domain) {
+  const expires = new Date(Date.now() + days * 864e5).toUTCString()
+  document.cookie = `${name}=${encodeURIComponent(value)}; expires=${expires}; path=/; domain=${domain}; Secure; SameSite=None`
+}
+
+function getCookie(name) {
+  return document.cookie.split('; ').reduce((r, v) => {
+    const parts = v.split('=')
+    return parts[0] === name ? decodeURIComponent(parts[1]) : r
+  }, '')
 }
 
 const router = createRouter({
@@ -175,6 +201,7 @@ const router = createRouter({
 })
 
 router.beforeEach(async (to, from, next) => {
+  await setDeviceIdentifier()
   const adminRoutePattern = /^\/admin\//
   const authRequired = adminRoutePattern.test(to.path)
   const authStore = useAuthStore()
