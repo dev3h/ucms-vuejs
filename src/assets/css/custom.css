@@ -1,19 +1,19 @@
 ::-webkit-scrollbar {
-    width: 4px !important;
-    height: 8px !important;
+  width: 4px !important;
+  height: 8px !important;
 }
 
 ::-webkit-scrollbar-thumb {
-    background-color: #e6e6e6;
-    border-radius: 1rem;
+  background-color: #e6e6e6;
+  border-radius: 1rem;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-    background-color: #8c8c8c;
+  background-color: #8c8c8c;
 }
 
 ::-webkit-scrollbar-track {
-    background: #fbfbfb;
+  background: #fbfbfb;
 }
 
 [type='text']:focus,
@@ -32,97 +32,97 @@ input:where(:not([type])):focus,
 [multiple]:focus,
 textarea:focus,
 select:focus {
-    box-shadow: none;
+  box-shadow: none;
 }
 
 /* ==================== Custom style element plus ==================== */
 /* Style chung cho dialog, form */
 .el-dialog {
-    border-radius: 0.55rem !important;
+  border-radius: 0.55rem !important;
 }
 
 .el-dialog__header {
-    width: 100%;
-    background: var(--tw-white);
-    border-radius: 0.5rem 0.5rem 0 0;
-    color: #000;
-    font-size: 1.25rem;
-    font-weight: 500;
-    line-height: 1.5rem;
+  width: 100%;
+  background: var(--tw-white);
+  border-radius: 0.5rem 0.5rem 0 0;
+  color: #000;
+  font-size: 1.25rem;
+  font-weight: 500;
+  line-height: 1.5rem;
 }
 
 .el-dialog__headerbtn {
-    top: 0 !important;
-    height: 48px !important;
-    margin-top: 8px;
-    margin-right: 8px;
-    /*display: none;*/
+  top: 0 !important;
+  height: 48px !important;
+  margin-top: 8px;
+  margin-right: 8px;
+  /*display: none;*/
 }
 
 .el-dialog__headerbtn .el-dialog__close {
-    color: #b0b0b0 !important;
-    background-color: #f5f5f5 !important;
-    border-radius: 50%;
-    padding: 4px;
-    font-size: 1.2rem !important;
-    width: 30px;
-    height: 30px;
+  color: #b0b0b0 !important;
+  background-color: #f5f5f5 !important;
+  border-radius: 50%;
+  padding: 4px;
+  font-size: 1.2rem !important;
+  width: 30px;
+  height: 30px;
 }
 /*dialog custom*/
 .el-dialog.dialog-base {
-    padding: 0 !important;
+  padding: 0 !important;
 
-    .el-dialog__header {
-        background-color: var(--tw-grayF5);
-        padding: 17px 32px !important;
+  .el-dialog__header {
+    background-color: var(--tw-grayF5);
+    padding: 17px 32px !important;
 
-        i {
-            font-size: 24px;
-        }
+    i {
+      font-size: 24px;
     }
+  }
 
-    .el-dialog__body {
-        padding: 24px 32px;
-        height: 100%;
-    }
+  .el-dialog__body {
+    padding: 24px 32px;
+    height: 100%;
+  }
 
-    .el-dialog__footer {
-        padding: 20px 0;
-        background-color: var(--tw-grayF5);
-        border-bottom-left-radius: 8px;
-        border-bottom-right-radius: 8px;
-    }
+  .el-dialog__footer {
+    padding: 20px 0;
+    background-color: var(--tw-grayF5);
+    border-bottom-left-radius: 8px;
+    border-bottom-right-radius: 8px;
+  }
 }
 
 .el-form-item__label {
-    /* line-height: 1.25rem; */
-    color: var(--tw-black28) !important;
-    /* font-size: 13px; */
-    font-weight: bold !important;
+  /* line-height: 1.25rem; */
+  color: var(--tw-black28) !important;
+  /* font-size: 13px; */
+  font-weight: bold !important;
 }
 
 .el-form--label-top .el-form-item__label {
-    padding: 0;
+  padding: 0;
 }
 
 .el-select .el-select__tags-text {
-    display: block !important;
+  display: block !important;
 }
 
 .el-main {
-    width: 100%;
+  width: 100%;
 }
 
 .el-form-item {
-    margin-bottom: 12px !important;
+  margin-bottom: 12px !important;
 }
 
 .el-form-item__error {
-    margin-top: 2px;
+  margin-top: 2px;
 }
 
 .el-form-item__error {
-    margin-left: 0 !important;
+  margin-left: 0 !important;
 }
 
 /* .el-form-item.is-error {
@@ -130,379 +130,392 @@ select:focus {
 } */
 
 .el-form-item__content {
-    margin-bottom: 12px !important;
+  margin-bottom: 12px !important;
 }
 
 .el-form--default.el-form--label-top .el-form-item .el-form-item__label {
-    line-height: 10px !important;
+  line-height: 10px !important;
 }
 
 .el-dialog__title {
-    font-style: normal;
-    font-weight: 600;
-    font-size: 20px;
+  font-style: normal;
+  font-weight: 600;
+  font-size: 20px;
 
-    color: #222222 !important;
+  color: #222222 !important;
 }
 
 .el-input {
-    height: 40px;
+  height: 40px;
 }
 
 .el-select__wrapper.is-focused,
 .el-input__wrapper.is-focus {
-    box-shadow: 0 0 0 1px var(--tw-primary) inset !important;
+  box-shadow: 0 0 0 1px var(--tw-primary) inset !important;
 }
 .el-textarea__inner:focus {
-    box-shadow: 0 0 0 1px var(--tw-primary) inset !important;
+  box-shadow: 0 0 0 1px var(--tw-primary) inset !important;
 }
 .el-select-dropdown__item.is-selected {
-    color: var(--tw-primary) !important;
+  color: var(--tw-primary) !important;
 }
 
 .is-required .el-form-item__label::before {
-    content: '' !important;
-    margin-right: 0px !important;
+  content: '' !important;
+  margin-right: 0px !important;
 }
 
 .is-required .el-form-item__label::after {
-    content: '*';
-    color: var(--el-color-danger);
-    margin-left: 4px;
+  content: '*';
+  color: var(--el-color-danger);
+  margin-left: 4px;
 }
 
 @media (max-width: 1024px) {
-    .createRequestExpertForm.el-dialog {
-        --el-dialog-width: 100% !important;
-    }
+  .createRequestExpertForm.el-dialog {
+    --el-dialog-width: 100% !important;
+  }
 }
 
 @media (max-width: 1280px) {
-    .createRequestExpertForm.el-dialog {
-        --el-dialog-width: 80% !important;
-    }
+  .createRequestExpertForm.el-dialog {
+    --el-dialog-width: 80% !important;
+  }
 }
 
 /* Style chung cho Breadcrumb */
 .el-breadcrumb .el-breadcrumb__item .el-breadcrumb__inner a,
 .el-breadcrumb__inner.is-link {
-    color: #606266;
-    font-weight: normal;
+  color: #606266;
+  font-weight: normal;
 }
 
 .el-breadcrumb .el-breadcrumb__item:last-child .el-breadcrumb__inner,
 .el-breadcrumb .el-breadcrumb__item:last-child .el-breadcrumb__inner a,
 .el-breadcrumb .el-breadcrumb__item:last-child .el-breadcrumb__inner a:hover,
 .el-breadcrumb .el-breadcrumb__item:last-child .el-breadcrumb__inner:hover {
-    font-weight: 700;
-    color: black;
+  font-weight: 700;
+  color: black;
 }
 
 .el-breadcrumb .el-breadcrumb__item .el-breadcrumb__inner a:hover {
-    color: #2078ce;
-    font-weight: 700;
+  color: #2078ce;
+  font-weight: 700;
 }
 
 .common-el-select .el-input__wrapper {
-    width: 146px !important;
-    padding: 10px 8px !important;
+  width: 146px !important;
+  padding: 10px 8px !important;
 }
 
 .common-el-select--long .el-input__wrapper {
-    width: 168px;
-    padding: 10px 8px !important;
+  width: 168px;
+  padding: 10px 8px !important;
 }
 
 /* style chung cho menu */
 .el-menu-item .menu-item-text {
-    color: var(--tw-gray8A);
+  color: var(--tw-gray8A);
 }
 .el-menu-item.is-active .menu-item-text {
-    color: var(--tw-primary);
+  color: var(--tw-primary);
 }
 
 /* style chung cho drawer*/
 .el-drawer__close-btn {
-    border-radius: 50%;
-    padding: 4px;
-    font-size: 1.2rem !important;
-    width: 30px;
-    height: 30px;
-    border: 2px solid #ACACAC !important;
+  border-radius: 50%;
+  padding: 4px;
+  font-size: 1.2rem !important;
+  width: 30px;
+  height: 30px;
+  border: 2px solid #acacac !important;
 }
 
 /* ==================== End custom style element plus ==================== */
 
 .line-clamp-1 {
-    overflow: hidden;
-    display: -webkit-box;
-    -webkit-box-orient: vertical;
-    -webkit-line-clamp: 1;
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 1;
 }
 
 .line-clamp-2 {
-    overflow: hidden;
-    display: -webkit-box;
-    -webkit-box-orient: vertical;
-    -webkit-line-clamp: 2;
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
 }
 
 .line-clamp-3 {
-    overflow: hidden;
-    display: -webkit-box;
-    -webkit-box-orient: vertical;
-    -webkit-line-clamp: 3;
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
 }
 
 .line-clamp-4 {
-    overflow: hidden;
-    display: -webkit-box;
-    -webkit-box-orient: vertical;
-    -webkit-line-clamp: 4;
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 4;
 }
 
 .line-clamp-5 {
-    overflow: hidden;
-    display: -webkit-box;
-    -webkit-box-orient: vertical;
-    -webkit-line-clamp: 5;
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 5;
 }
 
 button:disabled {
-    cursor: not-allowed;
+  cursor: not-allowed;
 }
 
 button.el-button--primary {
-    background-color: var(--tw-primary);
-    border-color: var(--tw-primary);
+  background-color: var(--tw-primary);
+  border-color: var(--tw-primary);
 }
 button.el-button.is-disabled {
-    opacity: 0.4;
+  opacity: 0.4;
+  background-color: var(--tw-gray-500);
+  border-color: var(--tw-gray-500);
+  &:hover {
     background-color: var(--tw-gray-500);
     border-color: var(--tw-gray-500);
-    &:hover {
-        background-color: var(--tw-gray-500);
-        border-color: var(--tw-gray-500);
-        opacity: 0.4;
-    }
+    opacity: 0.4;
+  }
 }
 
 button.el-button--primary:focus,
 button.el-button--primary:hover {
+  opacity: 0.8;
+  background-color: var(--tw-primary);
+  border-color: var(--tw-primary);
+}
+button.el-button--primary.is-link {
+  color: var(--tw-primary);
+  &:focus,
+  &:hover {
+    color: var(--tw-primary);
+    background-color: unset;
+    border: unset;
     opacity: 0.8;
-    background-color: var(--tw-primary);
-    border-color: var(--tw-primary);
+  }
 }
 
 button.el-button--info {
-    color: white;
-    background-color: #8a8a8a;
+  color: white;
+  background-color: #8a8a8a;
 }
 
 button.el-button--info:hover {
-    opacity: 0.8;
-    background-color: #8a8a8a;
+  opacity: 0.8;
+  background-color: #8a8a8a;
 }
 
 button.el-button--danger {
-    color: white;
-    background-color: #e21124;
+  color: white;
+  background-color: #e21124;
 }
 
 button.el-button--danger:hover {
-    opacity: 0.8;
-    background-color: #e21124;
+  opacity: 0.8;
+  background-color: #e21124;
 }
 
 .el-form .el-date-editor--date,
 .el-form .el-select,
 .el-form .el-input {
-    width: 100% !important;
+  width: 100% !important;
 }
 
 .box-content3 {
-    grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(3, 1fr);
 }
 .box-content4 {
-    grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(4, 1fr);
 }
 .box-content {
-    display: grid;
-    row-gap: 24px;
-    column-gap: 56px;
+  display: grid;
+  row-gap: 24px;
+  column-gap: 56px;
 }
 .box-content--item {
-    padding-top: 8px;
-    padding-bottom: 8px;
-    border-bottom: 1px solid var(--tw-grayF0);
+  padding-top: 8px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--tw-grayF0);
 }
 
 .box-content--item h3 {
-    font-weight: bold;
+  font-weight: bold;
 }
 
 /* Data table */
 .DataTable .CardHeader,
 .DataTable .CardFooter {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
 .DataTable .CardHeader {
-    margin-bottom: 1rem;
+  margin-bottom: 1rem;
 }
 
 .DataTable .CardFooter {
-    margin-top: 0.9375rem;
+  margin-top: 0.9375rem;
 }
 
 .DataTable .CardHeader.CardHeaderCenter,
 .DataTable .CardFooter.CardFooterCenter {
-    justify-content: end;
+  justify-content: end;
 }
 
 .DataTable .el-table {
-    height: auto !important;
-    /* --el-table-border: none; */
-    max-height: calc(100vh - 250px);
-    overflow: auto;
+  height: auto !important;
+  /* --el-table-border: none; */
+  max-height: calc(100vh - 250px);
+  overflow: auto;
 }
 
 .DataTable .el-table__body-wrapper {
-    height: auto !important;
-    position: relative;
-    overflow: hidden;
+  height: auto !important;
+  position: relative;
+  overflow: hidden;
 }
 
 .DataTable .el-table__header th.el-table__cell {
-    background-color: var(--tw-header-table);
-    color: var(--tw-white);
+  background-color: var(--tw-header-table);
+  color: var(--tw-white);
 }
 
 .DataTable .el-table__row td.el-table__cell {
-    color: var(--tw-header-table);
-    padding: 15px 8px 15px 16px;
+  color: var(--tw-header-table);
+  padding: 15px 8px 15px 16px;
 }
 
 .DataTable .el-table--scrollable-x .el-table__body-wrapper {
-    overflow-x: auto;
+  overflow-x: auto;
 }
 
 .DataTable .el-table--scrollable-y .el-table__body-wrapper {
-    overflow-y: auto;
+  overflow-y: auto;
 }
 
 .DataTable .el-table .el-table__body.active {
-    cursor: grabbing;
+  cursor: grabbing;
 }
 
 @media only screen and (max-width: 500px) {
-    .number {
-        min-width: 18px;
-    }
+  .number {
+    min-width: 18px;
+  }
 }
 
 .DataTable .el-pagination.is-background .btn-next,
 .DataTable .el-pagination.is-background .btn-prev,
 .DataTable .el-pagination.is-background .el-pager li {
-    /* background-color: var(--tw-gray-300); */
-    background-color: #fff;
-    font-size: 14px;
-    min-width: 2rem;
-    height: 2rem;
-    line-height: 2rem;
-    /* border-radius: 8px; */
-    /* margin: 0 2px; */
-    margin: 0;
-    border: 1px solid #dcdfe6;
+  /* background-color: var(--tw-gray-300); */
+  background-color: #fff;
+  font-size: 14px;
+  min-width: 2rem;
+  height: 2rem;
+  line-height: 2rem;
+  /* border-radius: 8px; */
+  /* margin: 0 2px; */
+  margin: 0;
+  border: 1px solid #dcdfe6;
 }
 
 .DataTable .el-pagination.is-background .btn-next,
 .DataTable .el-pagination.is-background .btn-prev {
-    /* border: 0; */
-    border: 1px solid #dcdfe6;
+  /* border: 0; */
+  border: 1px solid #dcdfe6;
 }
 
 .DataTable .el-pagination.is-background button .el-icon {
-    font-size: 15px !important;
+  font-size: 15px !important;
 }
 
 .DataTable .el-pagination.is-background .btn-next span:not([class*='suffix']),
 .DataTable .el-pagination.is-background .btn-prev span:not([class*='suffix']) {
-    min-width: 2rem;
-    height: 2rem;
-    line-height: 2rem;
+  min-width: 2rem;
+  height: 2rem;
+  line-height: 2rem;
 }
 
 .DataTable .el-pagination.is-background .el-pager li:not(.disabled):hover,
 .DataTable .el-pagination.is-background .el-pager li:not(.disabled).active {
-    background-color: var(--tw-primary);
-    color: var(--tw-white);
+  background-color: var(--tw-primary);
+  color: var(--tw-white);
 }
 
 .DataTable .el-pagination.is-background .el-pager li:not(.is-disabled).is-active {
-    background-color: var(--tw-primary);
-    color: var(--tw-white);
+  background-color: var(--tw-primary);
+  color: var(--tw-white);
 }
 
 .DataTable .el-card__body {
-    padding: 0;
+  padding: 0;
 }
 
 .DataTable.is-never-shadow {
-    /* border: none; */
+  /* border: none; */
 }
 
 .el-table thead {
-    color: #000;
-    /* font-size: 13px; */
+  color: #000;
+  /* font-size: 13px; */
 }
 
 .el-table__header .el-table__cell {
-    padding: 10px 16px;
+  padding: 10px 16px;
 }
 
 .DataTable .el-scrollbar__bar.is-horizontal {
-    height: 0px;
+  height: 0px;
 }
 
 .DataTable .el-scrollbar__view {
-    overflow-x: scroll;
-    display: block !important;
+  overflow-x: scroll;
+  display: block !important;
 }
 
 .DataTable .el-table__body .el-table__cell {
-    padding: 10px 0;
-    border-bottom: 1px solid #dcdfe6;
+  padding: 10px 0;
+  border-bottom: 1px solid #dcdfe6;
 }
 
 .DataTable .table-pagination {
-    background: var(--tw-white);
-    padding: 12px 16px;
+  background: var(--tw-white);
+  padding: 12px 16px;
 }
 
 .DataTable .table-pagination .el-select .el-select__wrapper {
-    box-shadow: unset !important;
+  box-shadow: unset !important;
 }
 
 .DataTable .table-pagination .el-pagination {
-    width: 100%;
+  width: 100%;
 }
 
 .DataTable .table-pagination .el-pagination .el-pagination__sizes {
-    margin-right: auto;
+  margin-right: auto;
 }
 
 .DataTable .select-option .el-select__wrapper {
-    text-align: right;
-    box-shadow: none;
-    padding: 0 !important;
+  text-align: right;
+  box-shadow: none;
+  padding: 0 !important;
 }
 
 .DataTable .select-option .el-select__placeholder.is-transparent {
-    color: var(--el-input-text-color, var(--el-text-color-regular));
+  color: var(--el-input-text-color, var(--el-text-color-regular));
 }
 .DataTable .el-table.is-scrolling-none th.el-table-fixed-column--right {
-    background-color: var(--tw-primary) !important;
+  background-color: var(--tw-primary) !important;
+}
+.el-card.card-custom .el-card__body {
+  padding: 0;
 }

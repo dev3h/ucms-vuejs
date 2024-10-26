@@ -1,6 +1,7 @@
 import axios from '@/Plugins/axios'
 import { createRouter, createWebHistory } from 'vue-router'
 import { useAuthStore } from '@/stores/auth'
+import { getCookie } from '@/Store/Helper/helpers'
 
 const checkRequiredParams = async (to, from, next) => {
   const { redirect_uri, client_id } = to.query
@@ -24,12 +25,12 @@ const checkRequiredParams = async (to, from, next) => {
 
 const setDeviceIdentifier = async () => {
   try {
-    let deviceId = getCookie('device_identifier')
+    let deviceId = getCookie('deviceId')
     if (!deviceId) {
       const response = await axios.post('/auth/generate-device-id')
       deviceId = response.data.data
       const domain = window.location.hostname
-      setCookie('device_identifier', deviceId, 365, domain)
+      setCookie('deviceId', deviceId, 365, domain)
     }
   } catch (error) {
     console.log(error)
@@ -39,13 +40,6 @@ const setDeviceIdentifier = async () => {
 function setCookie(name, value, days, domain) {
   const expires = new Date(Date.now() + days * 864e5).toUTCString()
   document.cookie = `${name}=${encodeURIComponent(value)}; expires=${expires}; path=/; domain=${domain}; Secure; SameSite=None`
-}
-
-function getCookie(name) {
-  return document.cookie.split('; ').reduce((r, v) => {
-    const parts = v.split('=')
-    return parts[0] === name ? decodeURIComponent(parts[1]) : r
-  }, '')
 }
 
 const router = createRouter({
@@ -160,6 +154,12 @@ const router = createRouter({
           beforeEnter: checkRequiredParams
         },
         {
+          path: 'login/account-choose',
+          name: 'sso-login-account-choose',
+          component: () => import('@/views/Auth/ClientSSO/AccountChoose.vue'),
+          beforeEnter: checkRequiredParams
+        },
+        {
           path: 'login/challenge/pwd',
           name: 'sso-login-password',
           component: () => import('@/views/Auth/ClientSSO/PasswordLogin.vue'),
@@ -200,8 +200,25 @@ const router = createRouter({
   ]
 })
 
+let firstTimeLogin = true
+
 router.beforeEach(async (to, from, next) => {
-  await setDeviceIdentifier()
+  const routeName = to?.name
+  if (routeName === 'sso-login-email' && firstTimeLogin) {
+    let deviceId = getCookie('deviceId')
+
+    if (!deviceId) {
+      await setDeviceIdentifier()
+    } else {
+      const deviceLoginHistories = await axios.get(`/auth/get-device-login-histories/${deviceId}`)
+      if (deviceLoginHistories.data.data.length > 0) {
+        const { client_id, redirect_uri } = to.query
+        firstTimeLogin = false
+        return next({ name: 'sso-login-account-choose', query: { client_id, redirect_uri } })
+      }
+    }
+  }
+
   const adminRoutePattern = /^\/admin\//
   const authRequired = adminRoutePattern.test(to.path)
   const authStore = useAuthStore()

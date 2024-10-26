@@ -1,16 +1,11 @@
 <template>
   <div class="flex items-center min-h-screen bg-grayF5">
-    <el-card class="!max-w-[1000px] w-full my-10 mx-auto rounded-lg p-10">
-      <div class="text-blueDark flex justify-between">
-        <div class="w-[300px]">
-          <div class="relative">
-            <div class="logo mb-6">
-              <img src="/images/logo.svg" alt="logo" class="h-[50px]" />
-            </div>
-          </div>
-        </div>
+    <el-card class="!max-w-[1000px] w-full my-10 mx-auto rounded-lg card-custom">
+       <div class="flex items-center mb-8 border-b border-gray">
+        <img src="/images/logo-small.png" />
+        <span class="text-lg font-semibold">{{ $t('auth-page.ucms-login') }}</span>
       </div>
-      <div class="flex justify-between">
+      <div class="flex justify-between p-8">
         <div class="text-zinc-800 text-[40px] font-bold uppercase leading-[28.80px]">
           {{ $t('auth-page.login-title') }}
         </div>

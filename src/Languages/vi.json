@@ -26,7 +26,12 @@
       "title-recovery": "Nhập một trong các mã khôi phục khẩn cấp của bạn."
     },
     "return-to-login": "Quay lại màn hình đăng nhập",
-    "authorization-error": "Đã chặn quyền truy cập: Lỗi ủy quyền"
+    "authorization-error": "Đã chặn quyền truy cập: Lỗi ủy quyền",
+    "ucms-login": "Đăng nhập với UCMS",
+    "account-choose-page": {
+      "sub-title": "Chọn 1 tài khoản",
+      "button-another": "Dùng 1 tài khoản khác"
+    }
   },
   "my-page": {
     "change-password": "Thay đổi mật khẩu",

@@ -28,6 +28,11 @@
     "return to login": "Return to login screen",
     "authorization-error": "Authorization Error"
   },
+  "account-choose-page": {
+    "title": "Login with UCMS",
+    "sub-title": "Choose an account",
+    "button-another": "Use another account"
+  },
   "my-page": {
     "change-password": "Change password",
     "link-account": "Link account",
