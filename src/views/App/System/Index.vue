@@ -182,7 +182,7 @@ export default {
       this.$router.push({ name: 'system-create' })
     },
     openEdit(id) {
-      this.$refs.modalSystem.open(id)
+      this.$router.push({ name: 'system-edit', params: { id } })
     },
     openDeleteForm(id) {
       this.$refs.deleteForm.open(id)

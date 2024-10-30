@@ -200,7 +200,8 @@
   "breadcrumb": {
     "create-user": "Tạo người dùng",
     "edit-user": "Chỉnh sửa người dùng",
-    "create-system": "Tạo hệ thống"
+    "create-system": "Tạo hệ thống",
+    "edit-system": "Chỉnh sửa hệ thống"
   },
   "pop-menu": {
     "profile": "Hồ sơ",

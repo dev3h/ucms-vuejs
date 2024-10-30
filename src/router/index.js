@@ -62,6 +62,7 @@ const router = createRouter({
         {
           path: 'system-components',
           children: [
+            // system
             {
               path: 'system',
               name: 'system',
@@ -70,7 +71,12 @@ const router = createRouter({
             {
               path: 'system/create',
               name: 'system-create',
-              component: () => import('@/views/App/System/Create.vue')
+              component: () => import('@/views/App/System/CreateEditForm.vue')
+            },
+            {
+              path: 'system/:id/edit',
+              name: 'system-edit',
+              component: () => import('@/views/App/System/CreateEditForm.vue')
             },
             {
               path: 'system/show/:id',
@@ -85,15 +91,47 @@ const router = createRouter({
               path: 'system/test1',
               component: () => import('@/views/App/System/Test1.vue')
             },
+            // subsystem
             {
               path: 'subsystem',
               name: 'subsystem',
               component: () => import('@/views/App/SubSystem/Index.vue')
             },
             {
+              path: 'subsystem/create',
+              name: 'subsystem-create',
+              component: () => import('@/views/App/SubSystem/CreateEditForm.vue')
+            },
+            {
+              path: 'subsystem/:id/edit',
+              name: 'subsystem-edit',
+              component: () => import('@/views/App/SubSystem/CreateEditForm.vue')
+            },
+            {
+              path: 'subsystem/show/:id',
+              name: 'subsystem-show',
+              component: () => import('@/views/App/SubSystem/Show.vue')
+            },
+            // module
+            {
               path: 'module',
               name: 'module',
               component: () => import('@/views/App/Module/Index.vue')
+            },
+            {
+              path: 'module/create',
+              name: 'module-create',
+              component: () => import('@/views/App/Module/CreateEditForm.vue')
+            },
+            {
+              path: 'module/:id/edit',
+              name: 'module-edit',
+              component: () => import('@/views/App/Module/CreateEditForm.vue')
+            },
+            {
+              path: 'module/show/:id',
+              name: 'module-show',
+              component: () => import('@/views/App/Module/Show.vue')
             },
             {
               path: 'action',

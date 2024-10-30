@@ -135,15 +135,11 @@ import BackBar from '@/components/BackBar/Index.vue'
 export default {
   components: { AdminLayout, BreadCrumbComponent, BackBar },
   mixins: [form],
-  props: {
-    isEdit: {
-      type: Boolean,
-      default: false
-    }
-  },
   data() {
     return {
+      isEdit: false,
       formData: {
+        id: this.$route.params.id,
         name: null,
         code: null,
         redirect_uris: ['']
@@ -165,13 +161,19 @@ export default {
           route: 'system'
         },
         {
-          name: 'breadcrumb.create-system',
+          name: this.isEdit ? 'breadcrumb.edit-system' : 'breadcrumb.create-system',
           route: ''
         }
       ]
     },
     titlePage() {
       return this.isEdit ? this.$t('back-bar.edit-system') : this.$t('back-bar.create-system')
+    }
+  },
+  async mounted() {
+    if (this.formData.id) {
+      this.isEdit = true
+      await this.fetchData()
     }
   },
   methods: {
@@ -184,9 +186,30 @@ export default {
     removeRedirectUri(index) {
       this.formData.redirect_uris.splice(index, 1)
     },
+    async fetchData() {
+      try {
+        this.loadingForm = true
+        await axios.get(`/system/${this.formData.id}`).then((response) => {
+          if (response?.data?.status_code === 200) {
+            const { id, name, code, redirect_uris } = response?.data?.data
+            this.formData = {
+              id,
+              name,
+              code,
+              redirect_uris
+            }
+          }
+          this.loadingForm = false
+        })
+      } catch (error) {
+        this.loadingForm = false
+        this.$message.error(error?.response?.data?.message || this.$t('message.something-wrong'))
+      }
+    },
     async submit() {
       this.loadingForm = true
-      await axios.post('/system', this.formData).then((response) => {
+      const { method, url } = this.prepareSubmit()
+      await axios?.[method](url, this.formData).then((response) => {
         this.$message({
           type: response?.data?.status_code === 200 ? 'success' : 'error',
           message: response?.data?.message
@@ -196,6 +219,12 @@ export default {
         }
         this.loadingForm = false
       })
+    },
+    prepareSubmit() {
+      return {
+        method: this.isEdit ? 'put' : 'post',
+        url: this.isEdit ? `/system/${this.formData.id}` : '/system',
+      }
     }
   }
 }

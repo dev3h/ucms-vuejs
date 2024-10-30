@@ -199,7 +199,8 @@
   "breadcrumb": {
     "create-user": "Create User",
     "edit-user": "Edit User",
-    "create-system": "Create System"
+    "create-system": "Create System",
+    "edit-system": "Edit System"
   },
   "pop-menu": {
     "profile": "Profile",
