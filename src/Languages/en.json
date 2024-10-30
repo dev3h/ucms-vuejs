@@ -180,8 +180,8 @@
     "user-management": "User Management"
   },
   "form": {
-    "add": "Add",
-    "edit": "Edit",
+    "add": "Add {name}",
+    "edit": "Edit {name}",
     "confirm-delete": "Are you sure you want to delete it?",
     "item-added": "added",
     "ignore": "Ignore",
@@ -219,6 +219,12 @@
     "create-user": "Create new user",
     "edit-user": "Edit user",
     "create-system": "Create new system",
-    "edit-system": "Edit system"
+    "edit-system": "Edit system",
+    "create-subsytem": "Create new subsystem",
+    "edit-subsytem": "Edit subsystem",
+    "create-module": "Create new module",
+    "edit-module": "Edit module",
+    "create-action": "Create new action",
+    "edit-action": "Edit action"
   }
 }

@@ -189,7 +189,7 @@ export default {
     },
     async deleteItem(id) {
       await axios
-        .delete(this.appRoute('admin.api.system.destroy', id))
+        .delete(`/system/${id}`)
         .then((response) => {
           this.$message.success(response?.data?.message)
           this.fetchData()

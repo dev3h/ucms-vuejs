@@ -57,14 +57,17 @@
           paginate-background
           @page-change="changePage"
         >
+          <template #system="{ row }">
+            <span>{{ row?.system?.name }}</span>
+          </template>
           <template #action="{ row }">
             <div class="flex justify-center items-center gap-x-[12px]">
               <div class="cursor-pointer" @click="openShow(row?.id)">
                 <img src="/images/svg/eye-icon.svg" />
               </div>
-              <!--                            <div class="cursor-pointer" @click="openEdit(row?.id)">-->
-              <!--                                <img src="/images/svg/pen-icon.svg" />-->
-              <!--                            </div>-->
+              <div class="cursor-pointer" @click="openEdit(row?.id)">
+                <img src="/images/svg/pen-icon.svg" />
+              </div>
               <div class="cursor-pointer" @click="openDeleteForm(row?.id)">
                 <img src="/images/svg/trash-icon.svg" />
               </div>
@@ -74,7 +77,7 @@
       </div>
     </div>
     <DeleteForm ref="deleteForm" @delete-action="deleteItem" />
-    <!-- <ModalSubSystem ref="modalSubSystem" :redirectRoute="subsystem" /> -->
+    <ModalSubSystem ref="modalSubSystem" @add-success="fetchData()" @update-success="fetchData()" />
   </AdminLayout>
 </template>
 <script>
@@ -107,6 +110,13 @@ export default {
           key: 'code',
           'min-width': 300,
           label: this.$t('column.common.code'),
+          align: 'left',
+          headerAlign: 'left'
+        },
+        {
+          key: 'system',
+          'min-width': 300,
+          label: this.$t('sidebar.system'),
           align: 'left',
           headerAlign: 'left'
         },
@@ -180,13 +190,13 @@ export default {
     },
     async deleteItem(id) {
       await axios
-        .delete(this.appRoute('admin.api.subsystem.destroy', id))
+        .delete(`/subsystem/${id}`)
         .then((response) => {
           this.$message.success(response?.data?.message)
           this.fetchData()
         })
         .catch((error) => {
-          this.$message.error(error?.response?.data?.message)
+          this.$message.error(error?.response?.data?.message || this.$t('message.something-wrong'))
         })
     },
     openShow(id) {

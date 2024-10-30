@@ -5,10 +5,11 @@
       :close-on-click-modal="false"
       :fullscreen="fullscreen"
       :before-close="closeModal"
+      class="dialog-base"
     >
       <template #header>
         <DialogHeader
-          :title="formType === 'add' ? $t('form.add') : $t('form.edit')"
+          :title="titlePage"
           :isFullscreen="fullscreen"
           @toggleFullscreen="handleToggleFullScreen"
         />
@@ -29,7 +30,7 @@
               :error="getError('name')"
               :inline-message="hasError('name')"
             >
-              <el-input size="large" v-model="formData.name" clearable />
+              <el-input :placeholder="$t('input.common.enter', { name: $t('column.common.name') })" size="large" v-model="formData.name" clearable />
             </el-form-item>
           </div>
           <div class="flex-1">
@@ -40,7 +41,7 @@
               :error="getError('code')"
               :inline-message="hasError('code')"
             >
-              <el-input size="large" v-model="formData.code" clearable />
+              <el-input :disabled="isEdit" :placeholder="$t('input.common.enter', { name: $t('column.common.code') })" size="large" v-model="formData.code" clearable />
             </el-form-item>
           </div>
           <div class="flex-1">
@@ -53,8 +54,9 @@
             >
               <el-select
                 v-model="formData.system_id"
-                :placeholder="$t('input.common.select')"
+                :placeholder="$t('input.common.select', { name: $t('sidebar.system') })"
                 size="large"
+                clearable
               >
                 <el-option
                   v-for="system in systems"
@@ -67,14 +69,21 @@
           </div>
         </el-form>
       </div>
-      <div class="w-full my-[15px] flex justify-center items-center">
-        <el-button type="danger" size="large" @click="closeModal">{{
-          $t('button.cancel')
-        }}</el-button>
-        <el-button type="primary" size="large" @click="doSubmit()" :loading="loadingForm">{{
-          $t('button.save')
-        }}</el-button>
-      </div>
+      <template #footer>
+       <div class="flex justify-center">
+         <el-button class="w-[120px]" type="info" size="large" @click="closeModal">{{
+           $t('button.cancel')
+         }}</el-button>
+         <el-button
+           class="w-[120px]"
+           type="primary"
+           size="large"
+           @click="doSubmit()"
+           :loading="loadingForm"
+           >{{ $t('button.save') }}</el-button
+         >
+       </div>
+      </template>
     </el-dialog>
   </div>
 </template>
@@ -96,7 +105,7 @@ export default {
   emits: ['add-success', 'update-success'],
   data() {
     return {
-      formType: 'add',
+      isEdit: false,
       isShowModal: false,
       current_id: null,
       systems: [],
@@ -107,22 +116,34 @@ export default {
         system_id: null
       },
       rules: {
-        name: baseRuleValidate(this.$t),
-        code: baseRuleValidate(this.$t),
-        system_id: baseRuleValidate(this.$t)
+        name: baseRuleValidate(this.$t)(this.$t('column.common.name')),
+        code: baseRuleValidate(this.$t)(this.$t('column.common.code')),
+        system_id: baseRuleValidate(this.$t)(this.$t('sidebar.system')) 
       },
       fullscreen: false,
       loadingForm: false
     }
   },
   async created() {
-    await this.getAllSystem()
+    
+  },
+  watch: {
+    isShowModal(val) {
+      if (val) {
+        this.getAllSystem()
+      }
+    }
+  },
+  computed: {
+    titlePage() {
+      return this.isEdit ? this.$t('back-bar.edit-subsytem') : this.$t('back-bar.create-subsytem')
+    }
   },
   methods: {
     async open(id) {
       if (id) {
         this.current_id = id
-        this.formType = 'edit'
+        this.isEdit = true
         await this.fetchData()
       }
       this.isShowModal = true
@@ -137,7 +158,7 @@ export default {
         system_id: null
       }
       this.$refs.form.resetFields()
-      this.formType = 'add'
+      this.isEdit = false
     },
     async submit() {
       this.loadingForm = true
@@ -148,16 +169,20 @@ export default {
         type: status === 200 ? 'success' : 'error',
         message: data?.message
       })
+      if(data?.status_code === 200) {
+        this.isEdit ? this.$emit('update-success') : this.$emit('add-success')
+        this.closeModal()
+      }
       this.loadingForm = false
-      this.isShowModal = false
-      this.$inertia.visit(this.redirectRoute)
     },
     async fetchData() {
-      if (this.formType === 'edit') {
+      if (this.isEdit) {
         this.loadingForm = true
-        const { data } = await axios.get(this.appRoute('admin.api.subsystem.show', this.current_id))
+        const { data } = await axios.get(`/subsystem/${this.current_id}`)
         this.formData = {
-          ...data?.data,
+          id: data?.data?.id,
+          name: data?.data?.name,
+          code: data?.data?.code,
           system_id: data?.data?.system?.id
         }
         this.loadingForm = false
@@ -165,22 +190,17 @@ export default {
     },
     async getAllSystem() {
       try {
-        const response = await axios.get(this.appRoute('admin.api.system.index'))
+        const response = await axios.get('/system')
         this.systems = response?.data?.data
       } catch (error) {
         this.$message.error(error?.response?.data?.message)
       }
     },
     prepareSubmit() {
-      let action = null
-      let method = 'post'
-      if (this.formType === 'add') {
-        action = this.appRoute('admin.api.subsystem.store')
-      } else {
-        action = this.appRoute('admin.api.subsystem.update', this.current_id)
-        method = 'put'
+      return {
+        action: this.isEdit ? `/subsystem/${this.current_id}` : '/subsystem',
+        method: this.isEdit ? 'put' : 'post'
       }
-      return { action, method }
     },
     handleToggleFullScreen() {
       this.fullscreen = !this.fullscreen

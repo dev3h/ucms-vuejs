@@ -59,9 +59,9 @@
         >
           <template #action="{ row }">
             <div class="flex justify-center items-center gap-x-[12px]">
-              <!--                            <div class="cursor-pointer" @click="openShow(row?.id)">-->
-              <!--                                <img src="/images/svg/eye-icon.svg" />-->
-              <!--                            </div>-->
+              <div class="cursor-pointer" @click="openShow(row?.id)">
+                <img src="/images/svg/eye-icon.svg" />
+              </div>
               <div class="cursor-pointer" @click="openEdit(row?.id)">
                 <img src="/images/svg/pen-icon.svg" />
               </div>
@@ -73,8 +73,8 @@
         </DataTable>
       </div>
     </div>
+    <ModalAction ref="modalAction" @add-success="fetchData()" @update-success="fetchData()" />
     <DeleteForm ref="deleteForm" @delete-action="deleteItem" />
-    <!-- <ModalAction ref="modalAction" :redirectRoute="appRoute('admin.action.index')" /> -->
   </AdminLayout>
 </template>
 <script>
@@ -99,7 +99,6 @@ export default {
       items: [],
       filters: {
         name: null,
-        role: null,
         page: Number(this?.$route?.params?.page ?? 1),
         limit: Number(this?.$route?.query?.limit ?? 10)
       },
@@ -187,13 +186,13 @@ export default {
     },
     async deleteItem(id) {
       await axios
-        .delete(this.appRoute('admin.api.action.destroy', id))
+        .delete(`/action/${id}`)
         .then((response) => {
           this.$message.success(response?.data?.message)
           this.fetchData()
         })
         .catch((error) => {
-          this.$message.error(error?.response?.data?.message)
+          this.$message.error(error?.response?.data?.message || this.$t('message.something-wrong'))
         })
     },
     openShow(id) {

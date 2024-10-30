@@ -98,16 +98,6 @@ const router = createRouter({
               component: () => import('@/views/App/SubSystem/Index.vue')
             },
             {
-              path: 'subsystem/create',
-              name: 'subsystem-create',
-              component: () => import('@/views/App/SubSystem/CreateEditForm.vue')
-            },
-            {
-              path: 'subsystem/:id/edit',
-              name: 'subsystem-edit',
-              component: () => import('@/views/App/SubSystem/CreateEditForm.vue')
-            },
-            {
               path: 'subsystem/show/:id',
               name: 'subsystem-show',
               component: () => import('@/views/App/SubSystem/Show.vue')
@@ -117,16 +107,6 @@ const router = createRouter({
               path: 'module',
               name: 'module',
               component: () => import('@/views/App/Module/Index.vue')
-            },
-            {
-              path: 'module/create',
-              name: 'module-create',
-              component: () => import('@/views/App/Module/CreateEditForm.vue')
-            },
-            {
-              path: 'module/:id/edit',
-              name: 'module-edit',
-              component: () => import('@/views/App/Module/CreateEditForm.vue')
             },
             {
               path: 'module/show/:id',

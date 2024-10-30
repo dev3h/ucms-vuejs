@@ -8,7 +8,7 @@
     >
       <template #header>
         <DialogHeader
-          :title="formType === 'add' ? $t('form.add') : $t('form.edit')"
+          :title="titlePage"
           :isFullscreen="fullscreen"
           @toggleFullscreen="handleToggleFullScreen"
         />
@@ -40,7 +40,7 @@
               :error="getError('code')"
               :inline-message="hasError('code')"
             >
-              <el-input size="large" v-model="formData.code" clearable />
+              <el-input :disabled="isEdit" size="large" v-model="formData.code" clearable />
             </el-form-item>
           </div>
         </el-form>
@@ -74,10 +74,9 @@ export default {
   emits: ['add-success', 'update-success'],
   data() {
     return {
-      formType: 'add',
+      isEdit: false,
       isShowModal: false,
       current_id: null,
-      modules: [],
       formData: {
         id: null,
         name: null,
@@ -91,14 +90,16 @@ export default {
       loadingForm: false
     }
   },
-  async created() {
-    await this.getAllModule()
+  computed: {
+    titlePage() {
+      return this.isEdit ? this.$t('back-bar.edit-action') : this.$t('back-bar.create-action')
+    }
   },
   methods: {
     async open(id) {
       if (id) {
         this.current_id = id
-        this.formType = 'edit'
+        this.isEdit = true
         await this.fetchData()
       }
       this.isShowModal = true
@@ -113,7 +114,7 @@ export default {
         module_id: null
       }
       this.$refs.form.resetFields()
-      this.formType = 'add'
+      this.isEdit = false
     },
     async submit() {
       this.loadingForm = true
@@ -129,7 +130,7 @@ export default {
       this.$inertia.visit(this.redirectRoute)
     },
     async fetchData() {
-      if (this.formType === 'edit') {
+      if (this.isEdit) {
         this.loadingForm = true
         const { data } = await axios.get(this.appRoute('admin.api.action.show', this.current_id))
         this.formData = {
@@ -139,24 +140,11 @@ export default {
         this.loadingForm = false
       }
     },
-    async getAllModule() {
-      try {
-        const response = await axios.get(this.appRoute('admin.api.module.index'))
-        this.modules = response?.data?.data
-      } catch (error) {
-        this.$message.error(error?.response?.data?.message)
-      }
-    },
     prepareSubmit() {
-      let action = null
-      let method = 'post'
-      if (this.formType === 'add') {
-        action = this.appRoute('admin.api.action.store')
-      } else {
-        action = this.appRoute('admin.api.action.update', this.current_id)
-        method = 'put'
+      return {
+        action: this.isEdit ? `/action/${this.current_id}` : '/action',
+        method: this.isEdit ? 'put' : 'post'
       }
-      return { action, method }
     },
     handleToggleFullScreen() {
       this.fullscreen = !this.fullscreen

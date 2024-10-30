@@ -61,9 +61,9 @@
               <div class="cursor-pointer" @click="openShow(row?.id)">
                 <img src="/images/svg/eye-icon.svg" />
               </div>
-              <!--                            <div class="cursor-pointer" @click="openEdit(row?.id)">-->
-              <!--                                <img src="/images/svg/pen-icon.svg" />-->
-              <!--                            </div>-->
+              <div class="cursor-pointer" @click="openEdit(row?.id)">
+                <img src="/images/svg/pen-icon.svg" />
+              </div>
               <div class="cursor-pointer" @click="openDeleteForm(row?.id)">
                 <img src="/images/svg/trash-icon.svg" />
               </div>
@@ -73,7 +73,7 @@
       </div>
     </div>
     <DeleteForm ref="deleteForm" @delete-action="deleteItem" />
-    <!-- <ModalModule ref="modalModule" :redirectRoute="appRoute('admin.module.index')" /> -->
+    <ModalModule ref="modalModule" @add-success="fetchData()" @update-success="fetchData()" />
   </AdminLayout>
 </template>
 <script>
@@ -178,13 +178,13 @@ export default {
     },
     async deleteItem(id) {
       await axios
-        .delete(this.appRoute('admin.api.module.destroy', id))
+        .delete(`/module/${id}`)
         .then((response) => {
           this.$message.success(response?.data?.message)
           this.fetchData()
         })
         .catch((error) => {
-          this.$message.error(error?.response?.data?.message)
+          this.$message.error(error?.response?.data?.message || this.$t('message.something-wrong'))
         })
     },
     openShow(id) {

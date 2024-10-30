@@ -56,6 +56,7 @@
               :inline-message="hasError('code')"
             >
               <el-input
+                :disabled="isEdit"
                 :placeholder="$t('input.common.enter', { name: $t('column.common.code') })"
                 size="large"
                 v-model="formData.code"

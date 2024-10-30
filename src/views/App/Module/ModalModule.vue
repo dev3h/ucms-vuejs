@@ -8,7 +8,7 @@
     >
       <template #header>
         <DialogHeader
-          :title="formType === 'add' ? $t('form.add') : $t('form.edit')"
+          :title="titlePage"
           :isFullscreen="fullscreen"
           @toggleFullscreen="handleToggleFullScreen"
         />
@@ -74,31 +74,32 @@ export default {
   emits: ['add-success', 'update-success'],
   data() {
     return {
-      formType: 'add',
+      isEdit: false,
       isShowModal: false,
       current_id: null,
-      systems: [],
       formData: {
         id: null,
         name: null,
         code: null
       },
       rules: {
-        name: baseRuleValidate(this.$t),
-        code: baseRuleValidate(this.$t)
+        name: baseRuleValidate(this.$t)(this.$t('column.common.name')),
+        code: baseRuleValidate(this.$t)(this.$t('column.common.code')),
       },
       fullscreen: false,
       loadingForm: false
     }
   },
-  async created() {
-    await this.getAllSubSystem()
+  computed: {
+    titlePage() {
+      return this.isEdit ? this.$t('back-bar.edit-module') : this.$t('back-bar.create-module')
+    }
   },
   methods: {
     async open(id) {
       if (id) {
         this.current_id = id
-        this.formType = 'edit'
+        this.isEdit = true
         await this.fetchData()
       }
       this.isShowModal = true
@@ -112,7 +113,7 @@ export default {
         code: null
       }
       this.$refs.form.resetFields()
-      this.formType = 'add'
+      this.isEdit = false
     },
     async submit() {
       this.loadingForm = true
@@ -123,38 +124,29 @@ export default {
         type: status === 200 ? 'success' : 'error',
         message: data?.message
       })
+      if(data?.status_code === 200) {
+        this.isEdit ? this.$emit('update-success') : this.$emit('add-success')
+        this.closeModal()
+      }
       this.loadingForm = false
-      this.isShowModal = false
-      this.$inertia.visit(this.redirectRoute)
     },
     async fetchData() {
-      if (this.formType === 'edit') {
+      if (this.isEdit) {
         this.loadingForm = true
         const { data } = await axios.get(this.appRoute('admin.api.module.show', this.current_id))
         this.formData = {
-          ...data?.data
+          id: data?.data?.id,
+          name: data?.data?.name,
+          code: data?.data?.code
         }
         this.loadingForm = false
       }
     },
-    async getAllSubSystem() {
-      try {
-        const response = await axios.get(this.appRoute('admin.api.subsystem.index'))
-        this.subsystems = response?.data?.data
-      } catch (error) {
-        this.$message.error(error?.response?.data?.message)
-      }
-    },
     prepareSubmit() {
-      let action = null
-      let method = 'post'
-      if (this.formType === 'add') {
-        action = this.appRoute('admin.api.module.store')
-      } else {
-        action = this.appRoute('admin.api.module.update', this.current_id)
-        method = 'put'
+      return {
+        action: this.isEdit ? `/module/${this.current_id}` : '/module',
+        method: this.isEdit ? 'put' : 'post'
       }
-      return { action, method }
     },
     handleToggleFullScreen() {
       this.fullscreen = !this.fullscreen

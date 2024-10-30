@@ -181,8 +181,8 @@
     "user-management": "Quản lý người dùng"
   },
   "form": {
-    "add": "Thêm",
-    "edit": "Sửa",
+    "add": "Thêm {name}",
+    "edit": "Sửa {name}",
     "confirm-delete": "Bạn có chắc chắn muốn xóa nó không?",
     "item-added": "đã thêm",
     "ignore": "Bỏ qua",
@@ -220,6 +220,12 @@
     "create-user": "Tạo mới người dùng",
     "edit-user": "Chỉnh sửa người dùng",
     "create-system": "Tạo mới hệ thống",
-    "edit-system": "Chỉnh sửa hệ thống"
+    "edit-system": "Chỉnh sửa hệ thống",
+    "create-subsytem": "Tạo mới phân hệ",
+    "edit-subsytem": "Chỉnh sửa phân hệ",
+    "create-module": "Tạo mới mô-đun",
+    "edit-module": "Chỉnh sửa mô-đun",
+    "create-action": "Tạo mới hành động",
+    "edit-action": "Chỉnh sửa hành động"
   }
 }
