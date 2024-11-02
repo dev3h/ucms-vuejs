@@ -5,6 +5,7 @@
       :close-on-click-modal="false"
       :before-close="closeModal"
       :fullscreen="fullscreen"
+      class="dialog-base"
     >
       <template #header>
         <DialogHeader
@@ -29,30 +30,48 @@
               :error="getError('name')"
               :inline-message="hasError('name')"
             >
-              <el-input size="large" v-model="formData.name" clearable />
+              <el-input
+                :placeholder="$t('input.common.enter', { name: $t('column.common.name') })"
+                size="large"
+                v-model="formData.name"
+                clearable
+              />
             </el-form-item>
           </div>
           <div class="flex-1">
             <el-form-item
               :label="$t('column.common.code')"
               class="title--bold"
-              prop="name"
+              prop="code"
               :error="getError('code')"
               :inline-message="hasError('code')"
             >
-              <el-input :disabled="isEdit" size="large" v-model="formData.code" clearable />
+              <el-input
+                :disabled="isEdit"
+                :placeholder="$t('input.common.enter', { name: $t('column.common.code') })"
+                size="large"
+                v-model="formData.code"
+                clearable
+              />
             </el-form-item>
           </div>
         </el-form>
       </div>
-      <div class="w-full my-[15px] flex justify-center items-center">
-        <el-button type="danger" size="large" @click="closeModal">{{
-          $t('button.cancel')
-        }}</el-button>
-        <el-button type="primary" size="large" @click="doSubmit()" :loading="loadingForm">{{
-          $t('button.save')
-        }}</el-button>
-      </div>
+      <template #footer>
+        <div class="flex justify-center">
+          <el-button class="w-[120px]" type="info" size="large" @click="closeModal">{{
+            $t('button.cancel')
+          }}</el-button>
+          <el-button
+            class="w-[120px]"
+            type="primary"
+            size="large"
+            @click="doSubmit()"
+            :loading="loadingForm"
+            >{{ $t('button.save') }}</el-button
+          >
+        </div>
+      </template>
     </el-dialog>
   </div>
 </template>
@@ -83,8 +102,8 @@ export default {
         code: null
       },
       rules: {
-        name: baseRuleValidate(this.$t),
-        code: baseRuleValidate(this.$t)
+        name: baseRuleValidate(this.$t)(this.$t('column.common.name')),
+        code: baseRuleValidate(this.$t)(this.$t('column.common.code'))
       },
       fullscreen: false,
       loadingForm: false
@@ -110,8 +129,7 @@ export default {
       this.formData = {
         id: null,
         name: null,
-        code: null,
-        module_id: null
+        code: null
       }
       this.$refs.form.resetFields()
       this.isEdit = false
@@ -125,19 +143,27 @@ export default {
         type: status === 200 ? 'success' : 'error',
         message: data?.message
       })
+      if (data?.status_code === 200) {
+        this.isEdit ? this.$emit('update-success') : this.$emit('add-success')
+        this.closeModal()
+      }
       this.loadingForm = false
-      this.isShowModal = false
-      this.$inertia.visit(this.redirectRoute)
     },
     async fetchData() {
       if (this.isEdit) {
-        this.loadingForm = true
-        const { data } = await axios.get(this.appRoute('admin.api.action.show', this.current_id))
-        this.formData = {
-          ...data?.data,
-          module_id: data?.data?.module?.id
+        try {
+          this.loadingForm = true
+          const { data } = await axios.get(`/action/${this.current_id}`)
+          this.formData = {
+            id: data?.data?.id,
+            name: data?.data?.name,
+            code: data?.data?.code
+          }
+          this.loadingForm = false
+        } catch (error) {
+          this.loadingForm = false
+          this.$message.error(error?.response?.data?.message || this.$t('message.something-wrong'))
         }
-        this.loadingForm = false
       }
     },
     prepareSubmit() {

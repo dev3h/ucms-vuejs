@@ -159,6 +159,11 @@ const router = createRouter({
               component: () => import('@/views/App/Permission/Index.vue')
             }
           ]
+        },
+        {
+          path: 'audit-log',
+          name: 'audit-log',
+          component: () => import('@/views/App/AuditLog/Test.vue')
         }
       ]
     },

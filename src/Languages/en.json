@@ -65,6 +65,10 @@
       "line-2": "Enter the 6 digit code provided for 'UCMS User' from your authenticator app.",
       "line-3": "Scan to add account",
       "line-4": "Can't scan the QR? View manual code"
+    },
+    "card-back": {
+      "line-1": "First enter a unique account name in the app Authenticator. Next, add this secret key",
+      "view-qr": "View QR code"
     }
   },
   "sso-ucms-confirm-page": {

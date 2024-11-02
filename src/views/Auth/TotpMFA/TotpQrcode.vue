@@ -2,7 +2,7 @@
   <div class="flex flex-col lg:flex-row justify-center min-h-screen items-center bg-gray-50 p-10">
     <!-- Left Section: Instruction Text -->
     <el-card>
-      <div class="flex justify-between p-10">
+      <div class="flex flex-col lg:flex-row justify-between p-10">
         <div class="lg:w-1/2 mb-8 lg:mb-0 lg:mr-12">
           <h1 class="text-3xl font-bold mb-4">{{ $t('setup-mfa-page.step-1.title') }}</h1>
           <div class="flex items-start mb-4">
@@ -34,23 +34,53 @@
                 :inline-message="hasError('totpCode')"
                 :error="getError('totpCode')"
               >
-                <el-input v-model="formData.totpCode" size="large"  :placeholder="$t('input.common.enter', { name: $t('column.common.code') })" clearable />
+                <el-input
+                  v-model="formData.totpCode"
+                  size="large"
+                  :placeholder="$t('input.common.enter', { name: $t('column.common.code') })"
+                  clearable
+                />
               </el-form-item>
             </el-form>
           </div>
         </div>
 
         <!-- Right Section: Download Buttons -->
-        <div class="lg:w-1/2 bg-blue-50 p-6 rounded-md shadow-md">
-          <div class="flex flex-col items-center gap-3">
-            <h4 class="font-bold">{{ $t('setup-mfa-page.step-3.line-3') }}</h4>
-            <img :src="qrCode" alt="" class="w-[300px] h-[300px] object-cover" />
-            <div class="text-blue-400 underline">{{ $t('setup-mfa-page.step-3.line-4') }}</div>
+        <div class="flip-card lg:w-1/2">
+          <div :class="['flip-card-inner', { flipped: isFlipped }]">
+            <!-- Front Content -->
+            <div
+              class="flip-card-front bg-blue-50 p-6 rounded-md shadow-md flex flex-col items-center gap-3"
+            >
+              <h4 class="font-bold">{{ $t('setup-mfa-page.step-3.line-3') }}</h4>
+              <img :src="qrCode" alt="" class="w-[300px] object-cover" />
+              <el-button
+                link
+                type="primary"
+                class="text-blue-400 underline"
+                @click="isFlipped = true"
+                >{{ $t('setup-mfa-page.step-3.line-4') }}</el-button>
+            </div>
+            <!-- Back Content -->
+            <div
+              class="flip-card-back bg-blue-50 p-6 rounded-md shadow-md flex flex-col items-center gap-3"
+            >
+              <p class="font-bold text-center">{{ $t('setup-mfa-page.card-back.line-1') }}</p>
+              <p></p>
+              <el-button
+                link
+                type="primary"
+                class="text-blue-400 underline"
+                @click="isFlipped = false"
+                >{{ $t('setup-mfa-page.card-back.view-qr') }}</el-button>
+            </div>
           </div>
         </div>
       </div>
-      <div class="flex justify-end pr-10">
-        <el-button type="info" size="large" class="w-[160px]" @click="goBack()">{{ $t('button.back') }}</el-button>
+      <div class="flex justify-end pr-10 mt-[10px]">
+        <el-button type="info" size="large" class="w-[160px]" @click="goBack()">{{
+          $t('button.back')
+        }}</el-button>
         <el-button @click="doSubmit" type="primary" size="large" class="w-[160px]">{{
           $t('button.submit')
         }}</el-button>
@@ -62,7 +92,7 @@
 <script>
 import axios from '@/Plugins/axios.js'
 import form from '@/Mixins/form'
-import baseRuleValidate from '@/Store/Const/baseRuleValidate';
+import baseRuleValidate from '@/Store/Const/baseRuleValidate'
 
 export default {
   mixins: [form],
@@ -76,7 +106,8 @@ export default {
       rules: {
         totpCode: baseRuleValidate(this.$t)(this.$t('column.common.code'))
       },
-      loadingForm: false
+      loadingForm: false,
+      isFlipped: false
     }
   },
   created() {
@@ -97,7 +128,7 @@ export default {
       } catch (error) {
         console.log(error)
         let errorMessage = this.$t('message.something-wrong')
-        if (error.response && error.response.data) {
+        if (error?.response && error?.response?.data) {
           try {
             const text = new TextDecoder().decode(new Uint8Array(error.response.data))
             const json = JSON.parse(text)
@@ -129,4 +160,27 @@ export default {
 }
 </script>
 
-<style scoped></style>
+<style scoped>
+.flip-card {
+  perspective: 1000px;
+  min-height: 420px;
+}
+.flip-card-inner {
+  transition: transform 0.6s;
+  transform-style: preserve-3d;
+  position: relative;
+  height: 100%;
+}
+.flip-card-inner.flipped {
+  transform: rotateY(180deg);
+}
+.flip-card-front,
+.flip-card-back {
+  position: absolute;
+  width: 100%;
+  backface-visibility: hidden;
+}
+.flip-card-back {
+  transform: rotateY(180deg);
+}
+</style>

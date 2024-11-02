@@ -20,19 +20,19 @@ export const MASTER_MENUS = [
             {
                 label: 'sidebar.subsystem',
                 icon: "subsystem-icon.svg",
-                route: "admin.subsystem.index",
+                route: "subsystem",
                 pathActive: "/admin/system-components/subsystem",
             },
             {
                 label: 'sidebar.module',
                 icon: "module-icon.svg",
-                route: "admin.module.index",
+                route: "module",
                 pathActive: "/admin/system-components/module",
             },
             {
                 label: 'sidebar.action',
                 icon: "action-icon.svg",
-                route: "admin.action.index",
+                route: "action",
                 pathActive: "/admin/system-components/action",
             },
         ]
@@ -66,7 +66,7 @@ export const MASTER_MENUS = [
     {
         label: 'sidebar.audit-log',
         icon: "audit-log-icon.svg",
-        route: "admin.audit-log.index",
+        route: "audit-log",
         pathActive: "audit-log",
     },
     // {

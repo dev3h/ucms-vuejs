@@ -65,6 +65,10 @@
       "line-2": "Nhập mã 6 chữ số được cung cấp cho 'Người dùng UCMS' từ ứng dụng xác thực của bạn.",
       "line-3": "Quét để thêm tài khoản",
       "line-4": "Không thể quét mã QR? Xem mã hướng dẫn"
+    },
+    "card-back": {
+      "line-1": "Đầu tiên, nhập tên tài khoản duy nhất trong ứng dụng Authenticator. Tiếp theo, thêm khóa bí mật này:",
+      "view-qr": "Xem mã QR"
     }
   },
   "sso-ucms-confirm-page": {
@@ -146,7 +150,7 @@
       "name": "Tên",
       "code": "Mã",
       "created-at": "Ngày tạo",
-      "action": "Hành động",
+      "action": "Thao tác",
       "status": "Trạng thái"
     },
     "url": "Địa chỉ URL",
@@ -171,7 +175,7 @@
     "system": "Hệ thống",
     "subsystem": "Phân hệ",
     "module": "Mô-đun",
-    "action": "Hành động",
+    "action": "Thao tác",
     "user": "Người dùng",
     "role": "Vai trò",
     "permission": "Quyền",

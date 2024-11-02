@@ -28,12 +28,12 @@
           </div>
         </div>
       </div>
-      <div class="w-full" v-if="tabActive === 1">
+      <!-- <div class="w-full" v-if="tabActive === 1">
         <ModuleTab :id="id" />
       </div>
       <div class="w-full" v-if="tabActive === 2">
         <GeneralTab :id="id" />
-      </div>
+      </div> -->
     </div>
   </AdminLayout>
 </template>
@@ -44,10 +44,10 @@ import BreadCrumbComponent from '@/components/Page/BreadCrumb.vue'
 import { searchMenu } from '@/Mixins/breadcrumb.js'
 import axios from '@/Plugins/axios'
 import form from '@/Mixins/form.js'
-import GeneralTab from '@/Pages/SubSystem/GeneralTab.vue'
-import ModuleTab from '@/Pages/SubSystem/ModuleTab.vue'
+// import GeneralTab from '@/Pages/SubSystem/GeneralTab.vue'
+// import ModuleTab from '@/Pages/SubSystem/ModuleTab.vue'
 export default {
-  components: { ModuleTab, GeneralTab, AdminLayout, BreadCrumbComponent },
+  components: {  AdminLayout, BreadCrumbComponent },
   mixins: [form],
   props: {
     id: {

@@ -30,7 +30,12 @@
               :error="getError('name')"
               :inline-message="hasError('name')"
             >
-              <el-input :placeholder="$t('input.common.enter', { name: $t('column.common.name') })" size="large" v-model="formData.name" clearable />
+              <el-input
+                :placeholder="$t('input.common.enter', { name: $t('column.common.name') })"
+                size="large"
+                v-model="formData.name"
+                clearable
+              />
             </el-form-item>
           </div>
           <div class="flex-1">
@@ -41,7 +46,13 @@
               :error="getError('code')"
               :inline-message="hasError('code')"
             >
-              <el-input :disabled="isEdit" :placeholder="$t('input.common.enter', { name: $t('column.common.code') })" size="large" v-model="formData.code" clearable />
+              <el-input
+                :disabled="isEdit"
+                :placeholder="$t('input.common.enter', { name: $t('column.common.code') })"
+                size="large"
+                v-model="formData.code"
+                clearable
+              />
             </el-form-item>
           </div>
           <div class="flex-1">
@@ -70,19 +81,19 @@
         </el-form>
       </div>
       <template #footer>
-       <div class="flex justify-center">
-         <el-button class="w-[120px]" type="info" size="large" @click="closeModal">{{
-           $t('button.cancel')
-         }}</el-button>
-         <el-button
-           class="w-[120px]"
-           type="primary"
-           size="large"
-           @click="doSubmit()"
-           :loading="loadingForm"
-           >{{ $t('button.save') }}</el-button
-         >
-       </div>
+        <div class="flex justify-center">
+          <el-button class="w-[120px]" type="info" size="large" @click="closeModal">{{
+            $t('button.cancel')
+          }}</el-button>
+          <el-button
+            class="w-[120px]"
+            type="primary"
+            size="large"
+            @click="doSubmit()"
+            :loading="loadingForm"
+            >{{ $t('button.save') }}</el-button
+          >
+        </div>
       </template>
     </el-dialog>
   </div>
@@ -118,15 +129,13 @@ export default {
       rules: {
         name: baseRuleValidate(this.$t)(this.$t('column.common.name')),
         code: baseRuleValidate(this.$t)(this.$t('column.common.code')),
-        system_id: baseRuleValidate(this.$t)(this.$t('sidebar.system')) 
+        system_id: baseRuleValidate(this.$t)(this.$t('sidebar.system'))
       },
       fullscreen: false,
       loadingForm: false
     }
   },
-  async created() {
-    
-  },
+  async created() {},
   watch: {
     isShowModal(val) {
       if (val) {
@@ -169,7 +178,7 @@ export default {
         type: status === 200 ? 'success' : 'error',
         message: data?.message
       })
-      if(data?.status_code === 200) {
+      if (data?.status_code === 200) {
         this.isEdit ? this.$emit('update-success') : this.$emit('add-success')
         this.closeModal()
       }
@@ -177,15 +186,20 @@ export default {
     },
     async fetchData() {
       if (this.isEdit) {
-        this.loadingForm = true
-        const { data } = await axios.get(`/subsystem/${this.current_id}`)
-        this.formData = {
-          id: data?.data?.id,
-          name: data?.data?.name,
-          code: data?.data?.code,
-          system_id: data?.data?.system?.id
+        try {
+          this.loadingForm = true
+          const { data } = await axios.get(`/subsystem/${this.current_id}`)
+          this.formData = {
+            id: data?.data?.id,
+            name: data?.data?.name,
+            code: data?.data?.code,
+            system_id: data?.data?.system?.id
+          }
+          this.loadingForm = false
+        } catch (err) {
+          this.loadingForm = false
+          this.$message.error(err?.response?.data?.message || this.$t('message.something-wrong'))
         }
-        this.loadingForm = false
       }
     },
     async getAllSystem() {

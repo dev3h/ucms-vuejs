@@ -11,8 +11,9 @@
             <div class="text-zinc-800 text-2xl font-bold uppercase leading-[28.80px] mb-3">
               {{ $t('auth-page.confirm-login-title', { name: decodeURIComponent(query?.sy) }) }}
             </div>
-            <div>
-              {{ query?.email }}
+            <div class="flex items-center gap-2">
+              <el-avatar size="small">{{ query?.email?.charAt(0) }}</el-avatar> 
+              <span>{{ query?.email }}</span>
             </div>
           </div>
           <div class="px-5 flex-1">
