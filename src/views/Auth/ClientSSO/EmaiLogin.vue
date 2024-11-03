@@ -63,7 +63,7 @@ export default {
   data() {
     return {
       formData: {
-        email: null
+        email: this.$route.query.email || ''
       },
       rules: {
         email: baseRuleValidate(this.$t)(this.$t('input.common.email'))

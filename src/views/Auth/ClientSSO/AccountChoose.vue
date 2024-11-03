@@ -61,8 +61,32 @@ export default {
         this.$message.error(err.response.data.message || this.$t('message.something-wrong'))
       }
     },
-    selectAccount(account) {
-      alert(`Selected account: ${account.name} - ${account.email}`)
+    async selectAccount(account) {
+      try {
+        const response = await axios.post('/auth/check-account-device-history', {
+          device_id: this.deviceId,
+          client_id: this.client_id,
+          redirect_uri: this.redirect_uri,
+          email: account.email
+        })
+        if (response?.data?.status_code === 200) {
+          const authTempCode = response?.data?.data
+          // Tạo URL với token trong fragment (dấu #)
+          const redirectUrl = `${this.redirect_uri}#auth_code=${authTempCode}&client_id=${this.client_id}&redirect_uri=${encodeURIComponent(this.redirect_uri)}`
+
+          // Redirect người dùng về URL mới với access token trong fragment
+          window.location.href = redirectUrl
+        }
+      } catch (err) {
+        this.$router.push({
+          name: 'sso-login-email',
+          query: {
+            client_id: this.client_id,
+            redirect_uri: this.redirect_uri,
+            email: account.email
+          }
+        })
+      }
     },
     handleOpenAnotherAccountForm() {
       return this.$router.push({
