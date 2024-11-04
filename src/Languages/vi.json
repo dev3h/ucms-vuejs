@@ -8,7 +8,8 @@
     "click-forgot-password": "Nhấn vào đây nếu bạn quên mật khẩu",
     "or": "Hoặc",
     "forgot-password-page": {
-      "title": "Nhập địa chỉ email của bạn để đặt lại mật khẩu"
+      "title": "Đổi mật khẩu",
+      "sub-title": "Nhập email đã đăng ký để đặt lại mật khẩu"
     },
     "confirm-forgot-password-page": {
       "title": "Chúng tôi đã gửi URL đặt lại mật khẩu đến {email}",

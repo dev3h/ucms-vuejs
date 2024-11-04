@@ -1,6 +1,6 @@
 <template>
-  <div class="flex items-center min-h-screen bg-grayF5 bg-gray-50">
-    <el-card class="!max-w-[500px] w-full my-10 mx-auto">
+  <div class="flex items-center min-h-screen bg-grayF5">
+    <el-card class="!max-w-[500px] w-full py-5 my-10 mx-auto">
       <div class="w-full flex flex-col">
         <div class="text-blueDark rounded-lg">
           <div class="relative">
@@ -28,7 +28,12 @@
                 :inline-message="hasError('email')"
                 :error="getError('email')"
               >
-                <el-input v-model="formData.email" size="large" clearable />
+                <el-input
+                  v-model="formData.email"
+                  size="large"
+                  clearable
+                  :placeholder="$t('input.common.enter', { name: $t('input.common.email') })"
+                />
               </el-form-item>
               <el-form-item
                 :label="$t('input.common.password')"
@@ -42,6 +47,7 @@
                   type="password"
                   show-password
                   clearable
+                  :placeholder="$t('input.common.enter', { name: $t('input.common.password') })"
                 />
               </el-form-item>
             </el-form>
@@ -65,7 +71,7 @@
                 </router-link>
               </div>
             </div>
-            <div class="mt-10" v-if="pathSub?.[1] === 'admin'">
+            <!-- <div class="mt-10" v-if="pathSub?.[1] === 'admin'">
               <h2 class="uppercase text-center font-bold text-xl">{{ $t('auth-page.or') }}</h2>
               <div class="border mt-4">
                 <a
@@ -76,7 +82,7 @@
                   <span>{{ $t('auth-page.sign-in-with-google') }}</span>
                 </a>
               </div>
-            </div>
+            </div> -->
           </div>
         </div>
       </div>
@@ -87,7 +93,7 @@
 import form from '@/Mixins/form'
 import axios from '@/Plugins/axios.js'
 import baseRuleValidate from '@/Store/Const/baseRuleValidate.js'
-import { useAuthStore } from '@/stores/auth';
+import { useAuthStore } from '@/stores/auth'
 
 export default {
   name: 'admin-login',

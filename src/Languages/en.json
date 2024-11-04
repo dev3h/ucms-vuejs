@@ -8,7 +8,8 @@
     "click-forgot-password": "Click here if you have forgotten your password",
     "or": "Or",
     "forgot-password-page": {
-      "title": "Enter your email address to reset your password"
+      "title": "Password reset",
+      "sub-title": "Enter the email you registered to reset your password"
     },
     "confirm-forgot-password-page": {
       "title": "We have sent the password reset URL to {email}",
