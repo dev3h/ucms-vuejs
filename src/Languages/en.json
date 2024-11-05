@@ -151,7 +151,8 @@
       "code": "Code",
       "created-at": "Created at",
       "actions": "Action",
-      "status": "Status"
+      "status": "Status",
+      "count": "Number of {name}"
     },
     "url": "URL",
     "last-seen": "Last seen",

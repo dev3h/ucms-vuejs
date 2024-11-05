@@ -60,6 +60,11 @@ const router = createRouter({
           component: () => import('@/views/Auth/Page/Password/ForgotPassword.vue')
         },
         {
+          path: 'confirm-forgot-password',
+          name: 'confirm-forgot-password',
+          component: () => import('@/views/Auth/Page/Password/ConfirmForgotPassword.vue')
+        },
+        {
           path: 'reset-password',
           name: 'reset-password',
           component: () => import('@/views/Auth/Page/Password/ResetPassword.vue')
@@ -250,7 +255,7 @@ router.beforeEach(async (to, from, next) => {
   const adminRoutePattern = /^\/admin\//
   const authRequired =
     adminRoutePattern.test(to.path) &&
-    !['admin-login', 'forgot-password', 'reset-password'].includes(to.name)
+    !['admin-login', 'forgot-password', 'confirm-forgot-password', 'reset-password'].includes(to.name)
   const authStore = useAuthStore()
   const loggedIn = authStore.getAdminAccessToken
 

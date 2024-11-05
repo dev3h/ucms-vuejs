@@ -108,7 +108,7 @@ export default {
         },
         {
           key: 'code',
-          'min-width': 300,
+          'width': 200,
           label: this.$t('column.common.code'),
           align: 'left',
           headerAlign: 'left'

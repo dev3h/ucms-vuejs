@@ -1,6 +1,11 @@
 <template>
   <div class="min-h-screen flex flex-col sm:justify-center items-center pt-6 sm:pt-0 bg-grayF5">
-    <el-card class="!max-w-[500px] w-full py-9 my-10 mx-auto">
+    <el-card class="!max-w-[500px] w-full py-6 mx-auto">
+      <div class="relative">
+        <div class="logo flex justify-center mb-6 px-5">
+          <img src="/images/logo.svg" alt="logo" class="h-[100px]" />
+        </div>
+      </div>
       <div
         class="text-zinc-800 text-2xl font-bold uppercase leading-[28.80px] text-center mb-[17px]"
       >
@@ -27,6 +32,7 @@
                 size="large"
                 show-password
                 clearable
+                :placeholder="$t('input.common.enter', { name: $t('input.common.new-password') })"
               />
             </el-form-item>
             <el-form-item
@@ -41,6 +47,9 @@
                 size="large"
                 show-password
                 clearable
+                :placeholder="
+                  $t('input.common.enter', { name: $t('input.common.confirm-new-password') })
+                "
               />
             </el-form-item>
           </el-form>
@@ -57,9 +66,9 @@
           </div>
         </div>
       </div>
-      <div class="h-[21px] justify-start items-center inline-flex mt-[21px]">
+      <div class="justify-start items-center flex mt-5">
         <router-link
-          class="text-center text-zinc-800 text-sm font-bold leading-[21px] cursor-pointer underline"
+          class="inline-block w-full text-center text-primary text-sm cursor-pointer underline"
           :to="{ name: 'admin-login' }"
         >
           {{ $t('auth-page.return-to-login') }}
@@ -96,7 +105,7 @@ export default {
   methods: {
     async submit() {
       this.loadingForm = true
-      const response = await axios.post('/reset-password', this.formData)
+      const response = await axios.post('/auth/reset-password', this.formData)
       this.$message({
         message: response?.data?.message,
         type: response?.data?.status_code === 200 ? 'success' : 'error'

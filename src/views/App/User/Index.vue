@@ -61,11 +61,15 @@
           @page-change="changePage"
           @size-change="changeSize"
         >
-         <template #roles="{ row }">
-           <div class="flex gap-1">
-             <span v-for="(role, index) in row?.roles" :key="index" class="bg-gray-200 rounded-full px-2 py-1 text-sm mr-2">
-               {{ role }}
-             </span>
+          <template #roles="{ row }">
+            <div class="flex gap-1">
+              <span
+                v-for="(role, index) in row?.roles"
+                :key="index"
+                class="bg-gray-200 rounded-full px-2 py-1 text-sm mr-2"
+              >
+                {{ role }}
+              </span>
             </div>
           </template>
           <template #activity="{ row }">
@@ -81,7 +85,7 @@
               <div class="cursor-pointer" @click="openShow(row?.id)">
                 <img src="/images/svg/eye-icon.svg" />
               </div>
-                <div class="cursor-pointer" @click="openEdit(row?.id)">
+              <div class="cursor-pointer" @click="openEdit(row?.id)">
                 <img src="/images/svg/pen-icon.svg" alt="" />
               </div>
               <div class="cursor-pointer" @click="openDeleteForm(row?.id)">
@@ -199,7 +203,7 @@ export default {
       this.filters.page = page
       let params = { ...this.filters }
       await axios
-        .get('user', {params})
+        .get('user', { params })
         .then((response) => {
           this.items = response?.data?.data
           this.paginate = response?.data?.meta
@@ -217,10 +221,10 @@ export default {
       this.fetchData()
     }, 500),
     openCreate() {
-      this.$router.push({name: 'user-create'})
+      this.$router.push({ name: 'user-create' })
     },
     openEdit(id) {
-      this.$router.push({name: 'user-edit', params: {id}})
+      this.$router.push({ name: 'user-edit', params: { id } })
     },
     openImport() {
       this.$refs.modalImport.open()
@@ -240,7 +244,7 @@ export default {
         })
     },
     openShow(id) {
-      this.$router.push({name: 'user-show', params: {id}})
+      this.$router.push({ name: 'user-show', params: { id } })
     },
     changeSize(value) {
       this.filters.page = 1

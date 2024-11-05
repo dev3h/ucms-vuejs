@@ -35,6 +35,7 @@
                 type="password"
                 show-password
                 clearable
+                :placeholder="$t('input.common.enter', { name: $t('input.common.password') })"
               />
             </el-form-item>
           </el-form>

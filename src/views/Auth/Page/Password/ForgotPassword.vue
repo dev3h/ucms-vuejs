@@ -75,10 +75,20 @@ export default {
   methods: {
     async submit() {
       this.loadingForm = true
-      const { data, status } = await axios.post('/reset-password/forgot-password', this.formData)
-      console.log(data)
-      this.$message({ message: data?.message, type: 'success' })
+      const response = await axios.post('/auth/forgot-password', this.formData)
+      this.$message({ 
+        message: response?.data?.message, 
+        type: response?.data?.status_code === 200 ? 'success' : 'error'
+      })
       this.loadingForm = false
+      if(response?.data?.status_code === 200) {
+        this.$router.push({
+          name: 'confirm-forgot-password',
+          query: {
+            email: this.formData.email
+          }
+        })
+      }
       // this.$inertia.visit(
       //     this.appRoute("admin.form-confirm-forgot-password", {
       //         email: this.formData.email,

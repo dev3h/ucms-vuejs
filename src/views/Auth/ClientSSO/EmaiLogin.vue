@@ -1,7 +1,7 @@
 <template>
   <div class="flex items-center min-h-screen bg-grayF5">
     <el-card class="!max-w-[1000px] w-full my-10 mx-auto rounded-lg card-custom">
-       <div class="flex items-center mb-8 border-b border-gray">
+      <div class="flex items-center mb-8 border-b border-gray">
         <img src="/images/logo-small.png" />
         <span class="text-lg font-semibold">{{ $t('auth-page.ucms-login') }}</span>
       </div>
@@ -24,7 +24,12 @@
               :inline-message="hasError('email')"
               :error="getError('email')"
             >
-              <el-input v-model="formData.email" size="large" clearable />
+              <el-input
+                v-model="formData.email"
+                size="large"
+                clearable
+                :placeholder="$t('input.common.enter', { name: $t('input.common.email') })"
+              />
             </el-form-item>
             <div class="-mt-2">
               <router-link

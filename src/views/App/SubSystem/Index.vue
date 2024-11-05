@@ -22,6 +22,21 @@
                 </template>
               </el-input>
             </div>
+            <el-select
+              v-model="filters.system_id"
+              class="!w-[200px]"
+              size="large"
+              :placeholder="$t('input.common.select', { name: $t('sidebar.system') })"
+              clearable
+              @change="fetchData"
+            >
+              <el-option
+                v-for="item in systems"
+                :key="item?.id"
+                :label="item?.name"
+                :value="item?.id"
+              />
+            </el-select>
             <div class="flex-col">
               <el-date-picker
                 v-model="filters.created_at"
@@ -60,6 +75,9 @@
           <template #system="{ row }">
             <span>{{ row?.system?.name }}</span>
           </template>
+          <template #module_count="{ row }">
+            <span @click="openModuleList(row?.id)">{{ row?.module_count }}</span>
+          </template>
           <template #action="{ row }">
             <div class="flex justify-center items-center gap-x-[12px]">
               <div class="cursor-pointer" @click="openShow(row?.id)">
@@ -78,6 +96,7 @@
     </div>
     <DeleteForm ref="deleteForm" @delete-action="deleteItem" />
     <ModalSubSystem ref="modalSubSystem" @add-success="fetchData()" @update-success="fetchData()" />
+    <SubSystemDrawer ref="subsystemDrawer" />
   </AdminLayout>
 </template>
 <script>
@@ -89,8 +108,9 @@ import axios from '@/Plugins/axios'
 import DeleteForm from '@/components/Page/DeleteForm.vue'
 import debounce from 'lodash.debounce'
 import ModalSubSystem from './ModalSubSystem.vue'
+import SubSystemDrawer from './SubSystemDrawer.vue'
 export default {
-  components: { ModalSubSystem, AdminLayout, BreadCrumbComponent, DataTable, DeleteForm },
+  components: { ModalSubSystem, AdminLayout, BreadCrumbComponent, DataTable, DeleteForm, SubSystemDrawer },
   data() {
     return {
       items: [],
@@ -98,6 +118,7 @@ export default {
         page: Number(this?.$route?.params?.page ?? 1),
         limit: Number(this?.$route?.query?.limit ?? 10)
       },
+      subsystemDrawer: null,
       fields: [
         {
           key: 'name',
@@ -108,7 +129,7 @@ export default {
         },
         {
           key: 'code',
-          'min-width': 300,
+          'width': 200,
           label: this.$t('column.common.code'),
           align: 'left',
           headerAlign: 'left'
@@ -117,6 +138,13 @@ export default {
           key: 'system',
           'min-width': 300,
           label: this.$t('sidebar.system'),
+          align: 'left',
+          headerAlign: 'left'
+        },
+        {
+          key: 'module_count',
+          width: 200,
+          label: this.$t('column.common.count', { name: this.$t('sidebar.module') }),
           align: 'left',
           headerAlign: 'left'
         },
@@ -188,6 +216,9 @@ export default {
     openDeleteForm(id) {
       this.$refs.deleteForm.open(id)
     },
+    openModuleList(id) {
+
+    },
     async deleteItem(id) {
       await axios
         .delete(`/subsystem/${id}`)
@@ -200,7 +231,8 @@ export default {
         })
     },
     openShow(id) {
-      this.$inertia.visit(this.appRoute('admin.subsystem.show', id))
+      this.$refs.subsystemDrawer.open()
+      // this.$inertia.visit(this.appRoute('admin.subsystem.show', id))
     }
   }
 }
