@@ -17,7 +17,7 @@ export default {
     }
   },
   methods: {
-    openDrawer() {
+    open() {
       this.isShowDrawer = true
     }
   }

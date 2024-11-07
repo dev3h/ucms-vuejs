@@ -5,7 +5,7 @@
         <BreadCrumbComponent :bread-crumb="setbreadCrumbHeader" />
       </div>
       <BackBar route-back="system" :title="item?.name">
-       <template #actionBackBar>
+        <template #actionBackBar>
           <div>
             <el-button class="w-[120px]" type="info" size="large" @click="goBack()">{{
               $t('button.cancel')
@@ -20,7 +20,7 @@
               {{ $t('button.update') }}
             </el-button>
           </div>
-        </template>  
+        </template>
       </BackBar>
       <div class="w-full py-5 px-4 flex">
         <div class="w-[300px]">
@@ -133,7 +133,7 @@ export default {
     }
   },
   methods: {
-     goBack() {
+    goBack() {
       this.$router.push({ name: 'user' })
     },
     // Xử lý khi nhấp vào Subsystem
@@ -201,6 +201,7 @@ export default {
                       id: `ACTION_${action?.id}`,
                       name: action?.name,
                       code: action?.code,
+                      permission_code: action?.permission_code,
                       granted: action?.granted,
                       status: action?.status,
                       is_direct: action?.is_direct
@@ -281,8 +282,58 @@ export default {
       row.actions = row.actions.map(() => !allChecked)
       this.updateCheckboxState(row.module_name, null, !allChecked)
     },
-    updatePermission() {
-      console.log(this.actionColumns)
+    async updatePermission() {
+      try {
+        const updatedPermissions = this.dataList.map((system) => {
+          return {
+            id: system.id,
+            name: system.name,
+            type: system.type,
+            code: system.code,
+            subsystems: system.children.map((subsystem) => {
+              return {
+                id: subsystem.id,
+                name: subsystem.name,
+                type: subsystem.type,
+                code: subsystem.code,
+                modules: subsystem.children.map((module) => {
+                  return {
+                    id: module.id,
+                    name: module.name,
+                    type: module.type,
+                    code: module.code,
+                    actions: module.permissions.map((action, index) => {
+                      return {
+                        id: action.id,
+                        name: action.name,
+                        code: action.code,
+                        permission_code: action.permission_code,
+                        granted: this.checkboxState[module.name]?.[index] ?? action.granted,
+                        status: action.status,
+                        is_direct: action.is_direct
+                      }
+                    })
+                  }
+                })
+              }
+            })
+          }
+        })
+
+        const response = await axios.post(
+          `/user/${this.$route.params.id}/update-permission`,
+          updatedPermissions
+        )
+        this.$message({
+          type: response?.data?.status_code === 200 ? 'success' : 'error',
+          message: response?.data?.message
+        })
+        if(response?.data?.status_code === 200) {
+          this.getPermission()
+        }
+      } catch (err) {
+        this.$message.error(err?.response?.data?.message || this.$t('message.something-wrong'))
+      }
     }
   }
 }
