@@ -26,9 +26,20 @@
               size="large"
               :placeholder="$t('sidebar.role')"
               clearable
-              @change="fetchData"
+              @change="fetchData()"
             >
               <el-option v-for="role in roles" :key="role.id" :label="role.name" :value="role.id" />
+            </el-select>
+            <el-select
+              v-model="filters.type"
+              class="!w-[200px]"
+              size="large"
+              :placeholder="$t('input.type-user')"
+              clearable
+              @change="fetchData()"
+            >
+              <el-option :label="$t('input.admin')" :value="1" />
+              <el-option :label="$t('input.user')" :value="2" />
             </el-select>
             <el-date-picker
               v-model="filters.created_at"
@@ -72,13 +83,11 @@
               </span>
             </div>
           </template>
-          <template #activity="{ row }">
-            <div class="flex justify-center">
-              <div
-                class="w-5 h-5 rounded-full"
-                :class="row?.activity === 'online' ? 'bg-green-500' : 'bg-gray-300'"
-              ></div>
-            </div>
+          <template #type="{ row }">
+            <span>{{ row?.type === 1 ? $t('input.admin') : $t('input.user') }}</span>
+          </template>
+          <template #two_factor_enable="{ row }">
+            <span>{{ row?.two_factor_enable ? $t('button.enable') : $t('button.disable') }}</span>
           </template>
           <template #action="{ row }">
             <div class="flex justify-center items-center gap-x-[12px]">
@@ -113,15 +122,10 @@ import ModalImport from './ModalImport.vue'
 
 export default {
   components: { AdminLayout, BreadCrumbComponent, DataTable, DeleteForm, ModalImport },
-  props: {
-    roles: {
-      type: Array,
-      default: () => []
-    }
-  },
   data() {
     return {
       items: [],
+      roles: [],
       filters: {
         page: Number(this?.route?.params?.page ?? 1),
         limit: Number(this?.$route?.query?.limit ?? 10)
@@ -145,6 +149,20 @@ export default {
           key: 'roles',
           'min-width': 200,
           label: this.$t('sidebar.role'),
+          align: 'left',
+          headerAlign: 'left'
+        },
+        {
+          key: 'type',
+          'min-width': 200,
+          label: this.$t('input.type-user'),
+          align: 'left',
+          headerAlign: 'left'
+        },
+        {
+          key: 'two_factor_enable',
+          'min-width': 200,
+          label: this.$t('column.2fa'),
           align: 'left',
           headerAlign: 'left'
         },
@@ -195,7 +213,7 @@ export default {
     }
   },
   async created() {
-    await this.fetchData()
+    Promise.all([this.fetchData(), this.fetchRoles()])
   },
   methods: {
     async fetchData(page = 1) {
@@ -212,6 +230,16 @@ export default {
         .catch((error) => {
           this.$message.error(error?.response?.data?.message || this.$t('message.something-wrong'))
           this.loadForm = false
+        })
+    },
+    async fetchRoles() {
+      await axios
+        .get('role', { params: { noPagination: true } })
+        .then((response) => {
+          this.roles = response?.data?.data
+        })
+        .catch((error) => {
+          this.$message.error(error?.response?.data?.message || this.$t('message.something-wrong'))
         })
     },
     changePage(page) {

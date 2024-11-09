@@ -152,8 +152,12 @@
       "created-at": "Created at",
       "actions": "Action",
       "status": "Status",
-      "count": "Number of {name}"
+      "count": "Number of {name}",
+      "select-all": "Select all"
     },
+    "number-permission": "Number of permission",
+    "number-user": "Number of user",
+    "2fa": "2FA",
     "url": "URL",
     "last-seen": "Last seen",
     "activity": "Activity",
@@ -206,7 +210,17 @@
     "create-user": "Create User",
     "edit-user": "Edit User",
     "create-system": "Create System",
-    "edit-system": "Edit System"
+    "edit-system": "Edit System",
+    "create-subsytem": "Create Subsystem",
+    "edit-subsytem": "Edit Subsystem",
+    "create-module": "Create Module",
+    "edit-module": "Edit Module",
+    "create-action": "Create Action",
+    "edit-action": "Edit Action",
+    "create-role": "Create Role",
+    "edit-role": "Edit Role",
+    "create-permission": "Create Permission",
+    "edit-permission": "Edit Permission"
   },
   "pop-menu": {
     "profile": "Profile",
@@ -231,6 +245,10 @@
     "create-module": "Create new module",
     "edit-module": "Edit module",
     "create-action": "Create new action",
-    "edit-action": "Edit action"
+    "edit-action": "Edit action",
+    "create-role": "Create new role",
+    "edit-role": "Edit role",
+    "create-permission": "Create new permission",
+    "edit-permission": "Edit permission"
   }
 }

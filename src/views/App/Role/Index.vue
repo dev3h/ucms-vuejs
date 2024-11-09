@@ -45,6 +45,9 @@
               <div class="cursor-pointer" @click="openShow(row?.id)">
                 <img src="/images/svg/eye-icon.svg" />
               </div>
+              <div class="cursor-pointer" @click="openEdit(row?.id)">
+                <img src="/images/svg/pen-icon.svg" alt="" />
+              </div>
               <div class="cursor-pointer" @click="openDeleteForm(row?.id)">
                 <img src="/images/svg/trash-icon.svg" />
               </div>
@@ -54,7 +57,6 @@
       </div>
     </div>
     <DeleteForm ref="deleteForm" @delete-action="deleteItem" />
-    <!-- <ModalRole ref="modalRole" :redirectRoute="appRoute('admin.role.index')" /> -->
   </AdminLayout>
 </template>
 <script>
@@ -65,9 +67,8 @@ import DataTable from '@/components/Page/DataTable.vue'
 import axios from '@/Plugins/axios'
 import DeleteForm from '@/components/Page/DeleteForm.vue'
 import debounce from 'lodash.debounce'
-import ModalRole from './ModalRole.vue'
 export default {
-  components: { ModalRole, AdminLayout, BreadCrumbComponent, DataTable, DeleteForm },
+  components: { AdminLayout, BreadCrumbComponent, DataTable, DeleteForm },
   props: {
     roles: {
       type: Array,
@@ -99,9 +100,16 @@ export default {
           headerAlign: 'left'
         },
         {
-          key: 'assigned',
-          width: 300,
-          label: this.$t('button.assign'),
+          key: 'number_of_permission',
+          'min-width': 300,
+          label: this.$t('column.number-permission'),
+          align: 'left',
+          headerAlign: 'left'
+        },
+        {
+          key: 'number_of_user',
+          'min-width': 300,
+          label: this.$t('column.number-user'),
           align: 'left',
           headerAlign: 'left'
         },
@@ -111,8 +119,7 @@ export default {
           label: '',
           align: 'center',
           headerAlign: 'center',
-          fixed: 'right',
-          minWidth: 200
+          fixed: 'right'
         }
       ],
       paginate: {},
@@ -125,7 +132,7 @@ export default {
       return [
         {
           name: menuOrigin?.label,
-          route: this.appRoute('admin.role.index')
+          route: 'role'
         }
       ]
     }
@@ -157,7 +164,10 @@ export default {
       this.fetchData()
     }, 500),
     openCreate() {
-      this.$refs.modalRole.open()
+      this.$router.push({ name: 'role-create' })
+    },
+    openEdit(id) {
+      this.$router.push({ name: 'role-create', params: { id } })
     },
     openDeleteForm(id) {
       this.$refs.deleteForm.open(id)

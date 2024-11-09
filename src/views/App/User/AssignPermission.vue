@@ -1,97 +1,85 @@
 <template>
-  <AdminLayout>
-    <div class="w-full bg-white">
-      <div class="w-full pt-3 pb-2 px-4">
-        <BreadCrumbComponent :bread-crumb="setbreadCrumbHeader" />
-      </div>
-      <BackBar route-back="system" :title="item?.name">
-        <template #actionBackBar>
-          <div>
-            <el-button class="w-[120px]" type="info" size="large" @click="goBack()">{{
-              $t('button.cancel')
-            }}</el-button>
-            <el-button
-              class="w-[120px]"
-              type="primary"
-              size="large"
-              @click="updatePermission"
-              :loading="loading"
-            >
-              {{ $t('button.update') }}
-            </el-button>
-          </div>
-        </template>
-      </BackBar>
-      <div class="w-full py-5 px-4 flex">
-        <div class="w-[300px]">
-          <el-aside class="w-full" style="background-color: #f5f7fa">
-            <el-input
-              v-model="filterText"
-              :placeholder="$t('input.common.enter')"
-              clearable
-            ></el-input>
-            <el-tree
-              :data="treeData"
-              :props="defaultProps"
-              :filter-node-method="filterNode"
-              @node-click="handleNodeClick"
-              ref="treeRef"
-              default-expand-all
-              highlight-current
-              :expand-on-click-node="false"
-            />
-          </el-aside>
-        </div>
-        <div class="DataTable permission-table !flex-1">
-          <el-table v-if="tableData.length > 0" :data="tableData" class="flex-1">
-            <!-- Dòng đầu tiên: Tên của Module -->
-            <el-table-column
-              label="Module"
-              prop="module_name"
-              :span-method="spanMethod"
-            ></el-table-column>
-
-            <!-- Các dòng sau: Tên và checkbox của Action -->
-            <el-table-column v-for="(action, index) in actionColumns" :key="index" :label="action">
-              <template v-slot="scope">
-                <el-checkbox
-                  v-if="scope.row.actions[index] !== undefined"
-                  v-model="scope.row.actions[index]"
-                  @change="
-                    updateCheckboxState(scope.row.module_name, index, scope.row.actions[index])
-                  "
-                ></el-checkbox>
-              </template>
-            </el-table-column>
-
-            <!-- Checkbox để chọn tất cả action của một module -->
-            <el-table-column label="Select All">
-              <template v-slot="scope">
-                <el-checkbox
-                  :indeterminate="isIndeterminate(scope.row)"
-                  :checked="isAllChecked(scope.row)"
-                  @change="toggleAll(scope.row)"
-                >
-                  Select All
-                </el-checkbox>
-              </template>
-            </el-table-column>
-          </el-table>
-        </div>
+  <div class="w-full bg-white">
+    <div class="bg-grayF5 py-[10px] px-4 flex items-center justify-end h-14">
+      <div>
+        <el-button class="w-[120px]" type="info" size="large" @click="goBack()">{{
+          $t('button.cancel')
+        }}</el-button>
+        <el-button
+          class="w-[120px]"
+          type="primary"
+          size="large"
+          @click="updatePermission"
+          :loading="loading"
+        >
+          {{ $t('button.update') }}
+        </el-button>
       </div>
     </div>
-  </AdminLayout>
+    <div class="w-full pb-5 pr-4 flex border">
+      <div class="w-[300px]">
+        <el-aside class="w-full" style="background-color: #f5f7fa">
+          <el-input
+            v-model="filterText"
+            :placeholder="$t('input.common.enter')"
+            clearable
+          ></el-input>
+          <el-tree
+            :data="treeData"
+            :props="defaultProps"
+            :filter-node-method="filterNode"
+            @node-click="handleNodeClick"
+            ref="treeRef"
+            default-expand-all
+            highlight-current
+            :expand-on-click-node="false"
+          />
+        </el-aside>
+      </div>
+      <div class="DataTable permission-table !flex-1">
+        <el-table v-if="tableData.length > 0" :data="tableData" class="flex-1">
+          <!-- Dòng đầu tiên: Tên của Module -->
+          <el-table-column
+            :label="$t('sidebar.module')"
+            prop="module_name"
+            :span-method="spanMethod"
+          ></el-table-column>
+
+          <!-- Các dòng sau: Tên và checkbox của Action -->
+          <el-table-column v-for="(action, index) in actionColumns" :key="index" :label="action">
+            <template v-slot="scope">
+              <el-checkbox
+                v-if="scope.row.actions[index] !== undefined"
+                v-model="scope.row.actions[index]"
+                @change="
+                  updateCheckboxState(scope.row.module_name, index, scope.row.actions[index])
+                "
+              ></el-checkbox>
+            </template>
+          </el-table-column>
+
+          <!-- Checkbox để chọn tất cả action của một module -->
+          <el-table-column :label="$t('column.common.select-all')">
+            <template v-slot="scope">
+              <el-checkbox
+                :indeterminate="isIndeterminate(scope.row)"
+                :checked="isAllChecked(scope.row)"
+                @change="toggleAll(scope.row)"
+              >
+                {{$t('column.common.select-all')}}
+              </el-checkbox>
+            </template>
+          </el-table-column>
+        </el-table>
+      </div>
+    </div>
+  </div>
 </template>
 
 <script>
-import AdminLayout from '@/Layouts/AdminLayout.vue'
-import BreadCrumbComponent from '@/components/Page/BreadCrumb.vue'
-import { searchMenu } from '@/Mixins/breadcrumb.js'
-import BackBar from '@/components/BackBar/Index.vue'
 import axios from '@/Plugins/axios'
 
 export default {
-  components: { AdminLayout, BreadCrumbComponent, BackBar },
   data() {
     return {
       filterText: '',
@@ -110,22 +98,6 @@ export default {
   },
   created() {
     this.getPermission()
-  },
-  computed: {
-    setbreadCrumbHeader() {
-      let menuOrigin = searchMenu()
-      return [
-        {
-          name: menuOrigin?.label,
-          route: 'system'
-        },
-        {
-          name: this.item?.name,
-          route: '',
-          isNoTranslate: true
-        }
-      ]
-    }
   },
   watch: {
     filterText(val) {
@@ -328,7 +300,7 @@ export default {
           type: response?.data?.status_code === 200 ? 'success' : 'error',
           message: response?.data?.message
         })
-        if(response?.data?.status_code === 200) {
+        if (response?.data?.status_code === 200) {
           this.getPermission()
         }
       } catch (err) {

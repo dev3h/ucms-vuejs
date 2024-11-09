@@ -141,12 +141,12 @@ const router = createRouter({
             {
               path: 'user/create',
               name: 'user-create',
-              component: () => import('@/views/App/User/CreateEdit.vue')
+              component: () => import('@/views/App/User/CreateEditForm.vue')
             },
             {
               path: 'user/:id/edit',
               name: 'user-edit',
-              component: () => import('@/views/App/User/CreateEdit.vue')
+              component: () => import('@/views/App/User/CreateEditForm.vue')
             },
             {
               path: 'user/:id',
@@ -162,6 +162,16 @@ const router = createRouter({
               path: 'role',
               name: 'role',
               component: () => import('@/views/App/Role/Index.vue')
+            },
+            {
+              path: 'role/create',
+              name: 'role-create',
+              component: () => import('@/views/App/Role/CreateEditForm.vue')
+            },
+            {
+              path: 'role/:id/edit',
+              name: 'role-edit',
+              component: () => import('@/views/App/Role/CreateEditForm.vue')
             },
             {
               path: 'permission',
