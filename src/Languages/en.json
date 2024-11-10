@@ -155,6 +155,7 @@
       "count": "Number of {name}",
       "select-all": "Select all"
     },
+    "description": "Description",
     "number-permission": "Number of permission",
     "number-user": "Number of user",
     "2fa": "2FA",

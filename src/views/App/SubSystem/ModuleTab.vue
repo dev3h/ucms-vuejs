@@ -49,21 +49,14 @@
 </template>
 
 <script>
-import AdminLayout from '@/Layouts/AdminLayout.vue'
-import BreadCrumbComponent from '@/components/Page/BreadCrumb.vue'
-import { searchMenu } from '@/Mixins/breadcrumb.js'
 import DataTable from '@/components/Page/DataTable.vue'
 import axios from '@/Plugins/axios'
 import DeleteForm from '@/components/Page/DeleteForm.vue'
 import debounce from 'lodash.debounce'
-import ModalAssign from '@/Pages/Role/ModalAssign.vue'
-import ModalExtraAdd from '@/Pages/SubSystem/ModalExtraAdd.vue'
+import ModalExtraAdd from './ModalExtraAdd.vue'
 export default {
   components: {
     ModalExtraAdd,
-    ModalAssign,
-    AdminLayout,
-    BreadCrumbComponent,
     DataTable,
     DeleteForm
   },

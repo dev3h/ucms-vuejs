@@ -62,7 +62,7 @@
       </div>
     </div>
     <DeleteForm ref="deleteForm" @delete-action="deleteItem" />
-    <ModalPermission ref="modalPermission" />
+    <ModalPermission ref="modalPermission" @add-success="fetchData()" @update-success="fetchData()" />
   </AdminLayout>
 </template>
 <script>
@@ -100,16 +100,16 @@ export default {
       },
       fields: [
         {
-          key: 'name',
-          'min-width': 400,
-          label: this.$t('column.common.name'),
+          key: 'code',
+          'min-width': 300,
+          label: this.$t('column.common.code'),
           align: 'left',
           headerAlign: 'left'
         },
         {
-          key: 'code',
-          'min-width': 300,
-          label: this.$t('column.common.code'),
+          key: 'description',
+          'min-width': 400,
+          label: this.$t('column.description'),
           align: 'left',
           headerAlign: 'left'
         },
@@ -175,7 +175,7 @@ export default {
     },
     async deleteItem(id) {
       await axios
-        .delete(this.appRoute('admin.api.permission.destroy', id))
+        .delete(`/permission/${id}`)
         .then((response) => {
           this.$message.success(response?.data?.message)
           this.fetchData()
@@ -184,9 +184,6 @@ export default {
           this.$message.error(error?.response?.data?.message)
         })
     },
-    openShow(id) {
-      this.$inertia.visit(this.appRoute('admin.account.show', id))
-    }
   }
 }
 </script>

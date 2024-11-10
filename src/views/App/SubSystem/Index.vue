@@ -28,7 +28,7 @@
               size="large"
               :placeholder="$t('input.common.select', { name: $t('sidebar.system') })"
               clearable
-              @change="fetchData"
+              @change="fetchData()"
             >
               <el-option
                 v-for="item in systems"
@@ -46,7 +46,7 @@
                 class="!w-[185px]"
                 value-format="YYYY-MM-DD"
                 format="YYYY/MM/DD"
-                @change="filterData"
+                @change="filterData()"
               />
             </div>
           </div>
@@ -73,7 +73,7 @@
           @page-change="changePage"
         >
           <template #system="{ row }">
-            <span>{{ row?.system?.name }}</span>
+            <router-link v-if="row?.system" class='text-primary hover:opacity-80' :to="{ name: 'system-show', params: {id: row?.system?.id} }">{{ row?.system?.name }}</router-link>
           </template>
           <template #module_count="{ row }">
             <span @click="openModuleList(row?.id)">{{ row?.module_count }}</span>
@@ -96,7 +96,7 @@
     </div>
     <DeleteForm ref="deleteForm" @delete-action="deleteItem" />
     <ModalSubSystem ref="modalSubSystem" @add-success="fetchData()" @update-success="fetchData()" />
-    <SubSystemDrawer ref="subsystemDrawer" />
+    <!-- <SubSystemDrawer ref="subsystemDrawer" /> -->
   </AdminLayout>
 </template>
 <script>
@@ -114,6 +114,7 @@ export default {
   data() {
     return {
       items: [],
+      systems: [],
       filters: {
         page: Number(this?.$route?.params?.page ?? 1),
         limit: Number(this?.$route?.query?.limit ?? 10)
@@ -181,7 +182,7 @@ export default {
     }
   },
   async created() {
-    await this.fetchData()
+    Promise.all([this.fetchData(), this.getAllSystem()])
   },
   methods: {
     async fetchData(page = 1) {
@@ -200,6 +201,14 @@ export default {
           this.loadForm = false
           this.$message.error(error?.response?.data?.message || this.$t('message.something-wrong'))
         })
+    },
+    async getAllSystem() {
+      try {
+        const response = await axios.get('/system')
+        this.systems = response?.data?.data
+      } catch (error) {
+        this.$message.error(error?.response?.data?.message || this.$t('message.something-wrong'))
+      }
     },
     changePage(page) {
       this.fetchData(page)
@@ -231,8 +240,8 @@ export default {
         })
     },
     openShow(id) {
-      this.$refs.subsystemDrawer.open()
-      // this.$inertia.visit(this.appRoute('admin.subsystem.show', id))
+      // this.$refs.subsystemDrawer.open()
+      this.$router.push({ name: 'subsystem-show', params: { id } })
     }
   }
 }

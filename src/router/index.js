@@ -94,10 +94,6 @@ const router = createRouter({
               component: () => import('@/views/App/System/Show.vue')
             },
             {
-              path: 'system/test',
-              component: () => import('@/views/App/System/Test.vue')
-            },
-            {
               path: 'system/test1',
               component: () => import('@/views/App/System/Test1.vue')
             },

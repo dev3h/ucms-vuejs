@@ -4,36 +4,29 @@
       <div class="w-full pt-3 pb-2">
         <BreadCrumbComponent :bread-crumb="setbreadCrumbHeader" />
       </div>
+      <BackBar route-back="subsystem" :title="item?.name || ''"> </BackBar>
       <div class="w-full py-[12px] pr-4">
         <div class="mt-2 border-b-[1px] border-[#8A8A8A] flex gap-[4px]">
           <div
+            v-for="tab in tabs"
+            :key="tab.id"
             class="text-center px-[12px] py-[4px] rounded-t-[4px] cursor-pointer"
             :class="{
-              'bg-primary text-white': tabActive === 1,
-              'bg-[#F4F4F4] text-[#8A8A8A]': tabActive !== 1
+              'bg-primary text-white': tabActive === tab.id,
+              'bg-[#F4F4F4] text-[#8A8A8A]': tabActive !== tab.id
             }"
-            @click="changeTab(1)"
+            @click="changeTab(tab.id)"
           >
-            {{ $t('sidebar.module') }}
-          </div>
-          <div
-            class="text-center px-[12px] py-[4px] rounded-t-[4px] cursor-pointer"
-            :class="{
-              'bg-primary text-white': tabActive === 2,
-              'bg-[#F4F4F4] text-[#8A8A8A]': tabActive !== 2
-            }"
-            @click="changeTab(2)"
-          >
-            {{ $t('button.general') }}
+            {{ tab.label }}
           </div>
         </div>
       </div>
-      <!-- <div class="w-full" v-if="tabActive === 1">
-        <ModuleTab :id="id" />
+      <div class="w-full" v-if="tabActive === 1">
+        <detailSubsystem :item="item" />
       </div>
       <div class="w-full" v-if="tabActive === 2">
-        <GeneralTab :id="id" />
-      </div> -->
+        <ModuleTab :id="id" />
+      </div>
     </div>
   </AdminLayout>
 </template>
@@ -42,41 +35,67 @@
 import AdminLayout from '@/Layouts/AdminLayout.vue'
 import BreadCrumbComponent from '@/components/Page/BreadCrumb.vue'
 import { searchMenu } from '@/Mixins/breadcrumb.js'
-import axios from '@/Plugins/axios'
 import form from '@/Mixins/form.js'
-// import GeneralTab from '@/Pages/SubSystem/GeneralTab.vue'
-// import ModuleTab from '@/Pages/SubSystem/ModuleTab.vue'
+import axios from '@/Plugins/axios'
+import BackBar from '@/components/BackBar/Index.vue'
+// import GeneralTab from '.SubSystemDrawer.vue'
+import ModuleTab from './ModuleTab.vue'
+import DetailSubsystem from './DetailSubsystem.vue'
 export default {
-  components: {  AdminLayout, BreadCrumbComponent },
+  components: { AdminLayout,BackBar, BreadCrumbComponent, ModuleTab, DetailSubsystem },
   mixins: [form],
-  props: {
-    id: {
-      type: Number,
-      default: () => null
-    }
-  },
   data() {
     return {
-      tabActive: 1
+      tabActive: 1,
+      tabs: [
+        {
+          id: 1,
+          label: this.$t('button.general')
+        },
+        {
+          id: 2,
+          label: this.$t('sidebar.module')
+        }
+      ],
+      loadingForm: false,
+      id: this.$route.params.id,
+      item: null
     }
   },
   computed: {
     setbreadCrumbHeader() {
       let menuOrigin = searchMenu()
-      console.log(menuOrigin?.label)
       return [
         {
           name: menuOrigin?.label,
-          route: this.appRoute('admin.subsystem.index')
+          route: 'subsystem'
         },
         {
-          name: this.id,
-          route: ''
+          name: this.item?.name,
+          route: '',
+          isNoTranslate: true
         }
       ]
     }
   },
+  created() {
+    this.fetchData()
+  },
   methods: {
+    goBack() {
+      this.$router.push({ name: 'subsystem' })
+    },
+    async fetchData() {
+      await axios
+        .get(`/subsystem/${this.id}`)
+        .then((response) => (this.item = response?.data?.data))
+        .catch((error) => {
+          this.$message({
+            type: 'error',
+            message: error.response.data.message || this.$t('something-wrong')
+          })
+        })
+    },
     changeTab(tab) {
       this.tabActive = tab
     }

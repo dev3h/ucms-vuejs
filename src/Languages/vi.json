@@ -156,6 +156,7 @@
       "count": "Số lượng {name}",
       "select-all": "Chọn toàn bộ"
     },
+    "description": "Mô tả",
     "number-permission": "Số lượng quyền",
     "number-user": "Số lượng người dùng",
     "2fa": "Xác thực hai yếu tố",
