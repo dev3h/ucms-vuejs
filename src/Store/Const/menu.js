@@ -52,13 +52,13 @@ export const MASTER_MENUS = [
             {
                 label: 'sidebar.role',
                 icon: "role-icon.svg",
-                route: "admin.role.index",
+                route: "role",
                 pathActive: "/admin/user-management/role",
             },
             {
                 label: 'sidebar.permission',
                 icon: "permission-icon.svg",
-                route: "admin.permission.index",
+                route: "permission",
                 pathActive: "/admin/user-management/permission",
             }
         ]

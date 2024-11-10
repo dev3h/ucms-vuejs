@@ -386,7 +386,11 @@ button.el-button--danger:hover {
 }
 
 .DataTable .el-table__header th.el-table__cell {
-  background-color: var(--tw-header-table);
+  background-color: var(--tw-header-table) !important;
+  color: var(--tw-white);
+}
+.permission-table .el-table__header th.el-table__cell {
+  background-color: var(--tw-header-table) !important;
   color: var(--tw-white);
 }
 

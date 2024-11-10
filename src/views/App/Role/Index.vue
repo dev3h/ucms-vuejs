@@ -167,14 +167,14 @@ export default {
       this.$router.push({ name: 'role-create' })
     },
     openEdit(id) {
-      this.$router.push({ name: 'role-create', params: { id } })
+      this.$router.push({ name: 'role-edit', params: { id } })
     },
     openDeleteForm(id) {
       this.$refs.deleteForm.open(id)
     },
     async deleteItem(id) {
       await axios
-        .delete(this.appRoute('admin.api.role.destroy', id))
+        .delete(`/role/${id}`)
         .then((response) => {
           this.$message.success(response?.data?.message)
           this.fetchData()
@@ -184,7 +184,7 @@ export default {
         })
     },
     openShow(id) {
-      this.$inertia.visit(this.appRoute('admin.role.show', id))
+      this.$router.push({ name: 'role-show', params: { id } })
     }
   }
 }

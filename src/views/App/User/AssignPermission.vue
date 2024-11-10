@@ -33,45 +33,54 @@
             default-expand-all
             highlight-current
             :expand-on-click-node="false"
+            node-key="code"
           />
         </el-aside>
       </div>
-      <div class="DataTable permission-table !flex-1">
-        <el-table v-if="tableData.length > 0" :data="tableData" class="flex-1">
-          <!-- Dòng đầu tiên: Tên của Module -->
-          <el-table-column
-            :label="$t('sidebar.module')"
-            prop="module_name"
-            :span-method="spanMethod"
-          ></el-table-column>
+      <el-table class="permission-table" v-if="tableData.length > 0" :data="tableData">
+        <!-- Dòng đầu tiên: Tên của Module -->
+        <el-table-column
+          :label="$t('sidebar.module')"
+          prop="module_name"
+          :span-method="spanMethod"
+          fixed="left"
+          min-width="120"
+        ></el-table-column>
 
-          <!-- Các dòng sau: Tên và checkbox của Action -->
-          <el-table-column v-for="(action, index) in actionColumns" :key="index" :label="action">
-            <template v-slot="scope">
-              <el-checkbox
-                v-if="scope.row.actions[index] !== undefined"
-                v-model="scope.row.actions[index]"
-                @change="
-                  updateCheckboxState(scope.row.module_name, index, scope.row.actions[index])
-                "
-              ></el-checkbox>
-            </template>
-          </el-table-column>
+        <!-- Các dòng sau: Tên và checkbox của Action -->
+        <el-table-column
+          min-width="120"
+          v-for="(action, index) in actionColumns"
+          :key="index"
+          :label="action"
+        >
+          <template v-slot="scope">
+            <el-checkbox
+              v-if="scope.row.actions[index] !== undefined"
+              v-model="scope.row.actions[index]"
+              @change="updateCheckboxState(scope.row.module_name, index, scope.row.actions[index])"
+            ></el-checkbox>
+          </template>
+        </el-table-column>
 
-          <!-- Checkbox để chọn tất cả action của một module -->
-          <el-table-column :label="$t('column.common.select-all')">
-            <template v-slot="scope">
-              <el-checkbox
-                :indeterminate="isIndeterminate(scope.row)"
-                :checked="isAllChecked(scope.row)"
-                @change="toggleAll(scope.row)"
-              >
-                {{$t('column.common.select-all')}}
-              </el-checkbox>
-            </template>
-          </el-table-column>
-        </el-table>
-      </div>
+        <!-- Checkbox để chọn tất cả action của một module -->
+        <el-table-column
+          :label="$t('column.common.select-all')"
+          width="120"
+          header-align="center"
+          align="center"
+          fixed="right"
+        >
+          <template v-slot="scope">
+            <el-checkbox
+              :indeterminate="isIndeterminate(scope.row)"
+              :checked="isAllChecked(scope.row)"
+              @change="toggleAll(scope.row)"
+            >
+            </el-checkbox>
+          </template>
+        </el-table-column>
+      </el-table>
     </div>
   </div>
 </template>
@@ -144,7 +153,7 @@ export default {
       this.$nextTick(() => {
         const firstSubsystem = this.treeData[0]?.children[0]
         if (firstSubsystem) {
-          this.$refs.treeRef.setCurrentKey(firstSubsystem.code)
+          this.$refs.treeRef.setCurrentKey(firstSubsystem?.code)
           this.populateTable(firstSubsystem)
         }
       })
@@ -315,9 +324,5 @@ export default {
 .el-tree {
   height: calc(100vh - 50px);
   overflow-y: auto;
-}
-.permission-table .el-table {
-  width: 100% !important;
-  max-width: 100% !important;
 }
 </style>

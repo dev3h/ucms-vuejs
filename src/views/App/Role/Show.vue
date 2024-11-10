@@ -14,9 +14,9 @@
             }"
             @click="changeTab(1)"
           >
-            {{ $t('sidebar.permission') }}
+            {{ $t('button.general') }}
           </div>
-          <div
+           <div
             class="text-center px-[12px] py-[4px] rounded-t-[4px] cursor-pointer"
             :class="{
               'bg-primary text-white': tabActive === 2,
@@ -26,23 +26,10 @@
           >
             {{ $t('sidebar.user') }}
           </div>
-          <div
-            class="text-center px-[12px] py-[4px] rounded-t-[4px] cursor-pointer"
-            :class="{
-              'bg-primary text-white': tabActive === 3,
-              'bg-[#F4F4F4] text-[#8A8A8A]': tabActive !== 3
-            }"
-            @click="changeTab(3)"
-          >
-            {{ $t('button.general') }}
-          </div>
         </div>
       </div>
       <div class="w-full" v-if="tabActive === 1">
-        <PermissionsTab :id="id" />
-      </div>
-      <div class="w-full" v-if="tabActive === 3">
-        <GeneralTab :id="id" />
+        <DetailRole :item="item" />
       </div>
       <div class="w-full" v-if="tabActive === 2">
         <UsersTab :id="id" />
@@ -55,24 +42,15 @@ import AdminLayout from '@/Layouts/AdminLayout.vue'
 import BreadCrumbComponent from '@/components/Page/BreadCrumb.vue'
 import { searchMenu } from '@/Mixins/breadcrumb.js'
 import axios from '@/Plugins/axios'
-import form from '@/Mixins/form.js'
-import GeneralTab from '@/Pages/Role/GeneralTab.vue'
-import UsersTab from '@/Pages/Role/UsersTab.vue'
-import PermissionsTab from '@/Pages/Role/PermissionsTab.vue'
+import UsersTab from './UsersTab.vue'
+import DetailRole from './DetailRole.vue'
 export default {
-  components: { PermissionsTab, UsersTab, GeneralTab, AdminLayout, BreadCrumbComponent },
-  mixins: [form],
-  props: {
-    id: {
-      type: Number,
-      default: () => null
-    }
-  },
+  components: { DetailRole,UsersTab, AdminLayout, BreadCrumbComponent },
   data() {
     return {
-      templatePermission: null,
+      id: this.$route.params.id,
+      item: null,
       tabActive: 1,
-      actions: [],
       loadingForm: false
     }
   },
@@ -82,35 +60,33 @@ export default {
       return [
         {
           name: menuOrigin?.label,
-          route: this.appRoute('admin.role.index')
+          route: 'role'
         },
         {
-          name: 'Edit role',
-          route: ''
+          name: this.item?.name,
+          route: '',
+          isNoTranslate: true
         }
       ]
     }
   },
+  created() {
+    this.fetchData()
+  },
   methods: {
     goBack() {
-      this.$inertia.visit(this.appRoute('admin.role.index'))
+      this.$router.push({ name: 'role' })
     },
-    async fetchRoleTemplate() {
+    async fetchData() {
       await axios
-        .get(this.appRoute('admin.api.role.template-permission', this.id))
-        .then((response) => {
-          this.templatePermission = response?.data?.data
-        })
+        .get(`/role/${this.id}`)
+        .then((response) => (this.item = response?.data?.data))
         .catch((error) => {
-          this.$message.error(error?.response?.data?.message)
+          this.$message({
+            type: 'error',
+            message: error.response.data.message || this.$t('something-wrong')
+          })
         })
-    },
-    handleCheckChange(action) {
-      if (!this.actions.includes(action)) {
-        this.actions.push(action)
-      } else {
-        this.actions = this.actions.filter((item) => item !== action)
-      }
     },
     changeTab(tab) {
       this.tabActive = tab

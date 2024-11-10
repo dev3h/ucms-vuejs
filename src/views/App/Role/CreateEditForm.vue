@@ -4,7 +4,7 @@
       <div class="w-full pt-3 pb-2 px-4">
         <BreadCrumbComponent :bread-crumb="setbreadCrumbHeader" />
       </div>
-      <BackBar route-back="system" :title="titlePage">
+      <BackBar route-back="role" :title="titlePage">
         <template #actionBackBar>
           <div>
             <el-button class="w-[120px]" type="info" size="large" @click="goBack()">{{
@@ -68,7 +68,7 @@
           <h4 class="font-bold text-sm">
             {{ $t('sidebar.permission') }} <span class="text-red-500">*</span>
           </h4>
-          <div class="w-full pb-5 pr-4 flex border">
+          <div class="w-full pb-5 flex border">
             <div class="w-[300px]">
               <el-aside class="w-full" style="background-color: #f5f7fa">
                 <el-input
@@ -85,16 +85,18 @@
                   default-expand-all
                   highlight-current
                   :expand-on-click-node="false"
+                  node-key="code"
                 />
               </el-aside>
             </div>
-            <div class="DataTable permission-table !flex-1">
-              <el-table v-if="tableData.length > 0" :data="tableData" class="flex-1">
+            <el-table class="permission-table" v-if="tableData.length > 0" :data="tableData">
                 <!-- Dòng đầu tiên: Tên của Module -->
                 <el-table-column
                   :label="$t('sidebar.module')"
                   prop="module_name"
                   :span-method="spanMethod"
+                  fixed="left"
+                  min-width="120"
                 ></el-table-column>
 
                 <!-- Các dòng sau: Tên và checkbox của Action -->
@@ -102,6 +104,7 @@
                   v-for="(action, index) in actionColumns"
                   :key="index"
                   :label="action"
+                  min-width="120"
                 >
                   <template v-slot="scope">
                     <el-checkbox
@@ -115,19 +118,23 @@
                 </el-table-column>
 
                 <!-- Checkbox để chọn tất cả action của một module -->
-                <el-table-column :label="$t('column.common.select-all')">
+                <el-table-column
+                  :label="$t('column.common.select-all')"
+                  width="120"
+                  header-align="center"
+                  align="center"
+                  fixed="right"
+                >
                   <template v-slot="scope">
                     <el-checkbox
                       :indeterminate="isIndeterminate(scope.row)"
                       :checked="isAllChecked(scope.row)"
                       @change="toggleAll(scope.row)"
                     >
-                      {{ $t('column.common.select-all') }}
                     </el-checkbox>
                   </template>
                 </el-table-column>
               </el-table>
-            </div>
           </div>
         </div>
       </div>
@@ -153,8 +160,7 @@ export default {
       formData: {
         id: this.$route.params.id,
         name: null,
-        code: null,
-        redirect_uris: ['']
+        code: null
       },
       actions: [],
       rules: {
@@ -194,7 +200,9 @@ export default {
     }
   },
   created() {
-    this.getPermission()
+    if (!this.formData.id) {
+      this.getPermission()
+    }
   },
   watch: {
     filterText(val) {
@@ -204,7 +212,7 @@ export default {
   async mounted() {
     if (this.formData.id) {
       this.isEdit = true
-      await this.fetchData()
+      Promise.all([this.fetchData(), this.getPermissionOfRole()])
     }
   },
   methods: {
@@ -214,14 +222,13 @@ export default {
     async fetchData() {
       try {
         this.loadingForm = true
-        await axios.get(`/system/${this.formData.id}`).then((response) => {
+        await axios.get(`/role/${this.formData.id}`).then((response) => {
           if (response?.data?.status_code === 200) {
-            const { id, name, code, redirect_uris } = response?.data?.data
+            const { id, name, code } = response?.data?.data
             this.formData = {
               id,
               name,
-              code,
-              redirect_uris
+              code
             }
           }
           this.loadingForm = false
@@ -233,6 +240,42 @@ export default {
     },
     async submit() {
       this.loadingForm = true
+      const updatedPermissions = this.dataList.map((system) => {
+        return {
+          id: system.id,
+          name: system.name,
+          type: system.type,
+          code: system.code,
+          subsystems: system.children.map((subsystem) => {
+            return {
+              id: subsystem.id,
+              name: subsystem.name,
+              type: subsystem.type,
+              code: subsystem.code,
+              modules: subsystem.children.map((module) => {
+                return {
+                  id: module.id,
+                  name: module.name,
+                  type: module.type,
+                  code: module.code,
+                  actions: module.permissions.map((action, index) => {
+                    return {
+                      id: action.id,
+                      name: action.name,
+                      code: action.code,
+                      permission_code: action.permission_code,
+                      granted: this.checkboxState[module.name]?.[index] ?? action.granted,
+                      status: action.status,
+                      is_direct: action.is_direct
+                    }
+                  })
+                }
+              })
+            }
+          })
+        }
+      })
+      this.formData.permissions = updatedPermissions
       const { method, url } = this.prepareSubmit()
       await axios?.[method](url, this.formData).then((response) => {
         this.$message({
@@ -240,7 +283,7 @@ export default {
           message: response?.data?.message
         })
         if (response?.data?.status_code === 200) {
-          this.$router.push({ name: 'system' })
+          this.$router.push({ name: 'role' })
         }
         this.loadingForm = false
       })
@@ -248,14 +291,26 @@ export default {
     prepareSubmit() {
       return {
         method: this.isEdit ? 'put' : 'post',
-        url: this.isEdit ? `/system/${this.formData.id}` : '/system'
+        url: this.isEdit ? `/role/${this.formData.id}` : '/role'
       }
     },
-    // Xử lý khi nhấp vào Subsystem
+    async getPermissionOfRole() {
+      try {
+        this.loadingForm = true
+        const response = await axios.get(`/role/${this.$route.params.id}/role-permissions`)
+        this.transformTree(response?.data?.data)
+        this.transformDataList(response?.data?.data)
+        this.loadingForm = false
+      } catch (err) {
+        this.loadingForm = false
+        this.$message.error(err?.response?.data?.message || this.$t('message.something-wrong'))
+      }
+    },
+
     async getPermission() {
       try {
         this.loadingForm = true
-        const response = await axios.get("/role/permission-template")
+        const response = await axios.get('/role/permission-template')
         this.transformTree(response?.data?.data)
         this.transformDataList(response?.data?.data)
         this.loadingForm = false
@@ -286,8 +341,9 @@ export default {
       // Select the first subsystem by default
       this.$nextTick(() => {
         const firstSubsystem = this.treeData[0]?.children[0]
+        console.log(firstSubsystem)
         if (firstSubsystem) {
-          this.$refs.treeRef.setCurrentKey(firstSubsystem.code)
+          this.$refs.treeRef.setCurrentKey(firstSubsystem?.code)
           this.populateTable(firstSubsystem)
         }
       })
@@ -317,9 +373,7 @@ export default {
                       name: action?.name,
                       code: action?.code,
                       permission_code: action?.permission_code,
-                      granted: action?.granted,
-                      status: action?.status,
-                      is_direct: action?.is_direct
+                      granted: action?.granted
                     }
                   })
                 }
@@ -331,7 +385,6 @@ export default {
       this.dataList = transformDataList
     },
     handleNodeClick(nodeData) {
-      console.log(nodeData)
       if (nodeData.type === 'subsystem') {
         this.populateTable(nodeData)
       }

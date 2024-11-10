@@ -174,6 +174,11 @@ const router = createRouter({
               component: () => import('@/views/App/Role/CreateEditForm.vue')
             },
             {
+              path: 'role/:id',
+              name: 'role-show',
+              component: () => import('@/views/App/Role/Show.vue')
+            },
+            {
               path: 'permission',
               name: 'permission',
               component: () => import('@/views/App/Permission/Index.vue')

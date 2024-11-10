@@ -61,7 +61,7 @@
         </DataTable>
       </div>
     </div>
-    <DeleteForm ref="deleteForm" @delete-action="deleteAccount" />
+    <DeleteForm ref="deleteForm" @delete-action="deleteItem" />
     <!-- <ModalPermission ref="modalPermission" :redirectRoute="appRoute('admin.permission.index')" /> -->
   </AdminLayout>
 </template>
@@ -133,7 +133,7 @@ export default {
       return [
         {
           name: menuOrigin?.label,
-          route: this.appRoute('admin.permission.index')
+          route: 'permission'
         }
       ]
     }
@@ -173,7 +173,7 @@ export default {
     openDeleteForm(id) {
       this.$refs.deleteForm.open(id)
     },
-    async deleteAccount(id) {
+    async deleteItem(id) {
       await axios
         .delete(this.appRoute('admin.api.permission.destroy', id))
         .then((response) => {

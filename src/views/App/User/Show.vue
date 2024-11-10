@@ -50,7 +50,6 @@ export default {
   data() {
     return {
       tabActive: 1,
-      actions: [],
       loadingForm: false,
       id: this.$route.params.id,
       item: null

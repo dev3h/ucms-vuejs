@@ -36,28 +36,25 @@
         <template #email="{ row }">
           <Link v-if="row?.id" :href="route('admin.user.show', row?.id)">{{ row?.email }}</Link>
         </template>
-        <!--                <template #action="{ row }">-->
-        <!--                    <div class="flex justify-center items-center gap-x-[12px]">-->
-        <!--                        <div class="cursor-pointer" @click="openDeleteForm(row?.id)">-->
-        <!--                            <img src="/images/svg/trash-icon.svg" />-->
-        <!--                        </div>-->
-        <!--                    </div>-->
-        <!--                </template>-->
+        <template #action="{ row }">
+          <div class="flex justify-center items-center gap-x-[12px]">
+            <div class="cursor-pointer" @click="openDeleteForm(row?.id)">
+              <img src="/images/svg/trash-icon.svg" />
+            </div>
+          </div>
+        </template>
       </DataTable>
     </div>
   </div>
 </template>
 
 <script>
-import AdminLayout from '@/Layouts/AdminLayout.vue'
-import BreadCrumbComponent from '@/components/Page/BreadCrumb.vue'
-import { searchMenu } from '@/Mixins/breadcrumb.js'
 import DataTable from '@/components/Page/DataTable.vue'
 import axios from '@/Plugins/axios'
 import DeleteForm from '@/components/Page/DeleteForm.vue'
 import debounce from 'lodash.debounce'
 export default {
-  components: { AdminLayout, BreadCrumbComponent, DataTable, DeleteForm },
+  components: { DataTable },
   props: {
     id: {
       type: Number,
@@ -70,7 +67,7 @@ export default {
       filters: {
         name: null,
         role: null,
-        page: Number(this.appRoute().params?.page ?? 1)
+        page: this.$route.query.page || 1
       },
       fields: [
         {
@@ -79,8 +76,15 @@ export default {
           label: this.$t('sidebar.user'),
           align: 'left',
           headerAlign: 'left'
+        },
+        {
+          key: 'action',
+          label: 'Action',
+          align: 'center',
+          headerAlign: 'center',
+          fixed: 'right',
+          width: 200
         }
-        // { key: 'action', label: 'Action', align: 'center', headerAlign: 'center', fixed: 'right', minWidth: 200 },
       ],
       paginate: {},
       loadForm: false
@@ -95,19 +99,17 @@ export default {
       this.filters.page = page
       let params = { ...this.filters }
       await axios
-        .get(
-          this.appRoute('admin.api.role.all-user', {
-            id: this.id,
-            ...params
-          })
-        )
+        .get(`/role/${this.id}/users`, {
+          params
+        })
         .then((response) => {
           this.items = response?.data?.data
           this.paginate = response?.data?.meta
           this.loadForm = false
         })
         .catch((error) => {
-          console.log(error)
+          this.$message.error(error?.response?.data?.message || this.$t('something-wrong'))
+          this.loadForm = false
         })
     },
     changePage(page) {
@@ -117,24 +119,24 @@ export default {
       this.fetchData()
     }, 500),
     openCreate() {
-      this.$inertia.visit(this.appRoute('admin.role.create'))
+      // this.$inertia.visit(this.appRoute('admin.role.create'))
     },
     openDeleteForm(id) {
       this.$refs.deleteForm.open(id)
     },
     async deleteItem(userId) {
       await axios
-        .delete(this.appRoute('admin.api.role.revoke-user', { id: this.id, user_id: userId }))
+        .delete(`/role/${this.id}/users/${userId}`)
         .then((response) => {
           this.$message.success(response?.data?.message)
           this.fetchData()
         })
         .catch((error) => {
-          this.$message.error(error?.response?.data?.message)
+          this.$message.error(error?.response?.data?.message || this.$t('something-wrong'))
         })
     },
     openShow(id) {
-      this.$inertia.visit(this.appRoute('admin.role.show', id))
+      this.$router.push({ name: 'user-show', params: { id } })
     }
   }
 }
