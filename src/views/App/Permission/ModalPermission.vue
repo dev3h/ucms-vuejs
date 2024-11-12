@@ -32,7 +32,7 @@
               <el-input size="large" v-model="formData.name" clearable />
             </el-form-item>
           </div>
-          <div class="flex-1 w-full">
+          <!-- <div class="flex-1 w-full">
             <el-form-item
               :label="$t('column.common.code')"
               class="title--bold code"
@@ -99,6 +99,39 @@
                 </div>
               </div>
             </el-form-item>
+          </div> -->
+          <div>
+            <h3 class="font-bold">Permission</h3>
+            <el-input
+              v-model="searchQuery"
+              placeholder="Search systems or subsystems..."
+              @input="filterTree"
+              clearable
+            />
+            <el-tree
+              :data="filteredPermissions"
+              node-key="code"
+              :props="treeProps"
+              highlight-current
+              default-expand-all
+              ref="permissionTree"
+            >
+              <template #default="{ node, data }">
+                <div v-if="data.type !== 'action'">
+                  {{ data.label }}
+                </div>
+                <div v-else>
+                  <el-radio-group v-model="selectedAction" @change="updateSelectedAction(data)">
+                    <el-radio :label="data.code" :key="data.code">
+                      {{ data.label }}
+                    </el-radio>
+                  </el-radio-group>
+                </div>
+              </template>
+            </el-tree>
+            <div style="margin-top: 20px">
+              <strong>Selected Action Code:</strong> {{ selectedAction }}
+            </div>
           </div>
         </el-form>
       </div>
@@ -150,13 +183,201 @@ export default {
         code: [{ required: true, message: 'This field is required', trigger: ['blur', 'change'] }]
       },
       fullscreen: false,
-      loadingForm: false
+      loadingForm: false,
+      searchQuery: '',
+      permissions: [
+        {
+          label: 'System A',
+          code: 'systemA',
+          type: 'system',
+          children: [
+            {
+              label: 'Subsystem A1',
+              code: 'subsystemA1',
+              type: 'subsystem',
+              children: [
+                {
+                  label: 'Module A1.1',
+                  code: 'moduleA11',
+                  type: 'module',
+                  children: [
+                    {
+                      label: 'View',
+                      code: 'systemA-subsystemA1-moduleA11-view',
+                      type: 'action',
+                      moduleCode: 'moduleA11'
+                    },
+                    {
+                      label: 'Edit',
+                      code: 'systemA-subsystemA1-moduleA11-edit',
+                      type: 'action',
+                      moduleCode: 'moduleA11'
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          label: 'System B',
+          code: 'systemB',
+          type: 'system',
+          children: [
+            {
+              label: 'Subsystem B1',
+              code: 'subsystemB1',
+              type: 'subsystem',
+              children: [
+                {
+                  label: 'Module B1.1',
+                  code: 'moduleB11',
+                  type: 'module',
+                  children: [
+                    {
+                      label: 'View',
+                      code: 'systemB-subsystemB1-moduleB11-view',
+                      type: 'action',
+                      moduleCode: 'moduleB11'
+                    },
+                    {
+                      label: 'Edit',
+                      code: 'systemB-subsystemB1-moduleB11-edit',
+                      type: 'action',
+                      moduleCode: 'moduleB11'
+                    }
+                  ]
+                },
+                {
+                  label: 'Module B1.2',
+                  code: 'moduleB12',
+                  type: 'module',
+                  children: [
+                    {
+                      label: 'View',
+                      code: 'systemB-subsystemB1-moduleB12-view',
+                      type: 'action',
+                      moduleCode: 'moduleB12'
+                    },
+                    {
+                      label: 'Edit',
+                      code: 'systemB-subsystemB1-moduleB12-edit',
+                      type: 'action',
+                      moduleCode: 'moduleB12'
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          label: 'System C',
+          code: 'systemC',
+          type: 'system',
+          children: [
+            {
+              label: 'Subsystem C1',
+              code: 'subsystemC1',
+              type: 'subsystem',
+              children: [
+                {
+                  label: 'Module C1.1',
+                  code: 'moduleC11',
+                  type: 'module',
+                  children: [
+                    {
+                      label: 'View',
+                      code: 'systemC-subsystemC1-moduleC11-view',
+                      type: 'action',
+                      moduleCode: 'moduleC11'
+                    },
+                    {
+                      label: 'Edit',
+                      code: 'systemC-subsystemC1-moduleC11-edit',
+                      type: 'action',
+                      moduleCode: 'moduleC11'
+                    }
+                  ]
+                },
+                {
+                  label: 'Module C1.2',
+                  code: 'moduleC12',
+                  type: 'module',
+                  children: [
+                    {
+                      label: 'View',
+                      code: 'systemC-subsystemC1-moduleC12-view',
+                      type: 'action',
+                      moduleCode: 'moduleC12'
+                    },
+                    {
+                      label: 'Edit',
+                      code: 'systemC-subsystemC1-moduleC12-edit',
+                      type: 'action',
+                      moduleCode: 'moduleC12'
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      selectedAction: {},
+      treeProps: {
+        label: 'label',
+        children: 'children',
+        isLeaf: (data) => data.type === 'action'
+      }
     }
   },
   created() {
     this.getCodeTemplateForPermission()
   },
+  computed: {
+    filteredPermissions() {
+      if (!this.searchQuery) return this.permissions
+
+      return this.permissions
+        .map((system) => {
+          if (system.label.toLowerCase().includes(this.searchQuery.toLowerCase())) {
+            // If the system matches, keep the full system structure
+            return system
+          }
+
+          const matchingSubsystems = system.children
+            .map((subsystem) => {
+              if (subsystem.label.toLowerCase().includes(this.searchQuery.toLowerCase())) {
+                // If the subsystem matches, keep the full subsystem structure
+                return subsystem
+              }
+              return null
+            })
+            .filter(Boolean)
+
+          if (matchingSubsystems.length > 0) {
+            // Return system with only matching subsystems
+            return {
+              ...system,
+              children: matchingSubsystems
+            }
+          }
+          return null
+        })
+        .filter(Boolean) // Filter out any null results
+    }
+  },
   methods: {
+    filterTree() {
+      const tree = this.$refs.permissionTree
+      if (tree) {
+        tree.store.setData(this.filteredPermissions) // Update the tree data dynamically
+      }
+    },
+    updateSelectedAction(action) {
+      this.selectedAction = action.code
+    },
     async open(id) {
       if (id) {
         this.current_id = id
@@ -190,14 +411,12 @@ export default {
       })
       this.loadingForm = false
       this.isShowModal = false
-      this.$inertia.visit(this.redirectRoute)
+      // this.$inertia.visit(this.redirectRoute)
     },
     async fetchData() {
       if (this.formType === 'edit') {
         this.loadingForm = true
-        const { data } = await axios.get(
-          this.appRoute('admin.api.permission.show', this.current_id)
-        )
+        const { data } = await axios.get(`/permission/${this.current_id}`)
         this.formData = data?.data
         const code = this.formData.code.split('-')
         this.systemCode = code[0]
@@ -209,8 +428,8 @@ export default {
     },
     async getCodeTemplateForPermission() {
       this.loadingForm = true
-      const { data } = await axios.get(this.appRoute('admin.api.permission.code-for-permission'))
-      this.codeTemplate = data?.data
+      // const { data } = await axios.get('/permission/code-template')
+      // this.codeTemplate = data?.data
       this.loadingForm = false
     },
     handleCodePermission(systemCode, subsytemCode, moduleCode, actionCode) {
@@ -262,9 +481,9 @@ export default {
       let action = null
       let method = 'post'
       if (this.formType === 'add') {
-        action = this.appRoute('admin.api.permission.store')
+        action = '/permission'
       } else {
-        action = this.appRoute('admin.api.permission.update', this.current_id)
+        action = `/permission/${this.current_id}`
         method = 'put'
       }
       return { action, method }

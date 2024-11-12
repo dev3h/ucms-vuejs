@@ -62,7 +62,7 @@
       </div>
     </div>
     <DeleteForm ref="deleteForm" @delete-action="deleteItem" />
-    <!-- <ModalPermission ref="modalPermission" :redirectRoute="appRoute('admin.permission.index')" /> -->
+    <ModalPermission ref="modalPermission" />
   </AdminLayout>
 </template>
 <script>
@@ -73,12 +73,12 @@ import DataTable from '@/components/Page/DataTable.vue'
 import axios from '@/Plugins/axios'
 import DeleteForm from '@/components/Page/DeleteForm.vue'
 import debounce from 'lodash.debounce'
-// import ModalPermission from '@/Pages/Permission/ModalPermission.vue'
+import ModalPermission from './ModalPermission.vue'
 // import ModalSubSystem from '@/Pages/SubSystem/ModalSubSystem.vue'
 export default {
   components: {
     // ModalSubSystem,
-    // ModalPermission,
+    ModalPermission,
     AdminLayout,
     BreadCrumbComponent,
     DataTable,
