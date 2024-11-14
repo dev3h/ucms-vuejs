@@ -56,11 +56,26 @@
           paginate-background
           @page-change="changePage"
         >
+          <template #action_count="{ row }">
+            <div class="flex gap-2 items-center">
+              <img
+                class="cursor-pointer"
+                src="/images/svg/add-item.svg"
+                alt=""
+                @click="openAddAction(row?.id)"
+              />
+              <span
+                @click="openActionList(row?.id)"
+                class="rounded-[50px] bg-gray-300 cursor-pointer px-2 py-1"
+                >{{ row?.action_count }} {{ $t('button.item') }}</span
+              >
+            </div>
+          </template>
           <template #action="{ row }">
             <div class="flex justify-center items-center gap-x-[12px]">
-              <div class="cursor-pointer" @click="openShow(row?.id)">
+              <!-- <div class="cursor-pointer" @click="openShow(row?.id)">
                 <img src="/images/svg/eye-icon.svg" />
-              </div>
+              </div> -->
               <div class="cursor-pointer" @click="openEdit(row?.id)">
                 <img src="/images/svg/pen-icon.svg" />
               </div>
@@ -74,6 +89,22 @@
     </div>
     <DeleteForm ref="deleteForm" @delete-action="deleteItem" />
     <ModalModule ref="modalModule" @add-success="fetchData()" @update-success="fetchData()" />
+    <ModalAddExtra
+      ref="modalExtra"
+      @add-success="fetchData()"
+      :title="$t('dialog.add', { name: $t('sidebar.action') })"
+      :placeholder="$t('input.common.select', { name: $t('sidebar.action') })"
+      fetchRoute="/module/:id/rest-actions"
+      addRoute="/module/:id/add-actions"
+    />
+    <ModalListChildren
+      :title="$t('sidebar.action')"
+      fetchRoute="/module/:id/actions"
+      deleteRoute="/module/:id/remove-action/:childId"
+      ref="modalList"
+      :showRoute="action-show"
+      @close-modal="fetchData()"
+    />
   </AdminLayout>
 </template>
 <script>
@@ -85,8 +116,18 @@ import axios from '@/Plugins/axios'
 import DeleteForm from '@/components/Page/DeleteForm.vue'
 import debounce from 'lodash.debounce'
 import ModalModule from './ModalModule.vue'
+import ModalAddExtra from '@/components/Dialog/ModalAddExtra.vue'
+import ModalListChildren from '@/components/Dialog/ModalListChildren.vue'
 export default {
-  components: { ModalModule, AdminLayout, BreadCrumbComponent, DataTable, DeleteForm },
+  components: {
+    ModalModule,
+    AdminLayout,
+    BreadCrumbComponent,
+    DataTable,
+    DeleteForm,
+    ModalAddExtra,
+    ModalListChildren
+  },
   data() {
     return {
       items: [],
@@ -94,6 +135,8 @@ export default {
         page: Number(this?.$route?.params?.page ?? 1),
         limit: Number(this?.$route?.query?.limit ?? 10)
       },
+      modalExtra: null,
+      modalList: null,
       fields: [
         {
           key: 'name',
@@ -106,6 +149,13 @@ export default {
           key: 'code',
           'min-width': 300,
           label: this.$t('column.common.code'),
+          align: 'left',
+          headerAlign: 'left'
+        },
+        {
+          key: 'action_count',
+          width: 200,
+          label: this.$t('column.common.count', { name: this.$t('sidebar.action') }),
           align: 'left',
           headerAlign: 'left'
         },
@@ -187,8 +237,14 @@ export default {
           this.$message.error(error?.response?.data?.message || this.$t('message.something-wrong'))
         })
     },
+    openAddAction(id) {
+      this.$refs.modalExtra.open(id)
+    },
+    openActionList(id) {
+      this.$refs.modalList.open(id)
+    },
     openShow(id) {
-      this.$inertia.visit(this.appRoute('admin.module.show', id))
+      // this.$inertia.visit(this.appRoute('admin.module.show', id))
     }
   }
 }

@@ -72,7 +72,7 @@ export default {
       filters: {
         name: null,
         role: null,
-        page: Number(this.appRoute().params?.page ?? 1)
+        page: Number(this.$route.query.page) || 1
       },
       fields: [
         {
@@ -111,12 +111,9 @@ export default {
       this.filters.page = page
       let params = { ...this.filters }
       await axios
-        .get(
-          this.appRoute('admin.api.subsystem.all-module', {
-            id: this.id,
-            ...params
-          })
-        )
+        .get(`/subsystem/${this.id}/modules`, {
+          params
+        })
         .then((response) => {
           this.items = response?.data?.data
           this.paginate = response?.data?.meta

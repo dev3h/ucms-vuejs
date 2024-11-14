@@ -136,9 +136,7 @@ export default {
     },
     async fetchData() {
       try {
-        const { data } = await axios.get(
-          this.appRoute('admin.api.subsystem.rest-module', this?.current_id)
-        )
+        const { data } = await axios.get(`/subsystem/${this.current_id}/rest-modules`)
         if (data?.data?.length > 0) {
           this.originalData = data?.data
           this.data = [...this.originalData]

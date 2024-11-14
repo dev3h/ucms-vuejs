@@ -58,6 +58,15 @@
           @page-change="changePage"
           @size-change="changeSize"
         >
+          <template #subsystem_count="{ row }">
+            <div class="flex gap-2 items-center">
+              <span
+                @click="openSubsystemList(row?.id)"
+                class="rounded-[50px] bg-gray-300 cursor-pointer px-2 py-1"
+                >{{ row?.subsystem_count }} {{ $t('button.item') }}</span
+              >
+            </div>
+          </template>
           <template #action="{ row }">
             <div class="flex justify-center items-center gap-x-[12px]">
               <div class="cursor-pointer" @click="openShow(row?.id)">
@@ -76,6 +85,16 @@
     </div>
     <DeleteForm ref="deleteForm" @delete-action="deleteItem" />
     <ModalSystem ref="modalSystem" />
+    <ModalListChildren
+      :title="$t('sidebar.subsystem')"
+      fetchRoute="/system/:id/subsystems"
+      deleteRoute="/system/:id/remove-subsystem/:childId"
+      ref="modalList"
+      showRoute="subsystem-show"
+      @close-modal="fetchData()"
+      children_count_label="sidebar.module"
+      children_key="module_count"
+    />
   </AdminLayout>
 </template>
 
@@ -88,9 +107,17 @@ import axios from '@/Plugins/axios'
 import DeleteForm from '@/components/Page/DeleteForm.vue'
 import debounce from 'lodash.debounce'
 import ModalSystem from './ModalSystem.vue'
+import ModalListChildren from '@/components/Dialog/ModalListChildren.vue'
 
 export default {
-  components: { ModalSystem, AdminLayout, BreadCrumbComponent, DataTable, DeleteForm },
+  components: {
+    ModalSystem,
+    ModalListChildren,
+    AdminLayout,
+    BreadCrumbComponent,
+    DataTable,
+    DeleteForm
+  },
   data() {
     return {
       items: [],
@@ -108,7 +135,7 @@ export default {
         },
         {
           key: 'code',
-          'width': 200,
+          width: 200,
           label: this.$t('column.common.code'),
           align: 'left',
           headerAlign: 'left'
@@ -117,6 +144,13 @@ export default {
           key: 'client_id',
           'min-width': 300,
           label: this.$t('column.client-id'),
+          align: 'left',
+          headerAlign: 'left'
+        },
+        {
+          key: 'subsystem_count',
+          'min-width': 300,
+          label: this.$t('column.common.count', { name: this.$t('sidebar.subsystem') }),
           align: 'left',
           headerAlign: 'left'
         },
@@ -137,6 +171,7 @@ export default {
           minWidth: 200
         }
       ],
+      modalList: null,
       paginate: {},
       loadForm: false
     }
@@ -186,6 +221,9 @@ export default {
     },
     openDeleteForm(id) {
       this.$refs.deleteForm.open(id)
+    },
+    openSubsystemList(id) {
+      this.$refs.modalList.open(id)
     },
     async deleteItem(id) {
       await axios

@@ -80,6 +80,7 @@
     "logout": "Đăng xuất",
     "send": "Gửi",
     "cancel": "Hủy",
+    "close": "Đóng",
     "confirm": "Xác nhận",
     "delete": "Xóa",
     "edit": "Sửa",
@@ -112,7 +113,11 @@
     "back": "Quay lại",
     "I-have-an-app": "Tôi đã có ứng dụng",
     "submit": "Gửi",
-    "add-client-secret": "Thêm client secret"
+    "add-client-secret": "Thêm client secret",
+    "item": "Phần tử"
+  },
+  "dialog": {
+    "add":"Thêm {name}"
   },
   "input": {
     "common": {

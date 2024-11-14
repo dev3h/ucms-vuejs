@@ -73,16 +73,34 @@
           @page-change="changePage"
         >
           <template #system="{ row }">
-            <router-link v-if="row?.system" class='text-primary hover:opacity-80' :to="{ name: 'system-show', params: {id: row?.system?.id} }">{{ row?.system?.name }}</router-link>
+            <router-link
+              v-if="row?.system"
+              class="text-primary hover:opacity-80"
+              :to="{ name: 'system-show', params: { id: row?.system?.id } }"
+            >
+              {{ row?.system?.name }}
+            </router-link>
           </template>
           <template #module_count="{ row }">
-            <span @click="openModuleList(row?.id)">{{ row?.module_count }}</span>
+            <div class="flex gap-2 items-center">
+              <img
+                class="cursor-pointer"
+                src="/images/svg/add-item.svg"
+                alt=""
+                @click="openAddModule(row?.id)"
+              />
+              <span
+                @click="openModuleList(row?.id)"
+                class="rounded-[50px] bg-gray-300 cursor-pointer px-2 py-1"
+                >{{ row?.module_count }} {{ $t('button.item') }}</span
+              >
+            </div>
           </template>
           <template #action="{ row }">
             <div class="flex justify-center items-center gap-x-[12px]">
-              <div class="cursor-pointer" @click="openShow(row?.id)">
+              <!-- <div class="cursor-pointer" @click="openShow(row?.id)">
                 <img src="/images/svg/eye-icon.svg" />
-              </div>
+              </div> -->
               <div class="cursor-pointer" @click="openEdit(row?.id)">
                 <img src="/images/svg/pen-icon.svg" />
               </div>
@@ -96,7 +114,24 @@
     </div>
     <DeleteForm ref="deleteForm" @delete-action="deleteItem" />
     <ModalSubSystem ref="modalSubSystem" @add-success="fetchData()" @update-success="fetchData()" />
-    <!-- <SubSystemDrawer ref="subsystemDrawer" /> -->
+    <ModalAddExtra
+      ref="modalExtra"
+      @add-success="fetchData()"
+      :title="$t('dialog.add', { name: $t('sidebar.module') })"
+      :placeholder="$t('input.common.select', { name: $t('sidebar.module') })"
+      fetchRoute="/subsystem/:id/rest-modules"
+      addRoute="/subsystem/:id/add-modules"
+    />
+    <ModalListChildren
+      :title="$t('sidebar.module')"
+      fetchRoute="/subsystem/:id/modules"
+      deleteRoute="/subsystem/:id/remove-module/:childId"
+      ref="modalList"
+      showRoute="module-show"
+      @close-modal="fetchData()"
+      children_count_label="sidebar.action"
+      children_key="action_count"
+    />
   </AdminLayout>
 </template>
 <script>
@@ -108,9 +143,18 @@ import axios from '@/Plugins/axios'
 import DeleteForm from '@/components/Page/DeleteForm.vue'
 import debounce from 'lodash.debounce'
 import ModalSubSystem from './ModalSubSystem.vue'
-import SubSystemDrawer from './SubSystemDrawer.vue'
+import ModalAddExtra from '@/components/Dialog/ModalAddExtra.vue'
+import ModalListChildren from '@/components/Dialog/ModalListChildren.vue'
 export default {
-  components: { ModalSubSystem, AdminLayout, BreadCrumbComponent, DataTable, DeleteForm, SubSystemDrawer },
+  components: {
+    ModalSubSystem,
+    AdminLayout,
+    BreadCrumbComponent,
+    DataTable,
+    DeleteForm,
+    ModalAddExtra,
+    ModalListChildren
+  },
   data() {
     return {
       items: [],
@@ -120,6 +164,8 @@ export default {
         limit: Number(this?.$route?.query?.limit ?? 10)
       },
       subsystemDrawer: null,
+      modalExtra: null,
+      modalList: null,
       fields: [
         {
           key: 'name',
@@ -130,7 +176,7 @@ export default {
         },
         {
           key: 'code',
-          'width': 200,
+          width: 200,
           label: this.$t('column.common.code'),
           align: 'left',
           headerAlign: 'left'
@@ -197,7 +243,6 @@ export default {
           this.loadForm = false
         })
         .catch((error) => {
-          console.log(error)
           this.loadForm = false
           this.$message.error(error?.response?.data?.message || this.$t('message.something-wrong'))
         })
@@ -225,8 +270,11 @@ export default {
     openDeleteForm(id) {
       this.$refs.deleteForm.open(id)
     },
+    openAddModule(id) {
+      this.$refs.modalExtra.open(id)
+    },
     openModuleList(id) {
-
+      this.$refs.modalList.open(id)
     },
     async deleteItem(id) {
       await axios

@@ -81,6 +81,7 @@
     "logout": "Logout",
     "send": "Send",
     "cancel": "Cancel",
+    "close": "Close",
     "confirm": "Confirm",
     "delete": "Delete",
     "edit": "Edit",
@@ -113,7 +114,11 @@
     "back": "Back",
     "I-have-an-app": "I have an app",
     "submit": "Submit",
-    "add-client-secret": "Add client secret"
+    "add-client-secret": "Add client secret",
+    "item": "Item"
+  },
+  "dialog": {
+    "add": "Add {name}"
   },
   "input": {
     "common": {
