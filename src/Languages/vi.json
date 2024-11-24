@@ -240,7 +240,9 @@
     "something-wrong": "Có lỗi xảy ra vui lòng thử lại sau",
     "copy-success": "Sao chép vào clipboard thành công",
     "login-ucms-fail": "Đăng nhập UCMS thất bại",
-    "miss-param": "Thiếu tham số {name}"
+    "miss-param": "Thiếu tham số {name}",
+    "block-user": "Bạn nhập sai mật khẩu quá nhiều lần, tài khoản của bạn đã bị tạm khóa",
+    "block-user-time": "Làm ơn chờ {time} giây rồi thử lại"
   },
   "back-bar": {
     "create-user": "Tạo mới người dùng",

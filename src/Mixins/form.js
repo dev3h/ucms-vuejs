@@ -67,6 +67,7 @@ export function toFormData(
 }
 
 export default {
+    name: 'form',
     emits: ["submit"],
     data() {
         return {
@@ -97,6 +98,13 @@ export default {
                 if (error.response?.status === 422) {
                     this.setErrors(error.response?.data?.errors ?? {});
                     message = "Please check your input values again.";
+                }
+                else if (error.response?.data?.errors == "USER_IS_BLOCKED") {
+                    const data = {
+                        remainTime: error.response?.data?.message,
+                        errors: error.response?.data?.errors
+                    }
+                    this.setErrors(data ?? {})
                 } else {
                     this.$message.error({ message: message, grouping: true });
                 }
@@ -140,5 +148,8 @@ export default {
         prepareForUpload() {
             return toFormData(this.formData, "", { indices: false });
         },
+        getAllErrors() {
+            return this.formErrors;
+        }
     },
 };

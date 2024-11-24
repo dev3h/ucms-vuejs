@@ -59,9 +59,9 @@
         >
           <template #action="{ row }">
             <div class="flex justify-center items-center gap-x-[12px]">
-              <div class="cursor-pointer" @click="openShow(row?.id)">
+              <!-- <div class="cursor-pointer" @click="openShow(row?.id)">
                 <img src="/images/svg/eye-icon.svg" />
-              </div>
+              </div> -->
               <div class="cursor-pointer" @click="openEdit(row?.id)">
                 <img src="/images/svg/pen-icon.svg" />
               </div>

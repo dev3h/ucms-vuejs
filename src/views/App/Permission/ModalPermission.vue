@@ -122,28 +122,30 @@
               :error="getError('code')"
               :inline-message="hasError('code')"
             >
-              <el-tree
-                class="w-full"
-                :data="filteredPermissions"
-                node-key="code"
-                :props="treeProps"
-                highlight-current
-                default-expand-all
-                ref="permissionTree"
-              >
-                <template #default="{ node, data }">
-                  <div v-if="data.type !== 'action'">
-                    {{ data.label }}
-                  </div>
-                  <div v-else>
-                    <el-radio-group v-model="selectedAction" @change="updateSelectedAction(data)">
-                      <el-radio :value="data.code" :key="data.code">
-                        {{ data.label }}
-                      </el-radio>
-                    </el-radio-group>
-                  </div>
-                </template>
-              </el-tree>
+              <div class="!max-h-[300px] w-full overflow-scroll mt-4">
+                <el-tree
+                  :data="filteredPermissions"
+                  node-key="code"
+                  :props="treeProps"
+                  highlight-current
+                  default-expand-all
+                  :default-expanded-keys="expandedKeys"
+                  ref="permissionTree"
+                >
+                  <template #default="{ node, data }">
+                    <div v-if="data.type !== 'action'">
+                      {{ data.label }}
+                    </div>
+                    <div v-else>
+                      <el-radio-group v-model="selectedAction" @change="updateSelectedAction(data)">
+                        <el-radio :value="data.code" :key="data.code">
+                          {{ data.label }}
+                        </el-radio>
+                      </el-radio-group>
+                    </div>
+                  </template>
+                </el-tree>
+              </div>
             </el-form-item>
 
             <div style="margin-top: 20px">
@@ -204,7 +206,8 @@ export default {
         label: 'label',
         children: 'children',
         isLeaf: (data) => data.type === 'action'
-      }
+      },
+      expandedKeys: []
     }
   },
   created() {
@@ -347,7 +350,10 @@ export default {
           const response = await axios.get(`/permission/${this.current_id}`)
           if (response?.data?.status_code === 200) {
             this.formData = response?.data?.data
-            this.selectedAction = response?.data?.data?.code
+            const code = response?.data?.data?.code
+            this.selectedAction = code
+            const system = code.split('-')[0]
+            this.expandedKeys = [`SYSTEM_${system}`]
           }
           this.loadingForm = false
         } catch (error) {
