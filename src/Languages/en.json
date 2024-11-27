@@ -127,6 +127,7 @@
       "new-password": "New password",
       "confirm-new-password": "New password (re-enter)",
       "initial-password": "Initial password",
+      "old-password": "Old password",
       "current-password": "Current password",
       "select": "Select"
     },

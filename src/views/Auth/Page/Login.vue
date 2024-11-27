@@ -87,14 +87,17 @@
         </div>
       </div>
     </el-card>
-    <el-dialog v-model="countdownActive"
-    :before-close = "handleBeforeClose"
-    :show-close="false"
-    class="h-1/2 dialog-block-user"
+    <el-dialog
+      v-model="countdownActive"
+      :before-close="handleBeforeClose"
+      :show-close="false"
+      class="h-1/2 dialog-block-user"
     >
       <div class="flex flex-col justify-center items-center h-full gap-6">
         <p class="text-xl text-center font-bold">{{ $t('message.block-user') }}</p>
-        <p class="text-2xl text-center font-bold text-black">{{ $t('message.block-user-time', {time: countdown}) }}</p>
+        <p class="text-2xl text-center font-bold text-black">
+          {{ $t('message.block-user-time', { time: countdown }) }}
+        </p>
       </div>
     </el-dialog>
   </div>
@@ -134,6 +137,8 @@ export default {
           localStorage.setItem('countdown', +data.remainTime)
           this.countdown = parseInt(+data.remainTime, 10)
           this.startCountdown()
+        } else if (data?.errors === 'PASSWORD_EXPIRED') {
+          this.$router.push({ name: 'password-update', query: { email: this.formData.email } })
         }
       },
       deep: true

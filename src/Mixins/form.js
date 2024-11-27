@@ -99,6 +99,12 @@ export default {
                     this.setErrors(error.response?.data?.errors ?? {});
                     message = "Please check your input values again.";
                 }
+                else if (error.response?.data?.errors == "PASSWORD_EXPIRED") {
+                    const data = {
+                        errors: error.response?.data?.errors
+                    }
+                    this.setErrors(data ?? {})
+                 }
                 else if (error.response?.data?.errors == "USER_IS_BLOCKED") {
                     const data = {
                         remainTime: error.response?.data?.message,

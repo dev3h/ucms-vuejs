@@ -126,6 +126,7 @@
       "new-password": "Mật khẩu mới",
       "confirm-new-password": "Mật khẩu mới (nhập lại)",
       "initial-password": "Mật khẩu ban đầu",
+      "old-password": "Mật khẩu cũ",
       "current-password": "Mật khẩu hiện tại",
       "search": "Tìm kiếm",
       "select": "Chọn {name}",
