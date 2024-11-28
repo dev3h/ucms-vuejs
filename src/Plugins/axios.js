@@ -67,8 +67,9 @@ export function provideAxios(options = {}) {
       return response
     },
     function (error) {
+      console.log(error)
       // Any status codes that falls outside the range of 2xx cause this function to trigger
-      const { status } = error.response
+      const status = error?.response?.status
 
       if (status === 401) {
         // window.location.href = '/admin/login'

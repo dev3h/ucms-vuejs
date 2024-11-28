@@ -167,7 +167,7 @@ export default {
       } else if (response?.data?.data?.twoFactor) {
         // this.$inertia.visit(this.appRoute('admin.two-factor.form'))
       } else {
-        const accessToken = response?.data?.data?.access_token
+        const accessToken = response?.data?.access_token
         this.authStore.setAdminAccessToken(accessToken)
         this.$router.push({ name: 'system' })
       }

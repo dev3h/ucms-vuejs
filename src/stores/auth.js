@@ -30,13 +30,29 @@ export const useAuthStore = defineStore('auth', {
         this.adminInfo = response?.data?.data
         return response?.data?.data
       } catch (error) {
-        this.clearAdminToken()
-        throw error
+        console.log(error)
+        if (
+          error?.response?.status === 401 &&
+          error?.response?.data?.errors !== 'INVALID_REFRESH_TOKEN'
+        ) {
+          await this.refreshToken()
+          return this.fetchAdminInfo()
+        }
+        // this.clearAdminToken()
       }
     },
     async logout() {
       await axios.post('/auth/admin/logout')
       this.clearAdminToken()
+    },
+    async refreshToken() {
+      try {
+        const response = await axios.post('/auth/admin/refresh-token')
+        const accessToken = response?.data?.access_token
+        this.setAdminAccessToken(accessToken)
+      } catch (error) {
+        // this.clearAdminToken
+      }
     }
   },
   getters: {

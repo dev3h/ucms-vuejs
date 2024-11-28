@@ -31,14 +31,14 @@
                 :placeholder="$t('input.common.enter', { name: $t('input.common.email') })"
               />
             </el-form-item>
-            <div class="-mt-2">
+            <!-- <div class="-mt-2">
               <router-link
                 class="text-sm underline cursor-pointer"
                 :to="{ name: 'forgot-password' }"
               >
                 {{ $t('auth-page.click-forgot-password') }}
               </router-link>
-            </div>
+            </div> -->
           </el-form>
 
           <div class="text-center mt-5">

@@ -72,6 +72,12 @@
                   clearable
                   :placeholder="$t('input.common.enter', { name: $t('input.common.password') })"
                 />
+                <div v-if="formData.password" class="w-full">
+                  <div class="password-strength-bar">
+                    <div v-for="n in 4" :key="n" :class="['strength-segment', { active: n <= passwordStrength }]"></div>
+                  </div>
+                  <div class="password-strength" :class="passwordStrengthClass">{{ passwordStrengthText }}</div>
+                </div>
               </el-form-item>
             </div>
             <div>
@@ -139,6 +145,7 @@ import axios from '@/Plugins/axios'
 import form from '@/Mixins/form.js'
 import baseRuleValidate from '@/Store/Const/baseRuleValidate.js'
 import BackBar from '@/components/BackBar/Index.vue'
+import zxcvbn from 'zxcvbn'
 
 export default {
   components: { AdminLayout, BreadCrumbComponent, BackBar },
@@ -170,7 +177,8 @@ export default {
         type: baseRuleValidate(this.$t)(this.$t('input.type-user')),
         password: baseRuleValidate(this.$t)(this.$t('input.common.password'))
       },
-      loadingForm: false
+      loadingForm: false,
+      passwordStrength: 0
     }
   },
   computed: {
@@ -189,6 +197,19 @@ export default {
     },
     titlePage() {
       return this.isEdit ? this.$t('back-bar.edit-user') : this.$t('back-bar.create-user')
+    },
+    passwordStrengthClass() {
+      return `strength-${this.passwordStrength}`
+    },
+    passwordStrengthText() {
+            const levels = ['Rất yếu', 'Yếu', 'Trung bình', 'Tốt', 'Mạnh']
+      return levels[this.passwordStrength]
+    }
+  },
+  watch: {
+    'formData.password': function (val) {
+      const result = zxcvbn(val)
+      this.passwordStrength = result.score
     }
   },
   created() {
@@ -203,6 +224,13 @@ export default {
       this.$router.push({ name: 'user' })
     },
     async submit() {
+      // if(!this.isEdit) {
+      //   if (this.passwordStrength < 2) {
+      //     this.setErrors({ password: [this.$t('message.password-weak')] })
+      //     this.$message.error(this.$t('message.password-weak'))
+      //     return
+      //   }
+      // }
       this.loadingForm = true
       const { method, url } = this.prepareSubmit()
       await axios?.[method](url, this.formData).then((response) => {
@@ -251,8 +279,41 @@ export default {
           this.$message.error(error?.response?.data?.message || this.$t('message.something-wrong'))
           this.loadForm = false
         })
-    }
+    },
   }
 }
 </script>
-<style></style>
+<style scoped>
+.strength-0 {
+  color: #D91656;
+}
+.strength-1 {
+  color: #E38E49;
+}
+.strength-2 {
+  color: #F3C623;
+}
+.strength-3 {
+  color: #A8CD89;
+}
+.strength-4 {
+  color: #47663B;
+}
+.password-strength {
+  margin-top: 5px;
+}
+.password-strength-bar {
+  display: flex;
+  gap: 4px;
+  margin-top: 5px;
+  width: 100%;
+}
+.strength-segment {
+  flex: 1;
+  height: 8px;
+  background-color: #e0e0e0;
+}
+.strength-segment.active {
+  background-color: green;
+}
+</style>
