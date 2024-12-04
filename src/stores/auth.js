@@ -35,8 +35,13 @@ export const useAuthStore = defineStore('auth', {
           error?.response?.status === 401 &&
           error?.response?.data?.errors !== 'INVALID_REFRESH_TOKEN'
         ) {
-          await this.refreshToken()
+          try {
+            await this.refreshToken()
           return this.fetchAdminInfo()
+          } catch (error) {
+            this.clearAdminToken()
+            throw new Error('Session expired. Please log in again.')
+          }
         }
         // this.clearAdminToken()
       }
@@ -52,6 +57,7 @@ export const useAuthStore = defineStore('auth', {
         this.setAdminAccessToken(accessToken)
       } catch (error) {
         // this.clearAdminToken
+        throw new Error('Refresh token expired or invalid')
       }
     }
   },
