@@ -89,6 +89,11 @@
           <template #two_factor_enable="{ row }">
             <span>{{ row?.two_factor_enable ? $t('button.enable') : $t('button.disable') }}</span>
           </template>
+          <template #history_login="{row}">
+            <span @click="openHistoryLogin(row?.id)" class="font-bold text-primary cursor-pointer hover:opacity-85">
+              {{ $t('button.detail') }}
+            </span>
+          </template>
           <template #action="{ row }">
             <div class="flex justify-center items-center gap-x-[12px]">
               <div class="cursor-pointer" @click="openShow(row?.id)">
@@ -107,6 +112,7 @@
     </div>
     <DeleteForm ref="deleteForm" @delete-action="deleteAccount" />
     <ModalImport ref="modalImport" @import-success="fetchData" />
+    <HistoryLoginDialog ref="historyLoginDialog" />
   </AdminLayout>
 </template>
 
@@ -119,9 +125,10 @@ import axios from '@/Plugins/axios'
 import DeleteForm from '@/components/Page/DeleteForm.vue'
 import debounce from 'lodash.debounce'
 import ModalImport from './ModalImport.vue'
+import HistoryLoginDialog from './Modal/HistoryLoginDialog.vue'
 
 export default {
-  components: { AdminLayout, BreadCrumbComponent, DataTable, DeleteForm, ModalImport },
+  components: { AdminLayout, BreadCrumbComponent, HistoryLoginDialog, DataTable, DeleteForm, ModalImport },
   data() {
     return {
       items: [],
@@ -130,6 +137,7 @@ export default {
         page: Number(this?.route?.params?.page ?? 1),
         limit: Number(this?.$route?.query?.limit ?? 10)
       },
+      historyLoginDialog: null,
       fields: [
         {
           key: 'name',
@@ -181,8 +189,15 @@ export default {
         //   headerAlign: 'left'
         // },
         {
+          key: 'history_login',
+          'min-width': 200,
+          label: this.$t('column.history-login'),
+          align: 'left',
+          headerAlign: 'left'
+        },
+        {
           key: 'created_at',
-          width: 200,
+          width: 150,
           label: this.$t('column.common.created-at'),
           align: 'left',
           headerAlign: 'left'
@@ -228,7 +243,8 @@ export default {
           this.loadForm = false
         })
         .catch((error) => {
-          this.$message.error(error?.response?.data?.message || this.$t('message.something-wrong'))
+          console.log(error)
+          // this.$message.error(error?.response?.data?.message || this.$t('message.something-wrong'))
           this.loadForm = false
         })
     },
@@ -239,7 +255,8 @@ export default {
           this.roles = response?.data?.data
         })
         .catch((error) => {
-          this.$message.error(error?.response?.data?.message || this.$t('message.something-wrong'))
+          console.log(error)
+          // this.$message.error(error?.response?.data?.message || this.$t('message.something-wrong'))
         })
     },
     changePage(page) {
@@ -256,6 +273,9 @@ export default {
     },
     openImport() {
       this.$refs.modalImport.open()
+    },
+    openHistoryLogin(id) {
+      this.$refs.historyLoginDialog.open(id)
     },
     openDeleteForm(id) {
       this.$refs.deleteForm.open(id)

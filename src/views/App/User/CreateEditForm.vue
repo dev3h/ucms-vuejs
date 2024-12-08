@@ -257,7 +257,8 @@ export default {
           this.roles = response?.data?.data
         })
         .catch((error) => {
-          this.$message.error(error?.response?.data?.message || this.$t('message.something-wrong'))
+          console.log(error)
+          // this.$message.error(error?.response?.data?.message || this.$t('message.something-wrong'))
         })
     },
     async fetchData() {

@@ -30,7 +30,7 @@ export const useAuthStore = defineStore('auth', {
         this.adminInfo = response?.data?.data
         return response?.data?.data
       } catch (error) {
-        console.log(error)
+        console.log(error) 
         if (
           error?.response?.status === 401 &&
           error?.response?.data?.errors !== 'INVALID_REFRESH_TOKEN'

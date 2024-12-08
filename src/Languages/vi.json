@@ -114,7 +114,8 @@
     "I-have-an-app": "Tôi đã có ứng dụng",
     "submit": "Gửi",
     "add-client-secret": "Thêm client secret",
-    "item": "Phần tử"
+    "item": "Phần tử",
+    "detail": "Chi tiết"
   },
   "dialog": {
     "add":"Thêm {name}"
@@ -181,7 +182,12 @@
     "specific-users": "Người dùng cụ thể",
     "title": "Tiêu đề",
     "client-id": "Client ID",
-    "client-secret": "Client secret"
+    "client-secret": "Client secret",
+    "history-login": "Lịch sử đăng nhập",
+    "os": "Hệ điều hành",
+    "browser": "Trình duyệt",
+    "ip": "Địa chỉ IP",
+    "session_type": "Loại phiên"
   },
   "sidebar": {
     "dashboard": "Bảng điều khiển",

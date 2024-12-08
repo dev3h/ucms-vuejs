@@ -115,7 +115,8 @@
     "I-have-an-app": "I have an app",
     "submit": "Submit",
     "add-client-secret": "Add client secret",
-    "item": "Item"
+    "item": "Item",
+    "detail": "Detail"
   },
   "dialog": {
     "add": "Add {name}"
@@ -180,7 +181,12 @@
     "specific-users": "Specific users",
     "title": "Title",
     "client-id": "Client ID",
-    "client-secret": "Client secret"
+    "client-secret": "Client secret",
+    "history-login": "History login",
+    "os": "OS",
+    "browser": "Browser",
+    "ip": "IP",
+    "session_type": "Session type"
   },
   "sidebar": {
     "dashboard": "Dashboard",

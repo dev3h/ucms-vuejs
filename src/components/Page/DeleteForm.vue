@@ -52,7 +52,6 @@ export default {
             this.current_id = null
         },
         async deleteItem() {
-            console.log(this.action)
             if (!this.action) {
                 this.$emit('delete-action', this.current_id)
                 this.isShowDeleteForm = false
