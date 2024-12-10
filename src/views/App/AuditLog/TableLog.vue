@@ -1,50 +1,56 @@
 <template>
-     <div class="w-full">
-        <div class="w-full flex flex-wrap justify-between gap-2 my-2">
-          <div class="flex flex-wrap gap-2">
-            <div class="col-span-1">
-              <el-input
-                v-model="filters.search"
-                class="!w-80"
-                size="large"
-                :placeholder="$t('input.common.search')"
-                clearable
-                @input="filterData"
-              >
-                <template #prefix>
-                  <img src="/images/svg/search-icon.svg" alt="" />
-                </template>
-              </el-input>
-            </div>
-            <div class="flex-col">
-              <el-date-picker
-                v-model="filters.created_at"
-                type="date"
-                :placeholder="$t('column.common.created-at')"
-                size="large"
-                class="!w-[185px]"
-                value-format="YYYY-MM-DD"
-                format="YYYY/MM/DD"
-                @change="filterData"
-              />
-            </div>
-          </div>
+  <div class="w-full">
+    <div class="w-full flex flex-wrap justify-between gap-2 my-2">
+      <div class="flex flex-wrap gap-2">
+        <div class="col-span-1">
+          <el-input
+            v-model="filters.search"
+            class="!w-80"
+            size="large"
+            :placeholder="$t('input.common.search')"
+            clearable
+            @input="filterData"
+          >
+            <template #prefix>
+              <img src="/images/svg/search-icon.svg" alt="" />
+            </template>
+          </el-input>
+        </div>
+        <div class="flex-col">
+          <el-date-picker
+            v-model="filters.created_at"
+            type="date"
+            :placeholder="$t('column.common.created-at')"
+            size="large"
+            class="!w-[185px]"
+            value-format="YYYY-MM-DD"
+            format="YYYY/MM/DD"
+            @change="filterData"
+          />
         </div>
       </div>
+    </div>
+  </div>
 
-      <div class="w-full">
-        <DataTable
-          v-loading="loadForm"
-          :fields="fields"
-          :items="items"
-          :paginate="paginate"
-          footer-center
-          paginate-background
-          @page-change="changePage"
-          @size-change="changeSize"
-        >
-        </DataTable>
-      </div>
+  <div class="w-full">
+    <DataTable
+      v-loading="loadForm"
+      :fields="fields"
+      :items="items"
+      :paginate="paginate"
+      :enableExpand="true"
+      footer-center
+      paginate-background
+      @page-change="changePage"
+      @size-change="changeSize"
+    >
+      <template #expand="{ row }">
+        <div>
+          <p>{{ row }}</p>
+        </div>
+      </template>
+    </DataTable>
+  </div>
 </template>
 
 <script>
@@ -58,12 +64,12 @@ export default {
     return {
       items: [],
       filters: {
-         page: Number(this?.$route?.params?.page ?? 1),
+        page: Number(this?.$route?.params?.page ?? 1),
         limit: Number(this?.$route?.query?.limit ?? 10)
       },
       fields: [
         {
-          key: 'created_at',
+          key: 'level',
           'min-width': 200,
           label: 'Cấp độ',
           align: 'left',
@@ -83,7 +89,7 @@ export default {
           align: 'left',
           headerAlign: 'left'
         },
-         {
+        {
           key: 'actor',
           'min-width': 400,
           label: this.$t('column.actor'),
@@ -95,28 +101,28 @@ export default {
           'min-width': 400,
           label: 'Kết quả',
           align: 'left',
-          headerAlign: 'left',
+          headerAlign: 'left'
         },
         {
           key: 'target',
           'min-width': 400,
           label: 'Trạng thái',
           align: 'left',
-          headerAlign: 'left',
+          headerAlign: 'left'
         },
         {
           key: 'target',
           'min-width': 400,
           label: 'GeoIP',
           align: 'left',
-          headerAlign: 'left',
+          headerAlign: 'left'
         },
         {
           key: 'target',
           'min-width': 400,
           label: 'Số lần lặp lại',
           align: 'left',
-          headerAlign: 'left',
+          headerAlign: 'left'
         }
       ],
       paginate: {},
@@ -124,7 +130,7 @@ export default {
     }
   },
   async created() {
-    // await this.fetchData()
+    await this.fetchData()
   },
   methods: {
     async fetchData(page = 1) {
@@ -132,7 +138,7 @@ export default {
       this.filters.page = page
       let params = { ...this.filters }
       await axios
-        .get('/audit-logs', { params })
+        .get('/log', { params })
         .then((response) => {
           this.items = response?.data?.data
           this.paginate = response?.data?.meta
@@ -157,6 +163,4 @@ export default {
 }
 </script>
 
-<style lang="scss" scoped>
-
-</style>
+<style lang="scss" scoped></style>

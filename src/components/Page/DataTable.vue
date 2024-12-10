@@ -12,6 +12,13 @@
             @selection-change="handleSelectionChange"
             @row-click="rowClick"
         >
+            <el-table-column v-if="enableExpand" type="expand" width="50">
+                <template #default="scope">
+                    <slot name="expand" v-bind="scope">
+                        {{ scope.row }}
+                    </slot>
+                </template>
+            </el-table-column>
             <el-table-column v-if="enableSelectBox" type="selection" width="55" />
             <el-table-column v-if="enableIndex" type="index" fixed width="70" label="No." align="center" />
             <el-table-column
@@ -120,6 +127,7 @@ export default {
         },
         enableIndex: {type: Boolean, default: false},
         enableSelectBox: {type: Boolean, default: false},
+        enableExpand: {type: Boolean, default: false},
         disableTableInfo: {type: Boolean, default: false},
         disablePaginateFooter: {type: Boolean, default: false},
         headerCenter: {type: Boolean, default: false},

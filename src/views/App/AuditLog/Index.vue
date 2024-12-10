@@ -127,7 +127,7 @@ export default {
       this.filters.page = page
       let params = { ...this.filters }
       await axios
-        .get(this.appRoute('admin.api.audit-log.index', params))
+        .get('/log', params)
         .then((response) => {
           this.items = response?.data?.data
           this.paginate = response?.data?.meta
