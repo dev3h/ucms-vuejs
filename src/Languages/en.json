@@ -186,7 +186,9 @@
     "os": "OS",
     "browser": "Browser",
     "ip": "IP",
-    "session_type": "Session type"
+    "session_type": "Session type",
+    "message": "Message",
+    "status-code": "Status code"
   },
   "sidebar": {
     "dashboard": "Dashboard",

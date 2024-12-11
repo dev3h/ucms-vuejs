@@ -187,7 +187,9 @@
     "os": "Hệ điều hành",
     "browser": "Trình duyệt",
     "ip": "Địa chỉ IP",
-    "session_type": "Loại phiên"
+    "session_type": "Loại phiên",
+    "message": "Message",
+    "status-code": "Mã trạng thái"
   },
   "sidebar": {
     "dashboard": "Bảng điều khiển",
