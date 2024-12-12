@@ -1,7 +1,7 @@
 <template>
   <div class="flex w-full">
     <!-- Left Side: Date-Time Logs -->
-    <div class="w-1/4 p-4 border-r border-gray-300">
+    <div class="w-[200px] p-4 border-r border-gray-300">
       <h3 class="text-lg font-bold mb-4">Date-Time Logs</h3>
       <ul class="space-y-2">
         <li
@@ -17,7 +17,7 @@
     </div>
 
     <!-- Right Side: Log Table -->
-    <div class="w-3/4 p-4">
+    <div class="flex-1 p-4">
       <div class="w-full flex flex-wrap justify-between gap-2 my-2">
         <div class="flex flex-wrap gap-2">
           <div class="col-span-1">
@@ -110,6 +110,7 @@ export default {
       try {
         const response = await axios.get('/log/date-times-logs');
         this.dateTimeLogs = response?.data?.data; // Assuming the response is an array of dates
+        this.selectedDate = this.dateTimeLogs[0] || null;
       } catch (error) {
         this.$message.error(error?.response?.data?.message);
       }

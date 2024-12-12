@@ -51,6 +51,7 @@ import VChart from 'vue-echarts'
 import 'echarts'
 import { searchMenu } from '@/Mixins/breadcrumb.js'
 import TableLog from './TableLog.vue'
+import axios from '@/Plugins/axios'
 
 export default {
   components: {
@@ -107,48 +108,70 @@ export default {
     }
   },
   methods: {
-    selectRange(range) {
+    async selectRange(range) {
       this.selectedRange = range
 
       let xAxisData = []
       let seriesData = null
+      let params = { range }
 
-      if (range === 'week') {
-        xAxisData = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
-        seriesData = this.generateRandomData(7)
-      } else if (range === 'month') {
-        xAxisData = Array.from({ length: 30 }, (_, i) => `${i + 1}`)
-        seriesData = this.generateRandomData(30)
-      } else if (range === 'year') {
-        xAxisData = [
-          'Jan',
-          'Feb',
-          'Mar',
-          'Apr',
-          'May',
-          'Jun',
-          'Jul',
-          'Aug',
-          'Sep',
-          'Oct',
-          'Nov',
-          'Dec'
-        ]
-        seriesData = this.generateRandomData(12)
-      } else if (range === 'daterange' && this.dateRange.length === 2) {
-        const startDate = new Date(this.dateRange[0])
-        const endDate = new Date(this.dateRange[1])
-        const daysDiff = (endDate - startDate) / (1000 * 60 * 60 * 24)
+      // Handle daterange specific logic
+      if (range === 'daterange' && this.dateRange.length === 2) {
+        const startDate = this.dateRange[0]
+        const endDate = this.dateRange[1]
+        params.start_date = startDate
+        params.end_date = endDate
 
+        const daysDiff = (new Date(endDate) - new Date(startDate)) / (1000 * 60 * 60 * 24)
         xAxisData = Array.from({ length: daysDiff + 1 }, (_, i) => {
           const date = new Date(startDate)
           date.setDate(date.getDate() + i)
           return date.toISOString().split('T')[0]
         })
-        seriesData = this.generateRandomData(daysDiff + 1)
+      } else {
+        // Default ranges for week, month, and year
+        if (range === 'week') {
+          xAxisData = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
+        } else if (range === 'month') {
+          xAxisData = Array.from({ length: 30 }, (_, i) => `${i + 1}`)
+        } else if (range === 'year') {
+          xAxisData = [
+            'Jan',
+            'Feb',
+            'Mar',
+            'Apr',
+            'May',
+            'Jun',
+            'Jul',
+            'Aug',
+            'Sep',
+            'Oct',
+            'Nov',
+            'Dec'
+          ]
+        }
+
+        // If no daterange, we use the range for the API request
+        params.range = range
       }
 
-      this.updateChartOptions(xAxisData, seriesData)
+      // Fetch data from the API based on the selected range and date range parameters
+      try {
+        const response = await axios.get('/log/chart-data', { params })
+        // Parse the response to update the chart
+        seriesData = [
+          response.data.series.debug,
+          response.data.series.info,
+          response.data.series.warning,
+          response.data.series.error,
+          response.data.series.critical
+        ]
+
+        // Update the chart with actual data
+        this.updateChartOptions(xAxisData, seriesData)
+      } catch (error) {
+        console.error('Error fetching chart data:', error)
+      }
     },
     updateChartOptions(xAxisData, seriesData) {
       this.chartOptions = {
