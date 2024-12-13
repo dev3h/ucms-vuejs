@@ -7,11 +7,32 @@
         <li
           v-for="date in dateTimeLogs"
           :key="date"
-          class="cursor-pointer hover:bg-gray-100 p-2 rounded"
+          class="cursor-pointer hover:bg-gray-100 p-2 rounded flex justify-between items-center"
           :class="{ 'bg-blue-100': date === selectedDate }"
           @click="selectDate(date)"
         >
-          {{ date }}
+          <span>{{ date }}</span>
+          <!-- Dropdown button -->
+          <!-- <el-dropdown trigger="click" class="float-right">
+            <el-button size="small" type="text">
+              click
+            </el-button>
+            <el-dropdown-menu slot="dropdown">
+              <el-dropdown-item @click="deleteLogByDate(date)">Xóa</el-dropdown-item>
+            </el-dropdown-menu>
+          </el-dropdown> -->
+          <el-dropdown trigger="contextmenu">
+            <span class="el-dropdown-link font-bold text-lg"> 
+             <img src="/images/svg/ellipse.svg" class='w-5 h-5' /> 
+            </span>
+            <template #dropdown>
+              <el-dropdown-menu class="w-[200px]">
+                <el-dropdown-item @click="deleteLogByDate(date)">
+                  <span class="!px-5">Xóa</span>
+                </el-dropdown-item>
+              </el-dropdown-menu>
+            </template>
+          </el-dropdown>
         </li>
       </ul>
     </div>
@@ -73,12 +94,13 @@
 </template>
 
 <script>
-import DataTable from '@/components/Page/DataTable.vue';
-import axios from '@/Plugins/axios';
-import debounce from 'lodash.debounce';
+import DataTable from '@/components/Page/DataTable.vue'
+import axios from '@/Plugins/axios'
+import debounce from 'lodash.debounce'
 
 export default {
   components: { DataTable },
+  emits: ['delete-success'],
   data() {
     return {
       dateTimeLogs: [], // Holds unique date-time logs
@@ -88,70 +110,106 @@ export default {
         page: Number(this?.$route?.params?.page ?? 1),
         limit: Number(this?.$route?.query?.limit ?? 10),
         search: '',
-        created_at: null,
+        created_at: null
       },
       fields: [
         { key: 'level', label: 'Cấp độ', 'min-width': 200, align: 'left', headerAlign: 'left' },
-        { key: 'created_at', label: this.$t('column.time'), width: 200, align: 'left', headerAlign: 'left' },
-        { key: 'ip_address', label: this.$t('column.ip'), 'min-width': 200, align: 'left', headerAlign: 'left' },
-        { key: 'status_code', label: this.$t('column.status-code'), width: 200, align: 'left', headerAlign: 'left' },
-        { key: 'message', label: this.$t('column.message'), 'min-width': 200, align: 'left', headerAlign: 'left' },
+        {
+          key: 'created_at',
+          label: this.$t('column.time'),
+          width: 200,
+          align: 'left',
+          headerAlign: 'left'
+        },
+        {
+          key: 'ip_address',
+          label: this.$t('column.ip'),
+          'min-width': 200,
+          align: 'left',
+          headerAlign: 'left'
+        },
+        {
+          key: 'status_code',
+          label: this.$t('column.status-code'),
+          width: 200,
+          align: 'left',
+          headerAlign: 'left'
+        },
+        {
+          key: 'message',
+          label: this.$t('column.message'),
+          'min-width': 200,
+          align: 'left',
+          headerAlign: 'left'
+        }
       ],
       paginate: {},
-      loadForm: false,
-    };
+      loadForm: false
+    }
   },
   async created() {
-    await this.fetchDateTimeLogs();
-    this.fetchData();
+    await this.fetchDateTimeLogs()
+    this.fetchData()
   },
   methods: {
     async fetchDateTimeLogs() {
       try {
-        const response = await axios.get('/log/date-times-logs');
-        this.dateTimeLogs = response?.data?.data; // Assuming the response is an array of dates
-        this.selectedDate = this.dateTimeLogs[0] || null;
+        const response = await axios.get('/log/date-times-logs')
+        this.dateTimeLogs = response?.data?.data // Assuming the response is an array of dates
+        this.selectedDate = this.dateTimeLogs[0] || null
       } catch (error) {
-        this.$message.error(error?.response?.data?.message);
+        this.$message.error(error?.response?.data?.message)
       }
     },
     async fetchData(page = 1) {
-      this.loadForm = true;
-      this.filters.page = page;
+      this.loadForm = true
+      this.filters.page = page
 
-      const params = { ...this.filters };
+      const params = { ...this.filters }
       if (this.selectedDate) {
-        params.created_at = this.selectedDate; // Filter by selected date
+        params.created_at = this.selectedDate // Filter by selected date
       }
 
       try {
-        const response = await axios.get('/log', { params });
-        this.items = response?.data?.data;
-        this.paginate = response?.data?.meta;
+        const response = await axios.get('/log', { params })
+        this.items = response?.data?.data
+        this.paginate = response?.data?.meta
       } catch (error) {
-        this.$message.error(error?.response?.data?.message);
+        this.$message.error(error?.response?.data?.message)
       } finally {
-        this.loadForm = false;
+        this.loadForm = false
       }
     },
     selectDate(date) {
-      this.selectedDate = date;
-      this.filters.page = 1; // Reset to the first page
-      this.fetchData();
+      this.selectedDate = date
+      this.filters.page = 1 // Reset to the first page
+      this.fetchData()
     },
     filterData: debounce(function () {
-      this.fetchData();
+      this.fetchData()
     }, 500),
     changePage(page) {
-      this.fetchData(page);
+      this.fetchData(page)
     },
     changeSize(value) {
-      this.filters.page = 1;
-      this.filters.limit = value;
-      this.fetchData();
+      this.filters.page = 1
+      this.filters.limit = value
+      this.fetchData()
     },
-  },
-};
+    async deleteLogByDate(date) {
+      await axios
+        .delete(`/log/${date}`)
+        .then((response) => {
+          this.$message.success(response?.data?.message)
+          Promise.all([this.fetchData(), this.fetchDateTimeLogs()])
+          this.$emit('delete-success')
+        })
+        .catch((error) => {
+          this.$message.error(error?.response?.data?.message)
+        })
+    }
+  }
+}
 </script>
 
 <style lang="scss" scoped></style>

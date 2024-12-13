@@ -15,7 +15,7 @@ const checkRequiredParams = async (to, from, next) => {
     next({ name: 'error-login', query: { authError: encodeURIComponent(message.trim()) } })
   } else {
     try {
-      const response = await axios.post('/system/check-data-system', { ...to.query })
+      const response = await axios.post('auth/sso-ucms/check-info-system', { ...to.query })
       if (response?.data?.data) next()
     } catch (error) {
       next({ name: 'error-login', query: { authError: error.response?.data?.message } })
@@ -243,9 +243,13 @@ const router = createRouter({
       ]
     },
     {
-      path: '/:catchAll(.*)',
+      path: '/sso/:catchAll(.*)',
+      redirect: '/sso/login/error'
+    },
+    {
+      path: '/admin/:catchAll(.*)',
       redirect: '/admin/login'
-    }
+    },
   ]
 })
 
@@ -271,32 +275,38 @@ router.beforeEach(async (to, from, next) => {
   const adminRoutePattern = /^\/admin\//
   const authRequired =
     adminRoutePattern.test(to.path) &&
-    !['admin-login', 'forgot-password', 'confirm-forgot-password', 'reset-password', 'password-update'].includes(to.name)
+    ![
+      'admin-login',
+      'forgot-password',
+      'confirm-forgot-password',
+      'reset-password',
+      'password-update'
+    ].includes(to.name)
   const authStore = useAuthStore()
   const loggedIn = authStore.getAdminAccessToken
 
-  if (to.path === '/admin/login' && loggedIn) {
+  if (adminRoutePattern.test(to.path) && loggedIn) {
     try {
       await authStore.fetchAdminInfo()
       return next('/admin/system-components/system')
     } catch (error) {
       // authStore.clearAdminToken()
-      return next()
-    }
-  }
-
-  if (authRequired && !loggedIn && to.name !== 'admin-login') {
-    return next('/admin/login')
-  }
-
-  if (loggedIn) {
-    try {
-      await authStore.fetchAdminInfo()
-    } catch (error) {
-      // authStore.clearAdminToken()
       return next('/admin/login')
     }
   }
+
+  if (authRequired && !loggedIn && adminRoutePattern.test(to.path) && to.name !== 'admin-login') {
+    return next('/admin/login')
+  }
+
+  // if (loggedIn && adminRoutePattern.test(to.path) {
+  //   try {
+  //     await authStore.fetchAdminInfo()
+  //   } catch (error) {
+  //     // authStore.clearAdminToken()
+  //     return next('/admin/login')
+  //   }
+  // }
 
   next()
 })

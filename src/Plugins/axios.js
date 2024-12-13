@@ -4,38 +4,17 @@ import { useAuthStore } from '@/stores/auth'
 /**
  * Axios default config
  */
-
 export const defaultConfig = {
-  // `baseURL` will be prepended to `url` unless `url` is absolute.
-  // It can be convenient to set `baseURL` for an instance of axios to pass relative URLs
-  // to methods of that instance.
   baseURL:
     import.meta.env.VITE_ENV === 'production'
       ? import.meta.env.VITE_PROD_API_BACKEND
       : import.meta.env.VITE_API_BACKEND,
-
-  // `timeout` specifies the number of milliseconds before the request times out.
-  // If the request takes longer than `timeout`, the request will be aborted.
-  // default is `0` (no timeout)
   timeout: 60000,
-
-  // `headers` are custom headers to be sent
   headers: { 'X-Requested-With': 'XMLHttpRequest' },
-
-  // `withCredentials` indicates whether or not cross-site Access-Control requests
-  // should be made using credentials
   withCredentials: true,
-
-  // `responseType` indicates the type of data that the server will respond with
-  // options are: 'arraybuffer', 'document', 'json', 'text', 'stream'
-  //   browser only: 'blob'
   responseType: 'json',
-
-  // `xsrfCookieName` is the name of the cookie to use as a value for xsrf token
-  xsrfCookieName: 'XSRF-TOKEN', // default
-
-  // `xsrfHeaderName` is the name of the http header that carries the xsrf token value
-  xsrfHeaderName: 'X-XSRF-TOKEN' // default
+  xsrfCookieName: 'XSRF-TOKEN',
+  xsrfHeaderName: 'X-XSRF-TOKEN'
 }
 
 /**
@@ -45,44 +24,91 @@ export const defaultConfig = {
 export function provideAxios(options = {}) {
   const instance = axios.create(Object.assign({}, defaultConfig, options))
 
-  // Setting up axios
+  // Flags to handle token refresh logic
+  let isRefreshing = false
+  let failedQueue = []
+
+  const processQueue = (error, token = null) => {
+    failedQueue.forEach((prom) => {
+      if (error) {
+        prom.reject(error)
+      } else {
+        prom.resolve(token)
+      }
+    })
+    failedQueue = []
+  }
+
+  // Setting up axios request interceptor
   instance.interceptors.request.use(
-    function (requestConfig) {
+    async function (requestConfig) {
       const authStore = useAuthStore()
       const adminToken = authStore.getAdminAccessToken
-      requestConfig.headers['Authorization'] = `Bearer ${adminToken}`
-      
-      requestConfig.headers['Accept-Language'] = 'vi'
 
+      // If token exists, set Authorization header
+      if (adminToken) {
+        requestConfig.headers['Authorization'] = `Bearer ${adminToken}`
+      }
+
+      requestConfig.headers['Accept-Language'] = 'vi'
       return requestConfig
     },
     function (error) {
-      Promise.reject(error) 
+      return Promise.reject(error)
     }
   )
 
+  // Setting up axios response interceptor
   instance.interceptors.response.use(
-    function (response) {
-      // Any status code that lie within the range of 2xx cause this function to trigger
-      return response
-    },
-    function (error) {
-      console.log(error)
-      // Any status codes that falls outside the range of 2xx cause this function to trigger
-      const status = error?.response?.status
+    (response) => response,
+    async (error) => {
+      const authStore = useAuthStore()
+      const originalRequest = error.config
+      const isAdminRoute = originalRequest.url?.startsWith('/admin')
+      // Handle 401 error (unauthorized)
+      if (
+        isAdminRoute &&
+        error.response?.status === 401 &&
+        !originalRequest._retry &&
+        error.response?.data?.errors !== 'INVALID_REFRESH_TOKEN'
+      ) {
+        if (isRefreshing) {
+          // Add failed request to queue while refreshing token
+          return new Promise((resolve, reject) => {
+            failedQueue.push({ resolve, reject })
+          })
+            .then((token) => {
+              originalRequest.headers['Authorization'] = `Bearer ${token}`
+              return instance(originalRequest)
+            })
+            .catch((err) => Promise.reject(err))
+        }
 
-      if (status === 401) {
-        // window.location.href = '/admin/login'
+        originalRequest._retry = true
+        isRefreshing = true
+
+        try {
+          // Refresh token and retry the original request
+          await authStore.refreshToken()
+          processQueue(null, authStore.getAdminAccessToken)
+          originalRequest.headers['Authorization'] = `Bearer ${authStore.getAdminAccessToken}`
+          return instance(originalRequest)
+        } catch (err) {
+          processQueue(err, null)
+          authStore.clearAdminToken()
+          return Promise.reject(err)
+        } finally {
+          isRefreshing = false
+        }
       }
 
-      // Update error_bag if rsponse 422
-      if (status === 422 || status === 302) {
-        // return error.response
+      // Handle other error statuses
+      if ([422, 302].includes(error.response?.status)) {
+        return Promise.reject(error.response)
       }
-
-      if ([503, 404, 403].includes(status)) {
-        // this.$inertia.visit(this.route('error', {code: status}))
-        // window.location.href = '/error?status=' + status
+      if ([503, 404, 403].includes(error.response?.status)) {
+        // Optional: Redirect to error pages
+        // window.location.href = `/error?status=${error.response.status}`
       }
 
       return Promise.reject(error)
@@ -96,20 +122,10 @@ export function provideAxios(options = {}) {
  * Vue Axios Plugin
  */
 export const VueAxios = {
-  /**
-   * @type {boolean}
-   */
   installed: false,
 
-  /**
-   * Install Plugin
-   *
-   * @param {Vue} Vue
-   * @param {axios.AxiosInstance} instance
-   */
   install(Vue, instance = null) {
     if (this.installed) {
-      // Skip install
       return
     }
     this.installed = true

@@ -95,24 +95,22 @@ export default {
                     error.response?.data?.message ??
                     "An error has occurred. please try again.";
 
-                if (error.response?.status === 422) {
-                    this.setErrors(error.response?.data?.errors ?? {});
-                    message = "Please check your input values again.";
-                }
-                else if (error.response?.data?.errors == "PASSWORD_EXPIRED") {
-                    const data = {
-                        errors: error.response?.data?.errors
-                    }
-                    this.setErrors(data ?? {})
-                 }
-                else if (error.response?.data?.errors == "USER_IS_BLOCKED") {
-                    const data = {
-                        remainTime: error.response?.data?.message,
-                        errors: error.response?.data?.errors
-                    }
-                    this.setErrors(data ?? {})
+                if (error.response?.status === 422 || error?.status === 422) {
+                  this.setErrors(error?.response?.data?.errors ?? error?.data?.errors ?? {})
+                  message = 'Please check your input values again.'
+                } else if (error.response?.data?.errors == 'PASSWORD_EXPIRED') {
+                  const data = {
+                    errors: error.response?.data?.errors
+                  }
+                  this.setErrors(data ?? {})
+                } else if (error.response?.data?.errors == 'USER_IS_BLOCKED') {
+                  const data = {
+                    remainTime: error.response?.data?.message,
+                    errors: error.response?.data?.errors
+                  }
+                  this.setErrors(data ?? {})
                 } else {
-                    this.$message.error({ message: message, grouping: true });
+                  this.$message.error({ message: message, grouping: true })
                 }
 
                 return false;

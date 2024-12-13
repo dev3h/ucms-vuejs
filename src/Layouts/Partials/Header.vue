@@ -93,7 +93,7 @@ export default {
   },
   computed: {
     user() {
-      return this.authStore?.adminInfo
+      return this.authStore?.adminInfo ?? this.authStore.fetchAdminInfo()
     }
   },
   methods: {

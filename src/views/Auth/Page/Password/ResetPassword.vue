@@ -34,6 +34,12 @@
                 clearable
                 :placeholder="$t('input.common.enter', { name: $t('input.common.new-password') })"
               />
+              <div v-if="formData.password" class="w-full">
+                  <div class="password-strength-bar">
+                    <div v-for="n in 4" :key="n" :class="['strength-segment', { active: n <= passwordStrength }]"></div>
+                  </div>
+                  <div class="password-strength" :class="passwordStrengthClass">{{ passwordStrengthText }}</div>
+                </div>
             </el-form-item>
             <el-form-item
               :label="$t('input.common.confirm-new-password')"
@@ -81,6 +87,7 @@
 import form from '@/Mixins/form'
 import axios from '@/Plugins/axios'
 import baseRuleValidate from '@/Store/Const/baseRuleValidate.js'
+import zxcvbn from 'zxcvbn'
 
 export default {
   name: 'ResetPassword',
@@ -99,7 +106,23 @@ export default {
           this.$t('input.common.confirm-new-password')
         )
       },
-      loadingForm: false
+      loadingForm: false,
+      passwordStrength: 0
+    }
+  },
+  computed: {
+    passwordStrengthClass() {
+      return `strength-${this.passwordStrength}`
+    },
+    passwordStrengthText() {
+            const levels = ['Rất yếu', 'Yếu', 'Trung bình', 'Tốt', 'Mạnh']
+      return levels[this.passwordStrength]
+    }
+  },
+  watch: {
+    'formData.password': function (val) {
+      const result = zxcvbn(val)
+      this.passwordStrength = result.score
     }
   },
   methods: {

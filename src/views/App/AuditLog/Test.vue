@@ -41,7 +41,7 @@
       <div>
         <v-chart ref="chart" :option="chartOptions" autoresize style="height: 400px" />
       </div>
-      <TableLog />
+      <TableLog @delete-success="refreshChart()" />
     </div>
   </AdminLayout>
 </template>
@@ -173,6 +173,10 @@ export default {
       } catch (error) {
         console.error('Error fetching chart data:', error)
       }
+    },
+
+    refreshChart() {
+      this.selectRange(this.selectedRange)
     },
 
     fillMissingData(dates, series) {

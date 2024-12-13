@@ -523,3 +523,35 @@ button.el-button--danger:hover {
 .el-card.card-custom .el-card__body {
   padding: 0;
 }
+.strength-0 {
+  color: #D91656;
+}
+.strength-1 {
+  color: #E38E49;
+}
+.strength-2 {
+  color: #F3C623;
+}
+.strength-3 {
+  color: #A8CD89;
+}
+.strength-4 {
+  color: #47663B;
+}
+.password-strength {
+  margin-top: 5px;
+}
+.password-strength-bar {
+  display: flex;
+  gap: 4px;
+  margin-top: 5px;
+  width: 100%;
+}
+.strength-segment {
+  flex: 1;
+  height: 8px;
+  background-color: #e0e0e0;
+}
+.strength-segment.active {
+  background-color: green;
+}
