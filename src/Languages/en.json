@@ -116,7 +116,10 @@
     "submit": "Submit",
     "add-client-secret": "Add client secret",
     "item": "Item",
-    "detail": "Detail"
+    "detail": "Detail",
+    "this-week": "This week",
+    "this-month": "This month",
+    "this-year": "This year"
   },
   "dialog": {
     "add": "Add {name}"
@@ -144,7 +147,9 @@
     "type-user": "Type user",
     "enable-2fa": "Enable 2FA",
     "admin": "Admin",
-    "user": "User"
+    "user": "User",
+    "from-date": "From date",
+    "to-date": "To date"
   },
   "validate": {
     "required": "{column} is required",

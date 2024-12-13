@@ -2,7 +2,7 @@
   <div class="flex w-full">
     <!-- Left Side: Date-Time Logs -->
     <div class="w-[200px] p-4 border-r border-gray-300">
-      <h3 class="text-lg font-bold mb-4">Date-Time Logs</h3>
+      <!-- <h3 class="text-lg font-bold mb-4">Date-Time Logs</h3> -->
       <ul class="space-y-2">
         <li
           v-for="date in dateTimeLogs"
@@ -18,7 +18,7 @@
 
     <!-- Right Side: Log Table -->
     <div class="flex-1 p-4">
-      <div class="w-full flex flex-wrap justify-between gap-2 my-2">
+      <!-- <div class="w-full flex flex-wrap justify-between gap-2 my-2">
         <div class="flex flex-wrap gap-2">
           <div class="col-span-1">
             <el-input
@@ -47,7 +47,7 @@
             />
           </div>
         </div>
-      </div>
+      </div> -->
 
       <DataTable
         v-loading="loadForm"

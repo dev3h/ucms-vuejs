@@ -115,7 +115,10 @@
     "submit": "Gửi",
     "add-client-secret": "Thêm client secret",
     "item": "Phần tử",
-    "detail": "Chi tiết"
+    "detail": "Chi tiết",
+    "this-week": "Tuần này",
+    "this-month": "Tháng này",
+    "this-year": "Năm nay"
   },
   "dialog": {
     "add":"Thêm {name}"
@@ -145,7 +148,9 @@
     "type-user": "Loại người dùng",
     "enable-2fa": "Kích hoạt xác thực hai yếu tố",
     "admin": "Quản trị viên",
-    "user": "Người dùng"
+    "user": "Người dùng",
+    "from-date": "Ngày bắt đầu",
+    "to-date": "Ngày kết thúc"
   },
   "validate": {
     "required": "{column} không được để trống",

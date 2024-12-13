@@ -10,28 +10,30 @@
           :type="selectedRange === 'week' ? 'primary' : 'default'"
           @click="selectRange('week')"
         >
-          This Week
+          {{ $t('button.this-week') }}
         </el-button>
         <el-button
           :disabled="dateRange?.length === 2"
           :type="selectedRange === 'month' ? 'primary' : 'default'"
           @click="selectRange('month')"
         >
-          This Month
+          {{ $t('button.this-month') }}
         </el-button>
         <el-button
           :disabled="dateRange?.length === 2"
           :type="selectedRange === 'year' ? 'primary' : 'default'"
           @click="selectRange('year')"
         >
-          This Year
+          {{ $t('button.this-year') }}
         </el-button>
         <el-date-picker
           v-model="dateRange"
           type="daterange"
-          range-separator="to"
-          start-placeholder="From"
-          end-placeholder="To"
+          range-separator="~"
+          value-format="YYYY-MM-DD"
+          format="YYYY/MM/DD"
+          :start-placeholder="$t('input.from-date')"
+          :end-placeholder="$t('input.to-date')"
           @change="selectRange('daterange')"
           @clear="selectRange('week')"
         />
@@ -71,21 +73,21 @@ export default {
         yAxis: { type: 'value' },
         series: [
           { name: 'Debug', type: 'bar', stack: 'logs', data: [], itemStyle: { color: '#4A90E2' } },
-          { name: 'Info', type: 'bar', stack: 'logs', data: [], itemStyle: { color: '#7ED321' } },
+          { name: 'Info', type: 'bar', stack: 'logs', data: [], itemStyle: { color: '#9EDF9C' } },
           {
             name: 'Warning',
             type: 'bar',
             stack: 'logs',
             data: [],
-            itemStyle: { color: '#F5A623' }
+            itemStyle: { color: '#FFE31A' }
           },
-          { name: 'Error', type: 'bar', stack: 'logs', data: [], itemStyle: { color: '#D0021B' } },
+          { name: 'Error', type: 'bar', stack: 'logs', data: [], itemStyle: { color: '#FF2929' } },
           {
             name: 'Critical',
             type: 'bar',
             stack: 'logs',
             data: [],
-            itemStyle: { color: '#BD10E0' }
+            itemStyle: { color: '#740938' }
           }
         ]
       }
@@ -115,7 +117,6 @@ export default {
       let seriesData = null
       let params = { range }
 
-      // Handle daterange specific logic
       if (range === 'daterange' && this.dateRange.length === 2) {
         const startDate = this.dateRange[0]
         const endDate = this.dateRange[1]
@@ -128,51 +129,140 @@ export default {
           date.setDate(date.getDate() + i)
           return date.toISOString().split('T')[0]
         })
-      } else {
-        // Default ranges for week, month, and year
-        if (range === 'week') {
-          xAxisData = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
-        } else if (range === 'month') {
-          xAxisData = Array.from({ length: 30 }, (_, i) => `${i + 1}`)
-        } else if (range === 'year') {
-          xAxisData = [
-            'Jan',
-            'Feb',
-            'Mar',
-            'Apr',
-            'May',
-            'Jun',
-            'Jul',
-            'Aug',
-            'Sep',
-            'Oct',
-            'Nov',
-            'Dec'
-          ]
-        }
-
-        // If no daterange, we use the range for the API request
-        params.range = range
+      } else if (range === 'month') {
+        const now = new Date()
+        const daysInMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0).getDate()
+        xAxisData = Array.from({ length: daysInMonth }, (_, i) => `${i + 1}`)
+      } else if (range === 'year') {
+        xAxisData = [
+          'Jan',
+          'Feb',
+          'Mar',
+          'Apr',
+          'May',
+          'Jun',
+          'Jul',
+          'Aug',
+          'Sep',
+          'Oct',
+          'Nov',
+          'Dec'
+        ]
+      } else if (range === 'week') {
+        xAxisData = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
       }
 
-      // Fetch data from the API based on the selected range and date range parameters
       try {
         const response = await axios.get('/log/chart-data', { params })
-        // Parse the response to update the chart
-        seriesData = [
-          response.data.series.debug,
-          response.data.series.info,
-          response.data.series.warning,
-          response.data.series.error,
-          response.data.series.critical
-        ]
+        const apiData = response.data
 
-        // Update the chart with actual data
+        // Handle series data based on range
+        if (range === 'month') {
+          seriesData = this.fillMissingData(apiData.xAxis, apiData.series)
+          console.log(seriesData)
+        } else if (range === 'year') {
+          seriesData = this.fillMissingMonths(apiData.xAxis, apiData.series)
+        } else if (range === 'week') {
+          seriesData = this.fillMissingDays(apiData.xAxis, apiData.series)
+        } else {
+          console.log(apiData)
+          seriesData = this.fillMissingRanges(apiData.xAxis, apiData.series)
+        }
+
         this.updateChartOptions(xAxisData, seriesData)
       } catch (error) {
         console.error('Error fetching chart data:', error)
       }
     },
+
+    fillMissingData(dates, series) {
+      const now = new Date()
+      const daysInMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0).getDate()
+      const currentMonth = new Date().getMonth()
+      const daysArray = Array.from({ length: daysInMonth }, (_, day) => {
+        const dayFormat = (day + 1).toString().padStart(2, '0') // Format day as "01", "02", etc.
+        const month = currentMonth + 1
+        return `${month}-${dayFormat}`
+      }) // Generate array [1, 2, ..., daysInMonth]
+
+      return Object.keys(series).reduce((result, key) => {
+        const filledData = daysArray.map((dayKey) => {
+          // If the day exists in the series, use its value; otherwise, default to 0
+          const dayIndex = dates.findIndex((date) => date === dayKey)
+          return dayIndex !== -1 ? series[key][dayIndex] || 0 : 0
+        })
+
+        result[key] = filledData // Assign the filled data to the series key
+        return result
+      }, {})
+    },
+
+    fillMissingMonths(dates, series) {
+      const currentYear = new Date().getFullYear()
+      // Generate all months in the year as "YYYY-MM"
+      const monthsInYear = Array.from({ length: 12 }, (_, i) => {
+        const month = (i + 1).toString().padStart(2, '0') // Format month as "01", "02", etc.
+        return `${currentYear}-${month}`
+      })
+
+      // Process the series and fill missing months
+      return Object.keys(series).reduce((result, key) => {
+        const filledData = monthsInYear.map((monthKey) => {
+          // If the month exists, take the series value; otherwise, default to 0
+          const monthIndex = dates.findIndex((date) => date === monthKey)
+          return monthIndex !== -1 ? series[key][monthIndex] || 0 : 0
+        })
+
+        result[key] = filledData // Assign the filled data to the series key
+        return result
+      }, {})
+    },
+
+    fillMissingDays(dates, series) {
+      const daysInWeek = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
+      return Object.keys(series).reduce((result, key) => {
+        const filledData = daysInWeek.map((dayKey) => {
+          // If the day exists, take the series value; otherwise, default to 0
+          const dayIndex = dates.findIndex((date) => date === dayKey)
+          return dayIndex !== -1 ? series[key][dayIndex] || 0 : 0
+        })
+
+        result[key] = filledData // Assign the filled data to the series key
+        return result
+      }, {})
+    },
+    fillMissingRanges(dates, series) {
+      const [startDate, endDate] = this.dateRange
+
+      // Helper function to generate all dates in the range
+      const generateDateRange = (start, end) => {
+        const range = []
+        let currentDate = new Date(start)
+
+        while (currentDate <= new Date(end)) {
+          range.push(currentDate.toISOString().split('T')[0]) // Format as "YYYY-MM-DD"
+          currentDate.setDate(currentDate.getDate() + 1) // Increment by 1 day
+        }
+
+        return range
+      }
+
+      // Generate all dates in the range
+      const allDates = generateDateRange(startDate, endDate)
+
+      // Process the series and fill missing dates
+      return Object.keys(series).reduce((result, key) => {
+        const filledData = allDates.map((dateKey) => {
+          // Find the index of the date in the provided `dates`
+          const dateIndex = dates.findIndex((date) => date === dateKey)
+          return dateIndex !== -1 ? series[key][dateIndex] || 0 : 0 // Default to 0 if missing
+        })
+
+        result[key] = filledData // Assign the filled data to the series key
+        return result
+      }, {})
+    },
+
     updateChartOptions(xAxisData, seriesData) {
       this.chartOptions = {
         ...this.chartOptions,
@@ -181,23 +271,16 @@ export default {
           data: xAxisData,
           axisLabel: {
             interval: 0,
-            rotate: this.selectRange === 'daterange' ? 45 : 0
+            rotate: this.selectedRange === 'daterange' ? 45 : 0
           }
         },
-        series: this.chartOptions.series.map((series, index) => ({
-          ...series,
-          data: seriesData[index]
-        }))
+        series: this.chartOptions.series.map((series) => {
+          return {
+            ...series,
+            data: seriesData[series?.name?.toLowerCase()]
+          }
+        })
       }
-    },
-    generateRandomData(dataLength) {
-      return [
-        Array.from({ length: dataLength }, () => Math.floor(Math.random() * 2000)),
-        Array.from({ length: dataLength }, () => Math.floor(Math.random() * 1500)),
-        Array.from({ length: dataLength }, () => Math.floor(Math.random() * 1000)),
-        Array.from({ length: dataLength }, () => Math.floor(Math.random() * 500)),
-        Array.from({ length: dataLength }, () => Math.floor(Math.random() * 200))
-      ]
     }
   },
   mounted() {
