@@ -47,12 +47,18 @@
                 clearable
                 :placeholder="$t('input.common.enter', { name: $t('input.common.new-password') })"
               />
-               <div v-if="formData.password" class="w-full">
-                  <div class="password-strength-bar">
-                    <div v-for="n in 4" :key="n" :class="['strength-segment', { active: n <= passwordStrength }]"></div>
-                  </div>
-                  <div class="password-strength" :class="passwordStrengthClass">{{ passwordStrengthText }}</div>
+              <div v-if="formData.password" class="w-full">
+                <div class="password-strength-bar">
+                  <div
+                    v-for="n in 4"
+                    :key="n"
+                    :class="['strength-segment', { active: n <= passwordStrength }]"
+                  ></div>
                 </div>
+                <div class="password-strength" :class="passwordStrengthClass">
+                  {{ passwordStrengthText }}
+                </div>
+              </div>
             </el-form-item>
             <el-form-item
               :label="$t('input.common.confirm-new-password')"
@@ -114,7 +120,9 @@ export default {
       },
       authStore: useAuthStore(),
       loadingForm: false,
-      passwordStrength: 0
+      passwordStrength: 0,
+      pathSub: window.location.pathname.split('/'),
+      query: this.$route.query
     }
   },
   computed: {
@@ -122,7 +130,7 @@ export default {
       return `strength-${this.passwordStrength}`
     },
     passwordStrengthText() {
-            const levels = ['Rất yếu', 'Yếu', 'Trung bình', 'Tốt', 'Mạnh']
+      const levels = ['Rất yếu', 'Yếu', 'Trung bình', 'Tốt', 'Mạnh']
       return levels[this.passwordStrength]
     }
   },
@@ -135,15 +143,40 @@ export default {
   methods: {
     async submit() {
       this.loadingForm = true
-      const response = await axios.post('auth/admin/password-update', this.formData)
+      const isPathAdmin = this.pathSub[1] === 'admin'
+      const route = isPathAdmin ? 'auth/admin/password-update' : 'auth/sso-ucms/password-update'
+      const response = await axios.post(route, this.formData, {
+        params: this.query
+      })
       this.$message({
         message: response?.data?.message,
         type: response?.data?.status_code === 200 ? 'success' : 'error'
       })
-      if(response?.data?.status_code === 200) {
-        const accessToken = response?.data?.data?.access_token
-        this.authStore.setAdminAccessToken(accessToken)
-        this.$router.push({ name: 'system' })
+      if (response?.data?.status_code === 200) {
+        if (isPathAdmin) {
+          const accessToken = response?.data?.data?.access_token
+          this.authStore.setAdminAccessToken(accessToken)
+          this.$router.push({ name: 'system' })
+        } else {
+          const resData = response?.data?.data
+          const query = {
+            email: resData?.email,
+            consent_token: resData?.consentToken,
+            client_id: resData?.client_id,
+            redirect_uri: resData?.redirect_uri,
+            sy: encodeURIComponent(resData?.system_name)
+          }
+          const twoFactor = resData?.two_factor
+          if (twoFactor?.enable) {
+            if (twoFactor?.is_secret_token && twoFactor?.is_confirmed) {
+              this.$router.push({ name: 'sso-login-two-factor-challenge', query })
+            } else {
+              this.$router.push({ name: 'sso-login-setup-totp-mfa', query })
+            }
+          } else {
+            this.$router.push({ name: 'sso-login-confirm', query })
+          }
+        }
       }
       this.loadingForm = false
     }

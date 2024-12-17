@@ -209,6 +209,11 @@ const router = createRouter({
           beforeEnter: checkRequiredParams
         },
         {
+          path: 'login/password-update',
+          name: 'sso-password-update',
+          component: () => import('@/views/Auth/Page/Password/ChangePasswordFirst.vue')
+        },
+        {
           path: 'login/challenge/pwd',
           name: 'sso-login-password',
           component: () => import('@/views/Auth/ClientSSO/PasswordLogin.vue'),
@@ -249,7 +254,7 @@ const router = createRouter({
     {
       path: '/admin/:catchAll(.*)',
       redirect: '/admin/login'
-    },
+    }
   ]
 })
 

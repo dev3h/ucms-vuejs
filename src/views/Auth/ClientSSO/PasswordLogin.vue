@@ -54,6 +54,19 @@
         </div>
       </div>
     </el-card>
+    <el-dialog
+      v-model="countdownActive"
+      :before-close="handleBeforeClose"
+      :show-close="false"
+      class="h-1/2 dialog-block-user"
+    >
+      <div class="flex flex-col justify-center items-center h-full gap-6">
+        <p class="text-xl text-center font-bold">{{ $t('message.block-user') }}</p>
+        <p class="text-2xl text-center font-bold text-black">
+          {{ $t('message.block-user-time', { time: countdown }) }}
+        </p>
+      </div>
+    </el-dialog>
   </div>
 </template>
 <script>
@@ -76,7 +89,10 @@ export default {
       },
       loadingForm: false,
       errors: null,
-      pathSub: window.location.pathname.split('/')
+      pathSub: window.location.pathname.split('/'),
+      countdown: 50,
+      countdownActive: false,
+      countdownInterval: null
     }
   },
   watch: {
@@ -87,6 +103,26 @@ export default {
           this.$message.error(Object.values(value).join(', '))
         }
       }
+    },
+    formErrors: {
+      handler(data) {
+        if (data?.errors === "USER_IS_BLOCKED") {
+          localStorage.setItem('block_countdown', +data.remainTime)
+          this.countdown = parseInt(+data.remainTime, 10)
+          this.startCountdown()
+        } else if (data?.errors === 'PASSWORD_EXPIRED') {
+          this.$router.push({ name: 'sso-password-update', query: this.query  })
+        }
+      },
+      deep: true
+    },
+    
+  },
+  created() {
+    const savedCountdown = localStorage.getItem('block_countdown')
+    if (savedCountdown && savedCountdown > 0) {
+      this.countdown = parseInt(savedCountdown, 10)
+      this.startCountdown()
     }
   },
   methods: {
@@ -116,12 +152,38 @@ export default {
         }
       }
       this.loadingForm = false
-    }
+    },
+    startCountdown() {
+      this.countdownActive = true
+      if (this.countdownInterval) {
+        clearInterval(this.countdownInterval)
+      }
+      this.countdownInterval = setInterval(() => {
+        if (this.countdown > 0) {
+          this.countdown--
+          localStorage.setItem('block_countdown', this.countdown)
+        } else {
+          this.countdownActive = false
+          clearInterval(this.countdownInterval)
+          localStorage.removeItem('block_countdown')
+        }
+      }, 1000)
+    },
+     handleBeforeClose(done) {
+      if (this.countdown > 0) {
+        return;
+      } else {
+        done()
+      }
+    },
   }
 }
 </script>
 <style>
 .form-login .el-form-item {
   margin-bottom: 1.7rem !important;
+}
+.dialog-block-user .el-dialog__body {
+  height: 100% !important;
 }
 </style>
