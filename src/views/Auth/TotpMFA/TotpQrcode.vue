@@ -59,20 +59,25 @@
                 type="primary"
                 class="text-blue-400 underline"
                 @click="isFlipped = true"
-                >{{ $t('setup-mfa-page.step-3.line-4') }}</el-button>
+                >{{ $t('setup-mfa-page.step-3.line-4') }}</el-button
+              >
             </div>
             <!-- Back Content -->
             <div
               class="flip-card-back bg-blue-50 p-6 rounded-md shadow-md flex flex-col items-center gap-3"
             >
               <p class="font-bold text-center">{{ $t('setup-mfa-page.card-back.line-1') }}</p>
-              <p></p>
+              <p v-if="secretCode" @click="handleCopyToClipboard(secretCode)" 
+                  class="cursor-pointer hover:opacity-85">
+                {{ secretCode }}
+              </p>
               <el-button
                 link
                 type="primary"
                 class="text-blue-400 underline"
                 @click="isFlipped = false"
-                >{{ $t('setup-mfa-page.card-back.view-qr') }}</el-button>
+                >{{ $t('setup-mfa-page.card-back.view-qr') }}</el-button
+              >
             </div>
           </div>
         </div>
@@ -90,7 +95,7 @@
 </template>
 
 <script>
-import axios from '@/Plugins/axios.js'
+import axios from '@/Plugins/ssoAxios.js'
 import form from '@/Mixins/form'
 import baseRuleValidate from '@/Store/Const/baseRuleValidate'
 
@@ -99,6 +104,7 @@ export default {
   data() {
     return {
       qrCode: '',
+      secretCode: '',
       query: this.$route.query,
       formData: {
         totpCode: null
@@ -123,6 +129,10 @@ export default {
           },
           { responseType: 'arraybuffer' }
         )
+        const secretCodeHeader = response.headers['x-secret-code']
+        if (secretCodeHeader) {
+          this.secretCode = secretCodeHeader
+        }
         const blob = new Blob([response.data], { type: 'image/png' })
         this.qrCode = URL.createObjectURL(blob)
       } catch (error) {
@@ -155,6 +165,13 @@ export default {
     },
     goBack() {
       this.$router.go(-1)
+    },
+    handleCopyToClipboard(value) {
+      navigator.clipboard.writeText(value)
+      this.$message({
+        type: 'success',
+        message: this.$t('message.copy-success')
+      })
     }
   }
 }

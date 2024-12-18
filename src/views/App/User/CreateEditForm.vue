@@ -74,9 +74,15 @@
                 />
                 <div v-if="formData.password" class="w-full">
                   <div class="password-strength-bar">
-                    <div v-for="n in 4" :key="n" :class="['strength-segment', { active: n <= passwordStrength }]"></div>
+                    <div
+                      v-for="n in 4"
+                      :key="n"
+                      :class="['strength-segment', { active: n <= passwordStrength }]"
+                    ></div>
                   </div>
-                  <div class="password-strength" :class="passwordStrengthClass">{{ passwordStrengthText }}</div>
+                  <div class="password-strength" :class="passwordStrengthClass">
+                    {{ passwordStrengthText }}
+                  </div>
                 </div>
               </el-form-item>
             </div>
@@ -154,7 +160,7 @@ export default {
     templatePermission: {
       type: Array,
       default: () => []
-    },
+    }
   },
   data() {
     return {
@@ -202,18 +208,20 @@ export default {
       return `strength-${this.passwordStrength}`
     },
     passwordStrengthText() {
-            const levels = ['Rất yếu', 'Yếu', 'Trung bình', 'Tốt', 'Mạnh']
+      const levels = ['Rất yếu', 'Yếu', 'Trung bình', 'Tốt', 'Mạnh']
       return levels[this.passwordStrength]
     }
   },
   watch: {
     'formData.password': function (val) {
-      const result = zxcvbn(val)
-      this.passwordStrength = result.score
+      if (val) {
+        const result = zxcvbn(val)
+        this.passwordStrength = result.score
+      }
     }
   },
   created() {
-    if(this.$route.params?.id) {
+    if (this.$route.params?.id) {
       this.isEdit = true
       this.fetchData()
     }
@@ -247,7 +255,7 @@ export default {
     prepareSubmit() {
       return {
         method: this.isEdit ? 'put' : 'post',
-        url: this.isEdit ? `user/${this.currentId}` : 'user',
+        url: this.isEdit ? `user/${this.currentId}` : 'user'
       }
     },
     async fetchRoles() {
@@ -264,7 +272,8 @@ export default {
     async fetchData() {
       this.loadForm = true
       await axios
-        await axios.get(`user/${this.currentId}`)
+      await axios
+        .get(`user/${this.currentId}`)
         .then((response) => {
           this.formData = {
             id: response?.data?.data?.id,
@@ -272,7 +281,7 @@ export default {
             email: response?.data?.data?.email,
             type: response?.data?.data?.type,
             two_factor_enable: response?.data?.data?.two_factor_enable,
-            role_id: response?.data?.data?.role_ids[0]  
+            role_id: response?.data?.data?.role_ids[0]
           }
           this.loadForm = false
         })
@@ -280,7 +289,7 @@ export default {
           this.$message.error(error?.response?.data?.message || this.$t('message.something-wrong'))
           this.loadForm = false
         })
-    },
+    }
   }
 }
 </script>

@@ -102,7 +102,7 @@
       fetchRoute="/module/:id/actions"
       deleteRoute="/module/:id/remove-action/:childId"
       ref="modalList"
-      :showRoute="action-show"
+      showRoute="action-show"
       @close-modal="fetchData()"
     />
   </AdminLayout>

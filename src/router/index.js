@@ -290,21 +290,33 @@ router.beforeEach(async (to, from, next) => {
   const authStore = useAuthStore()
   const loggedIn = authStore.getAdminAccessToken
 
+  if (authRequired && !loggedIn) {
+    // Nếu chưa đăng nhập mà vào route cần auth, chuyển đến trang login
+    return next('/admin/login')
+  }
+
   if (adminRoutePattern.test(to.path) && loggedIn) {
     try {
+      // Nếu đã đăng nhập, kiểm tra thông tin admin
       await authStore.fetchAdminInfo()
-      return next('/admin/system-components/system')
+      if (to.name === 'admin-login') {
+        // Nếu đã đăng nhập mà đang ở trang login, chuyển đến dashboard
+        return next('/admin/system-components/system')
+      }
     } catch (error) {
-      // authStore.clearAdminToken()
+      // Nếu token không hợp lệ, xóa token và chuyển đến trang login
+      authStore.clearAdminToken()
       return next('/admin/login')
     }
   }
 
-  if (authRequired && !loggedIn && adminRoutePattern.test(to.path) && to.name !== 'admin-login') {
-    return next('/admin/login')
-  }
+  // Nếu không có điều kiện nào phù hợp, tiếp tục điều hướng bình thường
+  next()
+})
 
-  // if (loggedIn && adminRoutePattern.test(to.path) {
+export default router
+
+ // if (loggedIn && adminRoutePattern.test(to.path) {
   //   try {
   //     await authStore.fetchAdminInfo()
   //   } catch (error) {
@@ -312,8 +324,3 @@ router.beforeEach(async (to, from, next) => {
   //     return next('/admin/login')
   //   }
   // }
-
-  next()
-})
-
-export default router

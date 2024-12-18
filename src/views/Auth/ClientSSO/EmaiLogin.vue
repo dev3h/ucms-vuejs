@@ -59,7 +59,7 @@
 </template>
 <script>
 import form from '@/Mixins/form'
-import axios from '@/Plugins/axios.js'
+import axios from '@/Plugins/ssoAxios.js'
 import baseRuleValidate from '@/Store/Const/baseRuleValidate.js'
 
 export default {

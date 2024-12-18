@@ -39,7 +39,7 @@
 </template>
 <script>
 import { getCookie } from '@/Store/Helper/helpers'
-import axios from '@/Plugins/axios'
+import axios from '@/Plugins/ssoAxios'
 
 export default {
   data() {

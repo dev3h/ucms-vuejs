@@ -71,8 +71,7 @@ export default {
       required: true
     },
     showRoute: {
-      type: String,
-      required: true
+      type: String
     },
     deleteRoute: {
       type: String,

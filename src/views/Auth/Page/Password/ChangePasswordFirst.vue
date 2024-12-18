@@ -97,6 +97,7 @@
 <script>
 import form from '@/Mixins/form'
 import axios from '@/Plugins/axios'
+import ssoAxios from '@/Plugins/ssoAxios'
 import baseRuleValidate from '@/Store/Const/baseRuleValidate.js'
 import { useAuthStore } from '@/stores/auth'
 import zxcvbn from 'zxcvbn'
@@ -145,7 +146,8 @@ export default {
       this.loadingForm = true
       const isPathAdmin = this.pathSub[1] === 'admin'
       const route = isPathAdmin ? 'auth/admin/password-update' : 'auth/sso-ucms/password-update'
-      const response = await axios.post(route, this.formData, {
+      const Axios = isPathAdmin ? axios : ssoAxios
+      const response = await Axios.post(route, this.formData, {
         params: this.query
       })
       this.$message({

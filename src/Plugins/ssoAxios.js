@@ -24,32 +24,9 @@ export const defaultConfig = {
 export function provideAxios(options = {}) {
   const instance = axios.create(Object.assign({}, defaultConfig, options))
 
-  // Flags to handle token refresh logic
-  let isRefreshing = false
-  let failedQueue = []
-
-  const processQueue = (error, token = null) => {
-    failedQueue.forEach((prom) => {
-      if (error) {
-        prom.reject(error)
-      } else {
-        prom.resolve(token)
-      }
-    })
-    failedQueue = []
-  }
-
   // Setting up axios request interceptor
   instance.interceptors.request.use(
     async function (requestConfig) {
-      const authStore = useAuthStore()
-      const adminToken = authStore.getAdminAccessToken
-
-      // If token exists, set Authorization header
-      if (adminToken) {
-        requestConfig.headers['Authorization'] = `Bearer ${adminToken}`
-      }
-
       requestConfig.headers['Accept-Language'] = 'vi'
       return requestConfig
     },
@@ -62,42 +39,8 @@ export function provideAxios(options = {}) {
   instance.interceptors.response.use(
     (response) => response,
     async (error) => {
-      const authStore = useAuthStore()
-      const originalRequest = error.config
-      // Handle 401 error (unauthorized)
-      if (
-        error.response?.status === 401 &&
-        !originalRequest._retry &&
-        error.response?.data?.errors !== 'INVALID_REFRESH_TOKEN'
-      ) {
-        if (isRefreshing) {
-          // Add failed request to queue while refreshing token
-          return new Promise((resolve, reject) => {
-            failedQueue.push({ resolve, reject })
-          })
-            .then((token) => {
-              originalRequest.headers['Authorization'] = `Bearer ${token}`
-              return instance(originalRequest)
-            })
-            .catch((err) => Promise.reject(err))
-        }
-
-        originalRequest._retry = true
-        isRefreshing = true
-
-        try {
-          // Refresh token and retry the original request
-          await authStore.refreshToken()
-          processQueue(null, authStore.getAdminAccessToken)
-          originalRequest.headers['Authorization'] = `Bearer ${authStore.getAdminAccessToken}`
-          return instance(originalRequest)
-        } catch (err) {
-          processQueue(err, null)
-          authStore.clearAdminToken()
-          return Promise.reject(err)
-        } finally {
-          isRefreshing = false
-        }
+      if (error.response.status === 500) {
+        return Promise.reject(error)
       }
 
       // Handle other error statuses

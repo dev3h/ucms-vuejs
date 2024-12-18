@@ -41,7 +41,7 @@
   </div>
 </template>
 <script>
-import axios from '@/Plugins/axios.js'
+import axios from '@/Plugins/ssoAxios.js'
 
 export default {
   data() {
