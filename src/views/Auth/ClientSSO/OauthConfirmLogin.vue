@@ -60,11 +60,11 @@ export default {
           }
         })
         if (response?.data?.status_code === 200) {
-          const authTempCode = response?.data?.data
+          const {authTempCode, device_id} = response?.data?.data
           // Tạo URL với token trong fragment (dấu #)
-          const redirectUrl = `${this.query.redirect_uri}#auth_code=${authTempCode}&client_id=${this.query.client_id}&redirect_uri=${encodeURIComponent(this.query.redirect_uri)}`
+          const redirectUrl = `${this.query.redirect_uri}#auth_code=${authTempCode}&client_id=${this.query.client_id}&redirect_uri=${encodeURIComponent(this.query.redirect_uri)}&device_id=${device_id}`
 
-          // Redirect người dùng về URL mới với access token trong fragment
+          // // Redirect người dùng về URL mới với access token trong fragment
           window.location.href = redirectUrl
         }
         this.loadingForm = false

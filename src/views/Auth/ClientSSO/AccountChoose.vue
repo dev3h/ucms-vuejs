@@ -38,13 +38,12 @@
   </div>
 </template>
 <script>
-import { getCookie } from '@/Store/Helper/helpers'
+// import { getCookie } from '@/Store/Helper/helpers'
 import axios from '@/Plugins/ssoAxios'
 
 export default {
   data() {
     return {
-      deviceId: getCookie('deviceId'),
       client_id: this.$route.query.client_id,
       redirect_uri: this.$route.query.redirect_uri,
       accounts: []
@@ -53,7 +52,7 @@ export default {
   methods: {
     async fetchData() {
       try {
-        const response = await axios.get(`/auth/get-device-login-histories/${this.deviceId}`)
+        const response = await axios.get(`/auth/get-device-login-histories`)
         if (response?.data?.status_code === 200) {
           this.accounts = response.data.data
         }
@@ -64,10 +63,9 @@ export default {
     async selectAccount(account) {
       try {
         const response = await axios.post('/auth/check-account-device-history', {
-          device_id: this.deviceId,
           client_id: this.client_id,
           redirect_uri: this.redirect_uri,
-          email: account.email
+          ...account
         })
         if (response?.data?.status_code === 200) {
           const authTempCode = response?.data?.data

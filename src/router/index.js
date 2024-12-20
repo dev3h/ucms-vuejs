@@ -254,6 +254,10 @@ const router = createRouter({
     {
       path: '/admin/:catchAll(.*)',
       redirect: '/admin/login'
+    },
+    {
+      path: '/:catchAll(.*)',
+      redirect: '/admin/login'
     }
   ]
 })
@@ -263,18 +267,20 @@ let firstTimeLogin = true
 router.beforeEach(async (to, from, next) => {
   const routeName = to?.name
   if (routeName === 'sso-login-email' && firstTimeLogin) {
-    let deviceId = getCookie('deviceId')
+    // let deviceId = getCookie('deviceId')
 
-    if (!deviceId) {
-      await setDeviceIdentifier()
-    } else {
-      const deviceLoginHistories = await axios.get(`/auth/get-device-login-histories/${deviceId}`)
+    // if (!deviceId) {
+    //   await setDeviceIdentifier()
+    // } else {
+      
+    // }
+    // const deviceLoginHistories = await axios.get(`/auth/get-device-login-histories/${deviceId}`)
+    const deviceLoginHistories = await axios.get(`/auth/get-device-login-histories`)
       if (deviceLoginHistories.data.data.length > 0) {
         const { client_id, redirect_uri } = to.query
         firstTimeLogin = false
         return next({ name: 'sso-login-account-choose', query: { client_id, redirect_uri } })
       }
-    }
   }
 
   const adminRoutePattern = /^\/admin\//
