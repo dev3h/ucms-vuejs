@@ -57,6 +57,22 @@
                 />
               </el-form-item>
             </div>
+            <div>
+              <el-form-item
+                :label="$t('input.phone-number')"
+                class="title--bold"
+                prop="phone_number"
+                :error="getError('phone_number')"
+                :inline-message="hasError('phone_number')"
+              >
+                <el-input
+                  size="large"
+                  v-model="formData.phone_number"
+                  clearable
+                  :placeholder="$t('input.common.enter', { name: $t('input.phone-number') })"
+                />
+              </el-form-item>
+            </div>
             <div v-if="!isEdit">
               <el-form-item
                 :label="$t('input.common.password')"
@@ -170,7 +186,8 @@ export default {
         role_id: null,
         type: null,
         two_factor_enable: false,
-        password: null
+        password: null,
+        phone_number: null,
       },
       isEdit: false,
       currentId: this.$route.params?.id,
@@ -181,7 +198,8 @@ export default {
         email: baseRuleValidate(this.$t)(this.$t('input.common.email')),
         role_id: baseRuleValidate(this.$t)(this.$t('sidebar.role')),
         type: baseRuleValidate(this.$t)(this.$t('input.type-user')),
-        password: baseRuleValidate(this.$t)(this.$t('input.common.password'))
+        password: baseRuleValidate(this.$t)(this.$t('input.common.password')),
+        phone_number: baseRuleValidate(this.$t)(this.$t('input.phone-number'))
       },
       loadingForm: false,
       passwordStrength: 0
@@ -275,13 +293,15 @@ export default {
       await axios
         .get(`user/${this.currentId}`)
         .then((response) => {
+          console.log(response)
           this.formData = {
             id: response?.data?.data?.id,
             name: response?.data?.data?.name,
             email: response?.data?.data?.email,
             type: response?.data?.data?.type,
             two_factor_enable: response?.data?.data?.two_factor_enable,
-            role_id: response?.data?.data?.role_ids[0]
+            role_id: response?.data?.data?.role_ids[0],
+            phone_number: response?.data?.data?.phone_number
           }
           this.loadForm = false
         })

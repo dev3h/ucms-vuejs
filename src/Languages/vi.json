@@ -150,7 +150,8 @@
     "admin": "Quản trị viên",
     "user": "Người dùng",
     "from-date": "Ngày bắt đầu",
-    "to-date": "Ngày kết thúc"
+    "to-date": "Ngày kết thúc",
+    "phone-number": "Số điện thoại"
   },
   "validate": {
     "required": "{column} không được để trống",

@@ -149,7 +149,8 @@
     "admin": "Admin",
     "user": "User",
     "from-date": "From date",
-    "to-date": "To date"
+    "to-date": "To date",
+    "phone-number": "Phone number"
   },
   "validate": {
     "required": "{column} is required",

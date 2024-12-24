@@ -10,6 +10,10 @@
         <span>{{ item?.email }}</span>
       </div>
       <div class="box-content--item">
+        <h3>{{ $t('input.phone-number') }}</h3>
+        <span>{{ item?.phone_number }}</span>
+      </div>
+      <div class="box-content--item">
         <h3>{{ $t('input.type-user') }}</h3>
         <span>{{ item?.type === 1 ? $t('input.admin') : $t('input.user') }}</span>
       </div>
