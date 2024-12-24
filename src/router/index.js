@@ -220,6 +220,24 @@ const router = createRouter({
           beforeEnter: checkRequiredParams
         },
         {
+          path: 'forgot-pwd',
+          name: 'sso-login-forgot-password',
+          component: () => import('@/views/Auth/ClientSSO/ForgotPassword.vue'),
+          beforeEnter: checkRequiredParams
+        },
+        {
+          path: 'pwd/verify-code',
+          name: 'sso-password-verify-code',
+          component: () => import('@/views/Auth/ClientSSO/OtpPassword.vue'),
+          beforeEnter: checkRequiredParams
+        },
+        {
+          path: 'pwd/reset-password',
+          name: 'sso-reset-password',
+          component: () => import('@/views/Auth/ClientSSO/ResetPassword.vue'),
+          beforeEnter: checkRequiredParams
+        },
+        {
           path: 'login/oauth/id',
           name: 'sso-login-confirm',
           component: () => import('@/views/Auth/ClientSSO/OauthConfirmLogin.vue'),

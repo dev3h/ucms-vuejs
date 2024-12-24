@@ -6,6 +6,7 @@
     "admin-login-title": "Administrator Login",
     "sign-in-with-google": "Sign in with Google",
     "click-forgot-password": "Click here if you have forgotten your password",
+    "forgot-password": "Forgot password?",
     "or": "Or",
     "forgot-password-page": {
       "title": "Password reset",
@@ -150,7 +151,8 @@
     "user": "User",
     "from-date": "From date",
     "to-date": "To date",
-    "phone-number": "Phone number"
+    "phone-number": "Phone number",
+    "otp-code": "OTP code"
   },
   "validate": {
     "required": "{column} is required",

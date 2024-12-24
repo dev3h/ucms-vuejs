@@ -6,10 +6,13 @@
     "admin-login-title": "Đăng nhập quản trị",
     "sign-in-with-google": "Đăng nhập bằng Google",
     "click-forgot-password": "Nhấn vào đây nếu bạn quên mật khẩu",
+    "forgot-password": "Bạn quên mật khẩu?",
     "or": "Hoặc",
     "forgot-password-page": {
       "title": "Đổi mật khẩu",
-      "sub-title": "Nhập email đã đăng ký để đặt lại mật khẩu"
+      "sub-title": "Nhập email đã đăng ký để đặt lại mật khẩu",
+      "account-recovery": "Khôi phục tài khoản",
+      "sso-sub-title": "Để giúp bảo vệ tài khoản của bạn, vui lòng nhập số điện thoại của tài khoản này. UCMS sẽ gửi mã xác minh đến email của bạn"
     },
     "confirm-forgot-password-page": {
       "title": "Chúng tôi đã gửi URL đặt lại mật khẩu đến {email}",
@@ -151,7 +154,8 @@
     "user": "Người dùng",
     "from-date": "Ngày bắt đầu",
     "to-date": "Ngày kết thúc",
-    "phone-number": "Số điện thoại"
+    "phone-number": "Số điện thoại",
+    "otp-code": "Mã OTP"
   },
   "validate": {
     "required": "{column} không được để trống",

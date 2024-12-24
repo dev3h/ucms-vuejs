@@ -40,11 +40,17 @@
             </el-form-item>
           </el-form>
 
-          <div class="text-center mt-5">
+          <div class="flex items-center mt-5">
+            <router-link
+              class="flex-1 inline-block h-full text-primary hover:opacity-80"
+              :to="{ name: 'sso-login-forgot-password', query }"
+            >
+              {{ $t('auth-page.forgot-password') }}
+            </router-link>
             <el-button
               type="primary"
               :loading="loadingForm"
-              class="w-full mt-3 btn-gradient"
+              class="flex-1 btn-gradient"
               size="large"
               @click.prevent="doSubmit"
             >
@@ -106,17 +112,16 @@ export default {
     },
     formErrors: {
       handler(data) {
-        if (data?.errors === "USER_IS_BLOCKED") {
+        if (data?.errors === 'USER_IS_BLOCKED') {
           localStorage.setItem('block_countdown', +data.remainTime)
           this.countdown = parseInt(+data.remainTime, 10)
           this.startCountdown()
         } else if (data?.errors === 'PASSWORD_EXPIRED') {
-          this.$router.push({ name: 'sso-password-update', query: this.query  })
+          this.$router.push({ name: 'sso-password-update', query: this.query })
         }
       },
       deep: true
-    },
-    
+    }
   },
   created() {
     const savedCountdown = localStorage.getItem('block_countdown')
@@ -169,13 +174,13 @@ export default {
         }
       }, 1000)
     },
-     handleBeforeClose(done) {
+    handleBeforeClose(done) {
       if (this.countdown > 0) {
-        return;
+        return
       } else {
         done()
       }
-    },
+    }
   }
 }
 </script>
