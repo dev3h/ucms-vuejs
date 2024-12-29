@@ -5,6 +5,13 @@
         <BreadCrumbComponent :bread-crumb="setbreadCrumbHeader" />
       </div>
       <div class="flex items-center gap-3 mb-4">
+         <el-button
+          :disabled="dateRange?.length === 2"
+          :type="selectedRange === 'current' ? 'primary' : 'default'"
+          @click="selectRange('current')"
+        >
+          {{ $t('button.current') }}
+        </el-button>
         <el-button
           :disabled="dateRange?.length === 2"
           :type="selectedRange === 'week' ? 'primary' : 'default'"
@@ -150,6 +157,16 @@ export default {
         ]
       } else if (range === 'week') {
         xAxisData = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
+      } else if (range === 'current') {
+        const now = new Date()
+        const threeHoursAgo = new Date(now.getTime() - 3 * 60 * 60 * 1000)
+        const timeSlots = []
+
+        for (let time = threeHoursAgo; time <= now; time.setMinutes(time.getMinutes() + 15)) {
+          timeSlots.push(time.toTimeString().split(' ')[0].substring(0, 5)) // Format as "HH:mm"
+        }
+
+        xAxisData = timeSlots
       }
 
       try {
@@ -164,6 +181,8 @@ export default {
           seriesData = this.fillMissingMonths(apiData.xAxis, apiData.series)
         } else if (range === 'week') {
           seriesData = this.fillMissingDays(apiData.xAxis, apiData.series)
+        } else if (range === 'current') {
+          seriesData = this.fillMissingTimeSlots(apiData.xAxis, apiData.series)
         } else {
           console.log(apiData)
           seriesData = this.fillMissingRanges(apiData.xAxis, apiData.series)
@@ -235,6 +254,26 @@ export default {
         return result
       }, {})
     },
+    fillMissingTimeSlots(dates, series) {
+      const now = new Date()
+      const threeHoursAgo = new Date(now.getTime() - 3 * 60 * 60 * 1000)
+      const timeSlots = []
+
+      for (let time = threeHoursAgo; time <= now; time.setMinutes(time.getMinutes() + 15)) {
+        timeSlots.push(time.toTimeString().split(' ')[0].substring(0, 5)) // Format as "HH:mm"
+      }
+
+      return Object.keys(series).reduce((result, key) => {
+        const filledData = timeSlots.map((timeSlot) => {
+          // If the time slot exists, take the series value; otherwise, default to 0
+          const timeIndex = dates.findIndex((date) => date === timeSlot)
+          return timeIndex !== -1 ? series[key][timeIndex] || 0 : 0
+        })
+
+        result[key] = filledData // Assign the filled data to the series key
+        return result
+      }, {})
+    },
     fillMissingRanges(dates, series) {
       const [startDate, endDate] = this.dateRange
 
@@ -288,7 +327,7 @@ export default {
     }
   },
   mounted() {
-    this.selectRange('week') // Set default to 'This Week'
+    this.selectRange('current') // Set default to 'This Week'
   }
 }
 </script>

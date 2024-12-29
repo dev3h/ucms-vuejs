@@ -121,7 +121,8 @@
     "detail": "Chi tiết",
     "this-week": "Tuần này",
     "this-month": "Tháng này",
-    "this-year": "Năm nay"
+    "this-year": "Năm nay",
+    "current": "Hiện tại"
   },
   "dialog": {
     "add":"Thêm {name}"

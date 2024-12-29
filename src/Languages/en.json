@@ -120,7 +120,8 @@
     "detail": "Detail",
     "this-week": "This week",
     "this-month": "This month",
-    "this-year": "This year"
+    "this-year": "This year",
+    "current": "Current"
   },
   "dialog": {
     "add": "Add {name}"
