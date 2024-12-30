@@ -125,7 +125,7 @@ export default {
       errors: null,
       pathSub: window.location.pathname.split('/'),
       authStore: useAuthStore(),
-       countdown: 50,
+      countdown: 50,
       countdownActive: false,
       countdownInterval: null
     }
@@ -133,7 +133,7 @@ export default {
   watch: {
     formErrors: {
       handler(data) {
-        if (data?.errors === "USER_IS_BLOCKED") {
+        if (data?.errors === 'USER_IS_BLOCKED') {
           localStorage.setItem('countdown', +data.remainTime)
           this.countdown = parseInt(+data.remainTime, 10)
           this.startCountdown()
@@ -164,7 +164,10 @@ export default {
       const response = await axios.post('/auth/admin/login', this.formData)
       if (response?.data?.data?.firstLogin) {
         // this.$inertia.visit(this.appRoute('admin.first-login.form'))
-      } else if (response?.data?.data?.twoFactor) {
+      } else if (response?.data?.requireTwoFactor) {
+        const tempToken = response?.data?.tempToken
+        this.authStore.setAdminTempToken(tempToken)
+        this.$router.push({ name: 'admin-two-factor' })
         // this.$inertia.visit(this.appRoute('admin.two-factor.form'))
       } else {
         const accessToken = response?.data?.access_token
@@ -189,13 +192,13 @@ export default {
         }
       }, 1000)
     },
-     handleBeforeClose(done) {
+    handleBeforeClose(done) {
       if (this.countdown > 0) {
-        return;
+        return
       } else {
         done()
       }
-    },
+    }
   }
 }
 </script>
