@@ -197,7 +197,8 @@
     "ip": "IP",
     "session_type": "Session type",
     "message": "Message",
-    "status-code": "Status code"
+    "status-code": "Status code",
+    "filed": "Filed"
   },
   "sidebar": {
     "dashboard": "Dashboard",

@@ -166,7 +166,8 @@ export default {
         // this.$inertia.visit(this.appRoute('admin.first-login.form'))
       } else if (response?.data?.requireTwoFactor) {
         const tempToken = response?.data?.tempToken
-        this.authStore.setAdminTempToken(tempToken)
+        // store in session storage
+        sessionStorage.setItem('tempToken', tempToken)
         this.$router.push({ name: 'admin-two-factor' })
         // this.$inertia.visit(this.appRoute('admin.two-factor.form'))
       } else {

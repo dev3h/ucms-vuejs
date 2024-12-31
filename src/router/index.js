@@ -75,6 +75,11 @@ const router = createRouter({
           component: () => import('@/views/Auth/Page/Password/ResetPassword.vue')
         },
         {
+          path: 'login/two-factor-challenge',
+          name: 'admin-two-factor',
+          component: () => import('@/views/Auth/Page/TwoFactorChallenge.vue')
+        },
+        {
           path: 'system-components',
           children: [
             // system
@@ -256,7 +261,7 @@ const router = createRouter({
         {
           path: 'login/two-factor-challenge',
           name: 'sso-login-two-factor-challenge',
-          component: () => import('@/views/Auth/Page/TwoFactorChallenge.vue')
+          component: () => import('@/views/Auth/Page/SSOTwoFactorChallenge.vue')
         },
         {
           path: 'login/error',
@@ -302,15 +307,15 @@ router.beforeEach(async (to, from, next) => {
   }
 
   const adminRoutePattern = /^\/admin\//
-  const authRequired =
-    adminRoutePattern.test(to.path) &&
-    ![
-      'admin-login',
-      'forgot-password',
-      'confirm-forgot-password',
-      'reset-password',
-      'password-update'
-    ].includes(to.name)
+  const routeNotRequireAuth = [
+    'admin-login',
+    'forgot-password',
+    'confirm-forgot-password',
+    'reset-password',
+    'password-update',
+    'admin-two-factor'
+  ]
+  const authRequired = adminRoutePattern.test(to.path) && !routeNotRequireAuth.includes(to.name)
   const authStore = useAuthStore()
   const loggedIn = authStore.getAdminAccessToken
 

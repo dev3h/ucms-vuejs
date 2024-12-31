@@ -200,7 +200,8 @@
     "ip": "Địa chỉ IP",
     "session_type": "Loại phiên",
     "message": "Message",
-    "status-code": "Mã trạng thái"
+    "status-code": "Mã trạng thái",
+    "field ": "Trường"
   },
   "sidebar": {
     "dashboard": "Bảng điều khiển",
