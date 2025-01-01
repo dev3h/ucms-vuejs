@@ -80,6 +80,16 @@ const router = createRouter({
           component: () => import('@/views/Auth/Page/TwoFactorChallenge.vue')
         },
         {
+          path: 'login/setup-totp-mfa',
+          name: 'login-setup-totp-mfa',
+          component: () => import('@/views/Auth/TotpMFA/SetupTotpMfa.vue')
+        },
+        {
+          path: 'login/totp-mfa-qrcode',
+          name: 'login-totp-mfa-qrcode',
+          component: () => import('@/views/Auth/TotpMFA/TotpQrcode.vue')
+        },
+        {
           path: 'system-components',
           children: [
             // system
@@ -313,7 +323,9 @@ router.beforeEach(async (to, from, next) => {
     'confirm-forgot-password',
     'reset-password',
     'password-update',
-    'admin-two-factor'
+    'admin-two-factor',
+    'login-totp-mfa-qrcode',
+    'login-setup-totp-mfa'
   ]
   const authRequired = adminRoutePattern.test(to.path) && !routeNotRequireAuth.includes(to.name)
   const authStore = useAuthStore()

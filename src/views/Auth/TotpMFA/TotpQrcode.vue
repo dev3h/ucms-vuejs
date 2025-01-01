@@ -67,8 +67,11 @@
               class="flip-card-back bg-blue-50 p-6 rounded-md shadow-md flex flex-col items-center gap-3"
             >
               <p class="font-bold text-center">{{ $t('setup-mfa-page.card-back.line-1') }}</p>
-              <p v-if="secretCode" @click="handleCopyToClipboard(secretCode)" 
-                  class="cursor-pointer hover:opacity-85">
+              <p
+                v-if="secretCode"
+                @click="handleCopyToClipboard(secretCode)"
+                class="cursor-pointer hover:opacity-85"
+              >
                 {{ secretCode }}
               </p>
               <el-button
@@ -106,8 +109,10 @@ export default {
       qrCode: '',
       secretCode: '',
       query: this.$route.query,
+      isAdminRoute: this.$route.path.split('/')[1] === 'admin',
       formData: {
-        totpCode: null
+        totpCode: null,
+        tempToken: sessionStorage.getItem('tempToken')
       },
       rules: {
         totpCode: baseRuleValidate(this.$t)(this.$t('column.common.code'))
@@ -122,13 +127,9 @@ export default {
   methods: {
     async generateTotpQrcode() {
       try {
-        const response = await axios.post(
-          '/2fa/generate',
-          {
-            ...this.query
-          },
-          { responseType: 'arraybuffer' }
-        )
+        const routeName = this.isAdminRoute ? '/2fa/admin/generate' : '/2fa/sso/generate'
+        const data = this.isAdminRoute ? { tempToken: this.formData.tempToken } : this.query
+        const response = await axios.post(routeName, data, { responseType: 'arraybuffer' })
         const secretCodeHeader = response.headers['x-secret-code']
         if (secretCodeHeader) {
           this.secretCode = secretCodeHeader
@@ -152,12 +153,17 @@ export default {
     },
     async submit() {
       this.loadingForm = true
-      const response = await axios.post('/2fa/authenticate', {
+      const routeName = this.isAdminRoute ? '/2fa/admin/authenticate' : '/2fa/sso/authenticate'
+      const response = await axios.post(routeName, {
         ...this.formData,
         ...this.query
       })
       if (response.data?.status_code === 200) {
-        this.$router.push({ name: 'sso-login-confirm', query: this.query })
+        if(this.isAdminRoute) {
+          this.$message.success(response.data?.message)
+        }
+        const routeName = this.isAdminRoute ? 'admin-login' : 'sso-login-confirm'
+        this.$router.push({ name: routeName, query: this.query })
       } else {
         this.$message.error(response.data?.message || this.$t('message.something-wrong'))
       }

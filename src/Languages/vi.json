@@ -27,7 +27,9 @@
     },
     "2fa-challenge-page": {
       "title": "Nhập mã xác minh được cung cấp bởi ứng dụng xác thực.",
-      "title-recovery": "Nhập một trong các mã khôi phục khẩn cấp của bạn."
+      "title-recovery": "Nhập một trong các mã khôi phục khẩn cấp của bạn.",
+      "click-here": "Nhấn vào đây",
+      "reset-2fa": "để đặt lại xác thực hai yếu tố của bạn"
     },
     "return-to-login": "Quay lại màn hình đăng nhập",
     "authorization-error": "Đã chặn quyền truy cập: Lỗi ủy quyền",

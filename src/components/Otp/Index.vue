@@ -15,10 +15,13 @@
         :class="{ '!border-redD1': !inputs[index] && isSubmitted }"
       />
     </div>
-    <div v-if="isSubmitted && inputs.some((input) => input === '')" class="mt-2 text-center">
+    <!-- <div v-if="isSubmitted && inputs.some((input) => input === '')" class="mt-2 text-center">
       <span class="text-redD1 text-xs">{{
         $t('validate.required', { column: $t('column.common.code') })
       }}</span>
+    </div> -->
+    <div v-if="isError" class="mt-2 text-center">
+      <span class="text-redD1 text-xs">{{ error }}</span>
     </div>
   </div>
 </template>
@@ -30,12 +33,14 @@ export default {
     length: {
       type: Number,
       default: 6
-    }
+    },
   },
   data() {
     return {
       inputs: Array(this.length).fill(''),
-      isSubmitted: false
+      isSubmitted: false,
+      isError: false,
+      error: ''
     }
   },
   methods: {
@@ -63,6 +68,8 @@ export default {
       }
     },
     handleKeydown(event, index) {
+      this.isError = false
+      this.error = ''
       if (event.key === 'Backspace' && this.inputs[index] === '' && index > 0) {
         this.inputs[index - 1] = ''
         event.target.previousElementSibling?.focus()
@@ -73,7 +80,13 @@ export default {
       if (this.inputs.some((input) => input === '')) {
         this.$emit('validationFailed')
       }
-    }
+    },
+    setErrorMessage(error) {
+      if(error) {
+        this.error = error
+        this.isError = true
+      }
+    },
   },
   watch: {
     inputs(newInputs) {

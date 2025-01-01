@@ -47,6 +47,9 @@ export const useAuthStore = defineStore('auth', {
     //   }
     // },
     async fetchAdminInfo() {
+      if (!this.adminAccessToken) {
+        return null
+      }
       if (this.adminInfo) {
         return this.adminInfo
       }

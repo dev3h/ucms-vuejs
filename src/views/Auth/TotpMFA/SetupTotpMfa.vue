@@ -47,7 +47,7 @@
         </div>
       </div>
       <div class="flex justify-end pr-10">
-        <el-button type="info" size="large" class="w-[160px]" @click="goBack()">{{ $t('button.back') }}</el-button>
+        <el-button v-if="!isAdminRoute" type="info" size="large" class="w-[160px]" @click="goBack()">{{ $t('button.back') }}</el-button>
         <el-button type="primary" size="large" class="w-[160px]" @click="openTotpCodeForm">{{
           $t('button.I-have-an-app')
         }}</el-button>
@@ -61,12 +61,14 @@ export default {
   name: 'SetupAuthenticatorApp',
   data() {
     return {
-      query: this.$route.query
+      query: this.$route.query,
+      isAdminRoute: this.$route.path.split('/')[1] === 'admin',
     }
   },
   methods: {
     openTotpCodeForm() {
-      this.$router.push({ name: 'sso-login-totp-mfa-qrcode', query: this.query})
+      const routeName = this.isAdminRoute ? 'login-totp-mfa-qrcode' : 'sso-login-totp-mfa-qrcode'
+      this.$router.push({ name: routeName, query: this.query})
     },
     goBack() {
       this.$router.go(-1)

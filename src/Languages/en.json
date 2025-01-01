@@ -25,7 +25,9 @@
     },
     "2fa-challenge-page": {
       "title": "Enter your verify code provided by authenticator app.",
-      "title-recovery": "Enter one of your emergency recovery codes."
+      "title-recovery": "Enter one of your emergency recovery codes.",
+      "click-here": "Click here",
+      "reset-2fa": "to reset 2FA"
     },
     "return to login": "Return to login screen",
     "authorization-error": "Authorization Error"

@@ -21,7 +21,7 @@
       :model="formData"
       :rules="rules"
       label-position="top"
-      @submit.prevent="submit"
+      @submit="(e) => e.preventDefault()"
     >
       <!-- <div v-if="!recovery">
         <el-form-item
@@ -61,12 +61,22 @@
           />
         </el-form-item>
       </div> -->
+
       <OtpInput ref="otpPad" class="mt-8" @enterCodeComplete="handleCode" />
 
-      <div class="flex flex-col justify-center mt-9 gap-4">
-        <el-button type="primary" :loading="loadingForm" @click.prevent="doSubmit">
+      <div class="flex justify-center mt-9 gap-1">
+        <router-link
+          :to="{ name: 'login-setup-totp-mfa' }"
+          class="text-sm text-gray-600 hover:text-gray-900 cursor-pointer underline"
+        >
+          {{ $t('auth-page.2fa-challenge-page.click-here') }}
+        </router-link>
+        <span class="text-sm text-gray-600">{{
+          $t('auth-page.2fa-challenge-page.reset-2fa')
+        }}</span>
+        <!-- <el-button type="primary" :loading="loadingForm" @click.prevent="doSubmit">
           {{ $t('button.verify') }}
-        </el-button>
+        </el-button> -->
         <!-- <el-button
           class="text-sm text-gray-600 hover:text-gray-900 cursor-pointer !ml-0"
           @click.prevent="toggleRecovery"
@@ -89,6 +99,7 @@ import axios from '@/Plugins/axios.js'
 import form from '@/Mixins/form'
 import baseRuleValidate from '@/Store/Const/baseRuleValidate'
 import OtpInput from '@/components/Otp/Index.vue'
+import { useAuthStore } from '@/stores/auth'
 
 export default {
   mixins: [form],
@@ -104,6 +115,8 @@ export default {
         recovery_code: '',
         tempToken: sessionStorage.getItem('tempToken')
       },
+      error: '',
+      authStore: useAuthStore(),
       recoveryCodeInput: null,
       otpPad: null,
       codeInput: null,
@@ -116,6 +129,13 @@ export default {
             trigger: ['blur', 'change']
           }
         ]
+      }
+    }
+  },
+  watch: {
+    'formData.totpCode'(newVal) {
+      if (newVal && newVal.length === 6) {
+        this.ok()
       }
     }
   },
@@ -135,22 +155,31 @@ export default {
     },
     handleCode(code) {
       this.formData.totpCode = code
-      this.doSubmit()
     },
-    async submit() {
-      this.loadingForm = true
-      const response = await axios.post('/2fa/challenge', {
-        ...this.formData,
-      })
-      if (response?.data?.status_code === 200) {
-        const authTempCode = response?.data?.data
-        // Tạo URL với token trong fragment (dấu #)
-        const redirectUrl = `${this.query.redirect_uri}#auth_code=${authTempCode}&client_id=${this.query.client_id}&redirect_uri=${encodeURIComponent(this.query.redirect_uri)}`
-
-        // Redirect người dùng về URL mới với access token trong fragment
-        window.location.href = redirectUrl
+    async ok() {
+      try {
+        this.loadingForm = true
+        const response = await axios.post('/2fa/challenge', {
+          ...this.formData
+        })
+        console.log(response)
+        if (response?.data?.status_code === 200) {
+          const accessToken = response?.data?.access_token
+          this.authStore.setAdminAccessToken(accessToken)
+          this.$router.push({ name: 'system' })
+        }
+        this.loadingForm = false
+      } catch (error) {
+        console.log(error)
+        if(error?.response?.status === 500) {
+          this.$message.error(error?.response?.message || this.$t('message.something-wrong'))
+        }
+        this.loadingForm = false
+        if (error?.status === 422) {
+          const errorMessage = error?.data?.errors?.totpCode[0]
+          this.$refs.otpPad.setErrorMessage(errorMessage)
+        }
       }
-      this.loadingForm = false
     }
   }
 }
