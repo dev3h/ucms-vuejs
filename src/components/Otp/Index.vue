@@ -13,6 +13,7 @@
         maxlength="1"
         class="otp-input"
         :class="{ '!border-redD1': !inputs[index] && isSubmitted }"
+        :disabled="isDisabled"
       />
     </div>
     <!-- <div v-if="isSubmitted && inputs.some((input) => input === '')" class="mt-2 text-center">
@@ -34,6 +35,10 @@ export default {
       type: Number,
       default: 6
     },
+    isDisabled: {
+      type: Boolean,
+      default: false
+    }
   },
   data() {
     return {

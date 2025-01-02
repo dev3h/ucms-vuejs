@@ -9,7 +9,7 @@
         <div class="flex justify-between">
           <div class="w-1/2">
             <div class="text-zinc-800 text-2xl font-bold uppercase leading-[28.80px] mb-3">
-              {{ $t('auth-page.confirm-login-title', { name: decodeURIComponent(query?.sy) }) }}
+              {{ $t('auth-page.confirm-login-title', { name: sy }) }}
             </div>
             <div class="flex items-center gap-2">
               <el-avatar size="small">{{ query?.email?.charAt(0) }}</el-avatar> 
@@ -18,7 +18,7 @@
           </div>
           <div class="px-5 flex-1">
             <div>
-              {{ $t('sso-ucms-confirm-page.line-1', { name: decodeURIComponent(query?.sy) }) }}
+              {{ $t('sso-ucms-confirm-page.line-1', { name: sy }) }}
             </div>
           </div>
         </div>
@@ -47,7 +47,8 @@ export default {
   data() {
     return {
       loadingForm: false,
-      query: this.$route.query
+      query: this.$route.query,
+      sy: null
     }
   },
   methods: {
@@ -76,6 +77,18 @@ export default {
       const redirectUrl = `${this.query.redirect_uri}?flash_message=${encodeURIComponent(this.$t('message.login-ucms-fail'))}`
       window.location.href = redirectUrl
     },
+    async getSystem() {
+      try {
+        const response = await axios.post('/auth/sso-ucms/get-system-name', {
+          client_id: this.query?.client_id
+        })
+        if (response?.data?.status_code === 200) {
+          this.sy = response?.data?.data
+        }
+      } catch (err) {
+        this.$message.error(err.response.data.message || this.$t('message.something-wrong'))
+      }
+    },
     handlePopState() {
       this.$router.push({
         name: 'sso-login-email',
@@ -91,6 +104,9 @@ export default {
   },
   beforeUnmount() {
     window.removeEventListener('popstate', this.handlePopState)
+  },
+  created() {
+    this.getSystem()
   }
 }
 </script>

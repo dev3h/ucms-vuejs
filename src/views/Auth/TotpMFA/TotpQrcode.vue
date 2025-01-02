@@ -98,7 +98,8 @@
 </template>
 
 <script>
-import axios from '@/Plugins/ssoAxios.js'
+import axiosSSO from '@/Plugins/ssoAxios.js'
+import axios from '@/Plugins/axios.js'
 import form from '@/Mixins/form'
 import baseRuleValidate from '@/Store/Const/baseRuleValidate'
 
@@ -129,7 +130,8 @@ export default {
       try {
         const routeName = this.isAdminRoute ? '/2fa/admin/generate' : '/2fa/sso/generate'
         const data = this.isAdminRoute ? { tempToken: this.formData.tempToken } : this.query
-        const response = await axios.post(routeName, data, { responseType: 'arraybuffer' })
+        const axiosInstance = this.isAdminRoute ? axios : axiosSSO
+        const response = await axiosInstance.post(routeName, data, { responseType: 'arraybuffer' })
         const secretCodeHeader = response.headers['x-secret-code']
         if (secretCodeHeader) {
           this.secretCode = secretCodeHeader
@@ -154,7 +156,8 @@ export default {
     async submit() {
       this.loadingForm = true
       const routeName = this.isAdminRoute ? '/2fa/admin/authenticate' : '/2fa/sso/authenticate'
-      const response = await axios.post(routeName, {
+      const axiosInstance = this.isAdminRoute ? axios : axiosSSO
+      const response = await axiosInstance.post(routeName, {
         ...this.formData,
         ...this.query
       })

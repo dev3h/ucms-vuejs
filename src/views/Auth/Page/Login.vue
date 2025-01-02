@@ -161,6 +161,7 @@ export default {
   methods: {
     async submit() {
       this.loadingForm = true
+      console.log(axios.defaults.headers.common)
       const response = await axios.post('/auth/admin/login', this.formData)
       if (response?.data?.data?.firstLogin) {
         // this.$inertia.visit(this.appRoute('admin.first-login.form'))

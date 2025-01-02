@@ -4,17 +4,53 @@ import { useAuthStore } from '@/stores/auth'
 /**
  * Axios default config
  */
+function getCookie(name) {
+  const value = `; ${document.cookie}`
+  const parts = value.split(`; ${name}=`)
+  if (parts.length === 2) return parts.pop().split(';').shift()
+}
+
+const csrfToken = getCookie('_csrf')
+
 export const defaultConfig = {
   baseURL:
     import.meta.env.VITE_ENV === 'production'
       ? import.meta.env.VITE_PROD_API_BACKEND
       : import.meta.env.VITE_API_BACKEND,
   timeout: 60000,
-  headers: { 'X-Requested-With': 'XMLHttpRequest' },
+  headers: {
+    'X-Requested-With': 'XMLHttpRequest',
+    'x-csrf-token': csrfToken
+    // 'XSRF-TOKEN': csrfToken
+  },
   withCredentials: true,
   responseType: 'json',
   xsrfCookieName: 'XSRF-TOKEN',
   xsrfHeaderName: 'X-XSRF-TOKEN'
+}
+
+/**
+ * Flag to prevent fetching CSRF token multiple times
+ */
+let isFetchingCsrfToken = false
+
+/**
+ * Fetch CSRF Token and set it globally
+ */
+async function fetchCsrfTokenIfNeeded(instance) {
+  // If CSRF token is not set and it's not being fetched
+  if (!instance.defaults.headers.common['X-CSRF-Token'] && !isFetchingCsrfToken) {
+    isFetchingCsrfToken = true // Set flag to indicate token is being fetched
+
+    try {
+      const response = await instance.get('/csrf/token', { withCredentials: true })
+      instance.defaults.headers.common['X-CSRF-Token'] = response.data.csrfToken
+    } catch (error) {
+      console.error('Failed to fetch CSRF token:', error)
+    } finally {
+      isFetchingCsrfToken = false // Reset flag once token is fetched or failed
+    }
+  }
 }
 
 /**
@@ -49,6 +85,9 @@ export function provideAxios(options = {}) {
       if (adminToken) {
         requestConfig.headers['Authorization'] = `Bearer ${adminToken}`
       }
+
+      // Ensure CSRF token is present
+      // await fetchCsrfTokenIfNeeded(instance)
 
       requestConfig.headers['Accept-Language'] = 'vi'
       return requestConfig
@@ -139,5 +178,6 @@ export const VueAxios = {
 }
 
 const instance = provideAxios()
+// fetchCsrfTokenIfNeeded(instance)
 
 export default instance

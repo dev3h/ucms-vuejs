@@ -15,7 +15,8 @@ const checkRequiredParams = async (to, from, next) => {
     next({ name: 'error-login', query: { authError: encodeURIComponent(message.trim()) } })
   } else {
     try {
-      const response = await axios.post('auth/sso-ucms/check-info-system', { ...to.query })
+      const axiosInstance = axios;
+      const response = await axiosInstance.post('auth/sso-ucms/check-info-system', { ...to.query })
       if (response?.data?.data) next()
     } catch (error) {
       next({ name: 'error-login', query: { authError: error.response?.data?.message } })

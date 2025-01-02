@@ -62,7 +62,10 @@
         </el-form-item>
       </div> -->
 
-      <OtpInput ref="otpPad" class="mt-8" @enterCodeComplete="handleCode" />
+      <OtpInput ref="otpPad" class="mt-8" 
+        @enterCodeComplete="handleCode" 
+        :isDisabled="loadingForm"
+      />
 
       <div class="flex justify-center mt-9 gap-1">
         <router-link
@@ -100,6 +103,7 @@ import form from '@/Mixins/form'
 import baseRuleValidate from '@/Store/Const/baseRuleValidate'
 import OtpInput from '@/components/Otp/Index.vue'
 import { useAuthStore } from '@/stores/auth'
+import { ElLoading } from 'element-plus'
 
 export default {
   mixins: [form],
@@ -135,7 +139,7 @@ export default {
   watch: {
     'formData.totpCode'(newVal) {
       if (newVal && newVal.length === 6) {
-        this.ok()
+        this.handleSubmit()
       }
     }
   },
@@ -156,9 +160,10 @@ export default {
     handleCode(code) {
       this.formData.totpCode = code
     },
-    async ok() {
+    async handleSubmit() {
       try {
         this.loadingForm = true
+        ElLoading.service({ fullscreen: true })
         const response = await axios.post('/2fa/challenge', {
           ...this.formData
         })
@@ -169,8 +174,10 @@ export default {
           this.$router.push({ name: 'system' })
         }
         this.loadingForm = false
+        ElLoading.service().close()
       } catch (error) {
         console.log(error)
+        ElLoading.service().close()
         if(error?.response?.status === 500) {
           this.$message.error(error?.response?.message || this.$t('message.something-wrong'))
         }

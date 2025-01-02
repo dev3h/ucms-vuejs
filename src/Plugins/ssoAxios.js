@@ -18,6 +18,30 @@ export const defaultConfig = {
 }
 
 /**
+ * Flag to prevent fetching CSRF token multiple times
+ */
+let isFetchingCsrfToken = false
+
+/**
+ * Fetch CSRF Token and set it globally
+ */
+async function fetchCsrfTokenIfNeeded(instance) {
+  // If CSRF token is not set and it's not being fetched
+  if (!instance.defaults.headers.common['X-CSRF-Token'] && !isFetchingCsrfToken) {
+    isFetchingCsrfToken = true // Set flag to indicate token is being fetched
+
+    try {
+      const response = await instance.get('/csrf/token', { withCredentials: true })
+      instance.defaults.headers.common['X-CSRF-Token'] = response.data.csrfToken
+    } catch (error) {
+      console.error('Failed to fetch CSRF token:', error)
+    } finally {
+      isFetchingCsrfToken = false // Reset flag once token is fetched or failed
+    }
+  }
+}
+
+/**
  * @param {Object} options
  * @returns {axios.AxiosInstance}
  */
@@ -27,6 +51,8 @@ export function provideAxios(options = {}) {
   // Setting up axios request interceptor
   instance.interceptors.request.use(
     async function (requestConfig) {
+      // Ensure CSRF token is present
+      // await fetchCsrfTokenIfNeeded(instance)
       requestConfig.headers['Accept-Language'] = 'vi'
       return requestConfig
     },
@@ -82,5 +108,6 @@ export const VueAxios = {
 }
 
 const instance = provideAxios()
+// fetchCsrfTokenIfNeeded(instance)
 
 export default instance
