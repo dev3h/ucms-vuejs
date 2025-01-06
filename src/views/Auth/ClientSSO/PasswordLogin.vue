@@ -143,7 +143,6 @@ export default {
           consent_token: resData?.consentToken,
           client_id: resData?.client_id,
           redirect_uri: resData?.redirect_uri,
-          sy: encodeURIComponent(resData?.system_name)
         }
         const twoFactor = resData?.two_factor
         if (twoFactor?.enable) {

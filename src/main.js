@@ -15,6 +15,17 @@ import vi from '@/Languages/vi.json';
 
 import App from './App.vue'
 import router from './router'
+// import axios from '@/Plugins/axios'
+
+// const csrfToken = async () => {
+//   try {
+//     const response = await axios.get('/csrf/token', { withCredentials: true })
+//     axios.defaults.headers.common['X-CSRF-Token'] = response.data.csrfToken
+//   } catch (error) {
+//     console.error('Failed to fetch CSRF token:', error)
+//   }
+// }
+// csrfToken()
 
 const app = createApp(App)
 const messages = {

@@ -204,7 +204,7 @@ export default {
       const currentMonth = new Date().getMonth()
       const daysArray = Array.from({ length: daysInMonth }, (_, day) => {
         const dayFormat = (day + 1).toString().padStart(2, '0') // Format day as "01", "02", etc.
-        const month = currentMonth + 1
+        const month = (currentMonth + 1).toString().padStart(2, '0');
         return `${month}-${dayFormat}`
       }) // Generate array [1, 2, ..., daysInMonth]
 

@@ -91,6 +91,11 @@ const router = createRouter({
           component: () => import('@/views/Auth/TotpMFA/TotpQrcode.vue')
         },
         {
+          path: 'dashboard',
+          name: 'dashboard',
+          component: () => import('@/views/App/Dashboard/Index.vue')
+        },
+        {
           path: 'system-components',
           children: [
             // system
@@ -254,7 +259,7 @@ const router = createRouter({
           beforeEnter: checkRequiredParams
         },
         {
-          path: 'login/oauth/id',
+          path: 'login/oauth',
           name: 'sso-login-confirm',
           component: () => import('@/views/Auth/ClientSSO/OauthConfirmLogin.vue'),
           beforeEnter: checkRequiredParams

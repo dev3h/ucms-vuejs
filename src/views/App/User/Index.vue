@@ -144,7 +144,8 @@ export default {
           'min-width': 200,
           label: this.$t('column.common.name'),
           align: 'left',
-          headerAlign: 'left'
+          headerAlign: 'left',
+          fixed: true
         },
         {
           key: 'email',
@@ -155,6 +156,7 @@ export default {
         },
         {
           key: 'roles',
+          'width': 200,
           'min-width': 200,
           label: this.$t('sidebar.role'),
           align: 'left',
@@ -204,7 +206,7 @@ export default {
         },
         {
           key: 'action',
-          width: 200,
+          width: 150,
           label: '',
           align: 'center',
           headerAlign: 'center',

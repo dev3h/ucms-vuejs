@@ -2,7 +2,7 @@ export const MASTER_MENUS = [
     {
         label: 'sidebar.dashboard',
         icon: "dashboard-icon.svg",
-        route: "admin.dashboard.index",
+        route: "dashboard",
         pathActive: "dashboard",
     },
     {
