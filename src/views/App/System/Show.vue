@@ -108,16 +108,18 @@
         >
           <template v-slot:node="{ node, collapsed }">
             <div
-              class="rich-media-node ml-1 p-1"
+              class="rich-media-node ml-1 p-1 relative"
               :style="{
                 border: collapsed ? '2px solid grey' : '',
                 backgroundColor: getNodeColor(node.type)
               }"
+              @contextmenu.prevent="showContextMenu($event, node)"
             >
               <span style="padding: 4px 0; font-weight: bold">{{ node.name }}</span>
               <span style="padding: 4px 0; font-style: italic; color: gray">
                 ({{ getNodeLabel(node.type) }})
               </span>
+              <ContextMenu ref="menu" />
             </div>
           </template>
         </vue-tree>
@@ -136,16 +138,18 @@ import axios from '@/Plugins/axios'
 import BackBar from '@/components/BackBar/Index.vue'
 import VueTree from '@ssthouse/vue3-tree-chart'
 import '@ssthouse/vue3-tree-chart/dist/vue3-tree-chart.css'
+import ContextMenu from './ContextMenu.vue'
 
 export default {
-  components: { AdminLayout, BreadCrumbComponent, BackBar, VueTree, DeleteForm },
+  components: { AdminLayout, BreadCrumbComponent, BackBar, VueTree, DeleteForm, ContextMenu },
   data() {
     return {
       item: null,
       id: this.$route.params.id,
       treeData: [],
       treeConfig: { nodeWidth: 120, nodeHeight: 80, levelHeight: 200 },
-      deleteForm: null
+      deleteForm: null,
+      menu: null
     }
   },
   computed: {
@@ -170,6 +174,12 @@ export default {
   methods: {
     goBack() {
       this.$router.push({ name: 'system' })
+    },
+    showContextMenu(event, node) {
+      this.$refs.menu.open(node)
+      // this.contextMenuStyle.top = `${event.clientY}px`;
+      // this.contextMenuStyle.left = `${event.clientX}px`;
+      // this.contextMenuVisible = true;
     },
     getNodeLabel(type) {
       switch (type) {
@@ -238,7 +248,9 @@ export default {
     },
     async handleChangeStatus(clientSecretId) {
       try {
-        const response = await axios.put(`/system/${this.id}/update-client-secret/${clientSecretId}`)
+        const response = await axios.put(
+          `/system/${this.id}/update-client-secret/${clientSecretId}`
+        )
         this.$message({
           type: 'success',
           message: response?.data?.message
