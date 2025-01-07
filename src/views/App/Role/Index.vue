@@ -38,7 +38,23 @@
         >
           <template #assigned="{ row }">
             <span v-if="row?.assigned === 0">-</span>
-            <span v-else>{{ row?.assigned }} {{ $t('column.users') }}</span>
+            <span v-else> {{ row?.assigned }} {{ $t('column.users') }} </span>
+          </template>
+          <template #number_of_user="{ row }">
+            <div class="flex gap-2 items-center">
+              <img
+                class="cursor-pointer"
+                src="/images/svg/add-item.svg"
+                alt=""
+                @click="openAddUser(row?.id)"
+              />
+              <span
+                @click="openUserList(row?.id)"
+                class="rounded-[50px] bg-gray-300 cursor-pointer px-2 py-1"
+              >
+                {{ row?.number_of_user }} {{ $t('column.users') }}
+              </span>
+            </div>
           </template>
           <template #action="{ row }">
             <div class="flex justify-center items-center gap-x-[12px]">
@@ -57,6 +73,24 @@
       </div>
     </div>
     <DeleteForm ref="deleteForm" @delete-action="deleteItem" />
+    <ModalAddExtra
+      ref="modalExtra"
+      @add-success="fetchData()"
+      :title="$t('dialog.add', { name: $t('sidebar.user') })"
+      :placeholder="$t('input.common.select', { name: $t('sidebar.user') })"
+      fetchRoute="/role/:id/rest-users"
+      addRoute="/role/:id/add-users"
+    />
+    <ModalListChildren
+      :title="$t('sidebar.user')"
+      fetchRoute="/role/:id/users"
+      deleteRoute="/role/:id/remove-user/:childId"
+      ref="modalList"
+      showRoute="user-show"
+      @close-modal="fetchData()"
+      :isCodeField="false"
+      :fieldsExtra="fieldsExtra"
+    />
   </AdminLayout>
 </template>
 <script>
@@ -67,8 +101,11 @@ import DataTable from '@/components/Page/DataTable.vue'
 import axios from '@/Plugins/axios'
 import DeleteForm from '@/components/Page/DeleteForm.vue'
 import debounce from 'lodash.debounce'
+import ModalAddExtra from '@/components/Dialog/ModalAddExtra.vue'
+import ModalListChildren from '@/components/Dialog/ModalListChildren.vue'
+
 export default {
-  components: { AdminLayout, BreadCrumbComponent, DataTable, DeleteForm },
+  components: { AdminLayout, BreadCrumbComponent, DataTable, DeleteForm, ModalAddExtra, ModalListChildren },
   props: {
     roles: {
       type: Array,
@@ -82,7 +119,7 @@ export default {
         name: null,
         role: null,
         page: Number(this?.$route?.params?.page ?? 1),
-        limit: Number(this?.$route?.query?.limit ?? 10)
+        limit: Number(this?.$route?.query?.limit ?? 10),
       },
       fields: [
         {
@@ -90,7 +127,8 @@ export default {
           'min-width': 400,
           label: this.$t('column.common.name'),
           align: 'left',
-          headerAlign: 'left'
+          headerAlign: 'left',
+          fixed: true
         },
         {
           key: 'code',
@@ -115,12 +153,21 @@ export default {
         },
         {
           key: 'action',
-          width: 200,
+          width: 150,
           label: '',
           align: 'center',
           headerAlign: 'center',
           fixed: 'right'
         }
+      ],
+      fieldsExtra: [
+        {
+          key: 'email',
+          'min-width': 200,
+          label: this.$t('input.common.email'),
+          align: 'left',
+          headerAlign: 'left'
+        },
       ],
       paginate: {},
       loadForm: false
@@ -165,6 +212,12 @@ export default {
     }, 500),
     openCreate() {
       this.$router.push({ name: 'role-create' })
+    },
+    openAddUser(id) {
+      this.$refs.modalExtra.open(id)
+    },
+    openUserList(id) {
+      this.$refs.modalList.open(id)
     },
     openEdit(id) {
       this.$router.push({ name: 'role-edit', params: { id } })

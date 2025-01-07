@@ -108,7 +108,8 @@ export default {
           'min-width': 400,
           label: this.$t('column.common.name'),
           align: 'left',
-          headerAlign: 'left'
+          headerAlign: 'left',
+          fixed: true
         },
         {
           key: 'code',
@@ -126,7 +127,7 @@ export default {
         },
         {
           key: 'action',
-          width: 200,
+          width: 150,
           label: '',
           align: 'center',
           headerAlign: 'center',

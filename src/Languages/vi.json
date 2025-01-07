@@ -203,7 +203,8 @@
     "session_type": "Loại phiên",
     "message": "Message",
     "status-code": "Mã trạng thái",
-    "field ": "Trường"
+    "field ": "Trường",
+    "geo_location": "Vị trí địa lý"
   },
   "sidebar": {
     "dashboard": "Bảng điều khiển",
@@ -265,7 +266,8 @@
     "login-ucms-fail": "Đăng nhập UCMS thất bại",
     "miss-param": "Thiếu tham số {name}",
     "block-user": "Bạn nhập sai mật khẩu quá nhiều lần, tài khoản của bạn đã bị tạm khóa",
-    "block-user-time": "Làm ơn chờ {time} giây rồi thử lại"
+    "block-user-time": "Làm ơn chờ {time} giây rồi thử lại",
+    "unknown_geo_location": "không xác định"
   },
   "back-bar": {
     "create-user": "Tạo mới người dùng",

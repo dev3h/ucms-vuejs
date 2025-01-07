@@ -200,7 +200,8 @@
     "session_type": "Session type",
     "message": "Message",
     "status-code": "Status code",
-    "filed": "Filed"
+    "filed": "Filed",
+    "geo_location": "Geo location"
   },
   "sidebar": {
     "dashboard": "Dashboard",
@@ -262,7 +263,8 @@
     "login-ucms-fail": "Login UCMS fail",
     "miss-param": "Missing parameter {name}",
     "block-user": "You entered the wrong password too many times. Your account has been blocked",
-    "block-user-time": "Please try again after {time} minutes"
+    "block-user-time": "Please try again after {time} minutes",
+    "unknown_geo_location": "Unknown geo location"
   },
   "back-bar": {
     "create-user": "Create new user",

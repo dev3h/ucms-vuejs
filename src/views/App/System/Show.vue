@@ -136,7 +136,7 @@ import { searchMenu } from '@/Mixins/breadcrumb.js'
 import DeleteForm from '@/components/Page/DeleteForm.vue'
 import axios from '@/Plugins/axios'
 import BackBar from '@/components/BackBar/Index.vue'
-import VueTree from '@ssthouse/vue3-tree-chart'
+import VueTree from '@ssthouse/vue3-tree-chart/'
 import '@ssthouse/vue3-tree-chart/dist/vue3-tree-chart.css'
 import ContextMenu from './ContextMenu.vue'
 
@@ -295,16 +295,14 @@ function transformData(data) {
           type: 'action'
         }))
       }))
-    }))
+    })),
+    links: [
+      { parent: 1, child: 2 },
+      { parent: 3, child: 2 },
+      { parent: 4, child: 2 }
+    ]
   }
 
-  // Example links (you may need to adjust this based on your actual requirements)
-  const links = [
-    { parent: 1, child: 2 },
-    { parent: 3, child: 2 },
-    { parent: 4, child: 2 }
-  ]
-
-  return { ...treeData, links, identifier: 'customID' }
+  return { ...treeData, identifier: 'customID' }
 }
 </script>

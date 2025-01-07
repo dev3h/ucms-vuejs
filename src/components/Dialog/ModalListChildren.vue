@@ -84,6 +84,14 @@ export default {
     children_count_label: {
       type: String,
       required: false
+    },
+    fieldsExtra: {
+      type: Array,
+      default: () => []
+    },
+    isCodeField: {
+      type: Boolean,
+      default: true
     }
   },
   emits: ['close-modal'],
@@ -96,14 +104,19 @@ export default {
         align: 'left',
         headerAlign: 'left'
       },
-      {
+    ]
+    if(this.isCodeField) {
+      fields.push({
         key: 'code',
         'min-width': 400,
         label: this.$t('column.common.code'),
         align: 'left',
         headerAlign: 'left'
-      }
-    ]
+      })
+    }
+    if(this.fieldsExtra) {
+      fields.push(...this.fieldsExtra)
+    }
 
     if (this.children_key) {
       fields.push({

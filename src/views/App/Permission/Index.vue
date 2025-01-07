@@ -115,7 +115,7 @@ export default {
         },
         {
           key: 'action',
-          width: 200,
+          width: 150,
           label: '',
           align: 'center',
           headerAlign: 'center',

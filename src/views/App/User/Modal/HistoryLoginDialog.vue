@@ -28,6 +28,14 @@
             {{ row?.session_type === 1 ? 'Admin' : 'SSO' }}
           </div>
         </template>
+        <template #geo_location="{ row }">
+          <div v-if="row?.geo_location?.city">
+            <span>{{ row?.geo_location?.city }} - {{ row?.geo_location?.region }}</span>
+          </div>
+          <div v-else>
+            <span>{{ $t('message.unknown_geo_location') }}</span>
+          </div>
+        </template>
         <template #action="{ row }">
           <div class="flex justify-center items-center gap-x-[12px]">
             <div class="cursor-pointer hover:opacity-85 font-bold" @click="openDeleteForm(row?.id)">
@@ -79,15 +87,22 @@ export default {
         headerAlign: 'left'
       },
       {
+        key: 'geo_location',
+        'min-width': 300,
+        label: this.$t('column.geo_location'),
+        align: 'left',
+        headerAlign: 'left'
+      },
+      {
         key: 'session_type',
-        'min-width': 400,
+        width: 150,
         label: this.$t('column.session_type'),
         align: 'left',
         headerAlign: 'left'
       },
       {
         key: 'action',
-        width: 200,
+        width: 150,
         label: '',
         align: 'center',
         headerAlign: 'center',
