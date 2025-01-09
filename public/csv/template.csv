@@ -1,0 +1,5 @@
+name,email,phone_number,password,role_id,type,two_factor_enable,,,,,
+a,a@gmail.com,133456789,a12345678X,1,1,0,,,,type,"1: admin, 2:user"
+b,b@gmail.com,134567892,a12345678X,1,2,0,,,,two_factor_enable,"0: false, 1: true"
+c,c@gmail.com,134567893,a12345678X,1,2,0,,,,,
+d,d@gmail.com,134567894,a12345678X,1,2,0,,,,,

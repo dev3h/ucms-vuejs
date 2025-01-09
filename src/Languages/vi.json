@@ -124,7 +124,8 @@
     "this-week": "Tuần này",
     "this-month": "Tháng này",
     "this-year": "Năm nay",
-    "current": "Hiện tại"
+    "current": "Hiện tại",
+    "upload": "Tải lên"
   },
   "dialog": {
     "add":"Thêm {name}"
@@ -204,7 +205,9 @@
     "message": "Message",
     "status-code": "Mã trạng thái",
     "field ": "Trường",
-    "geo_location": "Vị trí địa lý"
+    "geo_location": "Vị trí địa lý",
+    "importStatus": "Trạng thái nhập",
+    "importMessage": "Message nhập"
   },
   "sidebar": {
     "dashboard": "Bảng điều khiển",
@@ -267,7 +270,9 @@
     "miss-param": "Thiếu tham số {name}",
     "block-user": "Bạn nhập sai mật khẩu quá nhiều lần, tài khoản của bạn đã bị tạm khóa",
     "block-user-time": "Làm ơn chờ {time} giây rồi thử lại",
-    "unknown_geo_location": "không xác định"
+    "unknown_geo_location": "không xác định",
+    "no-file-selected": "Không có tệp nào được chọn",
+    "no-row-selected": "Không có hàng nào được chọn"
   },
   "back-bar": {
     "create-user": "Tạo mới người dùng",

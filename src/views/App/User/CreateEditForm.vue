@@ -290,7 +290,6 @@ export default {
     async fetchData() {
       this.loadForm = true
       await axios
-      await axios
         .get(`user/${this.currentId}`)
         .then((response) => {
           console.log(response)

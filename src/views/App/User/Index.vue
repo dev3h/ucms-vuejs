@@ -20,37 +20,9 @@
                 <img src="/images/svg/search-icon.svg" alt="" />
               </template>
             </el-input>
-            <el-select
-              v-model="filters.role_id"
-              class="!w-[200px]"
-              size="large"
-              :placeholder="$t('sidebar.role')"
-              clearable
-              @change="fetchData()"
-            >
-              <el-option v-for="role in roles" :key="role.id" :label="role.name" :value="role.id" />
-            </el-select>
-            <el-select
-              v-model="filters.type"
-              class="!w-[200px]"
-              size="large"
-              :placeholder="$t('input.type-user')"
-              clearable
-              @change="fetchData()"
-            >
-              <el-option :label="$t('input.admin')" :value="1" />
-              <el-option :label="$t('input.user')" :value="2" />
-            </el-select>
-            <el-date-picker
-              v-model="filters.created_at"
-              type="date"
-              :placeholder="$t('column.common.created-at')"
-              size="large"
-              class="!w-[200px]"
-              value-format="YYYY-MM-DD"
-              format="YYYY/MM/DD"
-              @change="filterData"
-            />
+            <el-button type="success" size="large" @click="openImportCsvSetup()">{{
+              $t('button.import-csv')
+            }}</el-button>
           </div>
           <div>
             <!-- <el-button size="large" @click="openImport()">{{ $t('button.import-csv') }}</el-button> -->
@@ -58,6 +30,39 @@
               $t('button.add')
             }}</el-button>
           </div>
+        </div>
+        <div class="mb-4 flex gap-4">
+          <el-select
+            v-model="filters.role_id"
+            class="!w-[200px]"
+            size="large"
+            :placeholder="$t('sidebar.role')"
+            clearable
+            @change="fetchData()"
+          >
+            <el-option v-for="role in roles" :key="role.id" :label="role.name" :value="role.id" />
+          </el-select>
+          <el-select
+            v-model="filters.type"
+            class="!w-[200px]"
+            size="large"
+            :placeholder="$t('input.type-user')"
+            clearable
+            @change="fetchData()"
+          >
+            <el-option :label="$t('input.admin')" :value="1" />
+            <el-option :label="$t('input.user')" :value="2" />
+          </el-select>
+          <el-date-picker
+            v-model="filters.created_at"
+            type="date"
+            :placeholder="$t('column.common.created-at')"
+            size="large"
+            class="!w-[200px]"
+            value-format="YYYY-MM-DD"
+            format="YYYY/MM/DD"
+            @change="filterData"
+          />
         </div>
       </div>
 
@@ -89,8 +94,11 @@
           <template #two_factor_enable="{ row }">
             <span>{{ row?.two_factor_enable ? $t('button.enable') : $t('button.disable') }}</span>
           </template>
-          <template #history_login="{row}">
-            <span @click="openHistoryLogin(row?.id)" class="font-bold text-primary cursor-pointer hover:opacity-85">
+          <template #history_login="{ row }">
+            <span
+              @click="openHistoryLogin(row?.id)"
+              class="font-bold text-primary cursor-pointer hover:opacity-85"
+            >
               {{ $t('button.detail') }}
             </span>
           </template>
@@ -113,6 +121,7 @@
     <DeleteForm ref="deleteForm" @delete-action="deleteAccount" />
     <ModalImport ref="modalImport" @import-success="fetchData" />
     <HistoryLoginDialog ref="historyLoginDialog" />
+    <SetupImportCsvDialog ref="modalCsvImportSetup" :fetchData="fetchData" />
   </AdminLayout>
 </template>
 
@@ -126,9 +135,18 @@ import DeleteForm from '@/components/Page/DeleteForm.vue'
 import debounce from 'lodash.debounce'
 import ModalImport from './ModalImport.vue'
 import HistoryLoginDialog from './Modal/HistoryLoginDialog.vue'
+import SetupImportCsvDialog from './Modal/SetupImportCsvDialog.vue'
 
 export default {
-  components: { AdminLayout, BreadCrumbComponent, HistoryLoginDialog, DataTable, DeleteForm, ModalImport },
+  components: {
+    AdminLayout,
+    BreadCrumbComponent,
+    HistoryLoginDialog,
+    DataTable,
+    DeleteForm,
+    ModalImport,
+    SetupImportCsvDialog
+  },
   data() {
     return {
       items: [],
@@ -156,7 +174,7 @@ export default {
         },
         {
           key: 'roles',
-          'width': 200,
+          width: 200,
           'min-width': 200,
           label: this.$t('sidebar.role'),
           align: 'left',
@@ -275,6 +293,9 @@ export default {
     },
     openImport() {
       this.$refs.modalImport.open()
+    },
+    openImportCsvSetup() {
+      this.$refs.modalCsvImportSetup.open()
     },
     openHistoryLogin(id) {
       this.$refs.historyLoginDialog.open(id)

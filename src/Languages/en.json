@@ -123,7 +123,8 @@
     "this-week": "This week",
     "this-month": "This month",
     "this-year": "This year",
-    "current": "Current"
+    "current": "Current",
+    "upload": "Upload"
   },
   "dialog": {
     "add": "Add {name}"
@@ -201,7 +202,9 @@
     "message": "Message",
     "status-code": "Status code",
     "filed": "Filed",
-    "geo_location": "Geo location"
+    "geo_location": "Geo location",
+    "importStatus": "Import status",
+    "importMessage": "Import message"
   },
   "sidebar": {
     "dashboard": "Dashboard",
@@ -264,7 +267,9 @@
     "miss-param": "Missing parameter {name}",
     "block-user": "You entered the wrong password too many times. Your account has been blocked",
     "block-user-time": "Please try again after {time} minutes",
-    "unknown_geo_location": "Unknown geo location"
+    "unknown_geo_location": "Unknown geo location",
+    "no-file-selected": "No file selected",
+    "no-row-selected": "No row selected"
   },
   "back-bar": {
     "create-user": "Create new user",
