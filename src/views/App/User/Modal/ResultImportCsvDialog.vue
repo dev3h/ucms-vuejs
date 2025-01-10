@@ -8,7 +8,7 @@
   >
     <template #header>
       <DialogHeader
-        :title="$t('column.history-login')"
+        :title="$t('dialog.import-from-csv')"
         :isFullscreen="fullscreen"
         @toggleFullscreen="handleToggleFullScreen"
       />
@@ -17,7 +17,11 @@
       <DataTable v-loading="loadingForm" :fields="fields" :items="items" footer-center>
         <template #importStatus="{ row }">
           <span>
-            <img v-if="row?.importStatus === 'failure'" src="/images/svg/import-error.svg" class="w-5" />
+            <img
+              v-if="row?.importStatus === 'failure'"
+              src="/images/svg/import-error.svg"
+              class="w-5"
+            />
             <img v-else src="/images/svg/import-success.svg" class="w-5" />
           </span>
         </template>
@@ -32,7 +36,7 @@
     <template #footer>
       <div class="flex justify-center items-center">
         <el-button type="info" size="large" @click="closeModal">{{ $t('button.close') }}</el-button>
-        <el-button type="primary" size="large" @click="handleImport">{{
+        <el-button type="primary" size="large" @click="handleExport()">{{
           $t('button.export')
         }}</el-button>
       </div>
@@ -44,6 +48,7 @@
 import axios from '@/Plugins/axios'
 import DialogHeader from '@/components/Dialog/DialogHeader.vue'
 import DataTable from '@/components/Page/DataTable.vue'
+import Papa from 'papaparse'
 
 export default {
   components: { DialogHeader, DataTable },
@@ -52,7 +57,7 @@ export default {
     const fields = [
       {
         key: 'importStatus',
-        'width': 50,
+        width: 50,
         label: '',
         align: 'left',
         headerAlign: 'left',
@@ -135,6 +140,23 @@ export default {
     },
     handleToggleFullScreen() {
       this.fullscreen = !this.fullscreen
+    },
+    handleExport() {
+      // Chuyển đổi dữ liệu thành CSV
+      const csv = Papa.unparse(this.items)
+      const BOM = '\uFEFF'
+      const csvWithBOM = BOM + csv
+
+      // Tạo file và tải xuống
+      const blob = new Blob([csvWithBOM], { type: 'text/csv;charset=utf-8;' })
+      const url = URL.createObjectURL(blob)
+      const link = document.createElement('a')
+      link.setAttribute('href', url)
+      link.setAttribute('download', 'import-result.csv')
+      link.style.visibility = 'hidden'
+      document.body.appendChild(link)
+      link.click()
+      document.body.removeChild(link)
     }
   }
 }

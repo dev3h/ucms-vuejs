@@ -8,7 +8,7 @@
   >
     <template #header>
       <DialogHeader
-        :title="$t('column.history-login')"
+        :title="$t('dialog.choose-csv-file')"
         :isFullscreen="fullscreen"
         @toggleFullscreen="handleToggleFullScreen"
       />
@@ -38,6 +38,7 @@
       <div class="flex justify-center items-center">
         <el-button type="info" size="large" @click="closeModal">{{ $t('button.close') }}</el-button>
         <el-button
+          :loading="isLoading"
           :disabled="!formData.file"
           type="primary"
           size="large"
@@ -53,8 +54,9 @@
 <script>
 import DialogHeader from '@/components/Dialog/DialogHeader.vue'
 import form from '@/Mixins/form.js'
-import axios from '@/Plugins/axios'
+// import axios from '@/Plugins/axios'
 import PreviewCsvDialog from './PreviewCsvDialog.vue'
+import Papa from 'papaparse';
 
 export default {
   components: { DialogHeader, PreviewCsvDialog },
@@ -71,7 +73,17 @@ export default {
       fullscreen: false,
       formData: {
         file: null
-      }
+      },
+      isLoading: false,
+      requiredHeaders: [
+        'name',
+        'email',
+        'phone_number',
+        'password',
+        'role_id',
+        'type',
+        'two_factor_enable',
+      ],
     }
   },
   methods: {
@@ -87,36 +99,74 @@ export default {
     },
     handleFileChange(event) {
       const file = event.target.files[0]
+      
       this.formData.file = file
     },
+    // async handleUploadCsv() {
+    //   if (!this.formData.file) {
+    //     this.$message.error(this.$t('message.no-file-selected'))
+    //     return
+    //   }
+
+    //   const formData = new FormData()
+    //   formData.append('file', this.formData.file)
+
+    //   try {
+    //     const response = await axios.post('/user/import-csv', formData, {
+    //       headers: {
+    //         'Content-Type': 'multipart/form-data'
+    //       }
+    //     })
+    //     if (response?.data?.status_code === 200) {
+    //       const dataRes = response?.data?.data
+    //       if (dataRes?.length > 0) {
+    //         this.isShowModal = false
+    //         this.$refs.previewCsvDialog.open(dataRes)
+    //       }
+    //       this.$refs.fileImport.value = ''
+    //       this.formData.file = null
+    //     }
+    //   } catch (error) {
+    //     this.$message.error(error?.response?.data?.message || this.$t('message.something-wrong'))
+    //   }
+    // }
     async handleUploadCsv() {
       if (!this.formData.file) {
-        this.$message.error(this.$t('message.no-file-selected'))
-        return
+        this.$message.error(this.$t('message.no-file-selected'));
+        return;
       }
+      this.isLoading = true;
+      const file = this.formData.file;
 
-      const formData = new FormData()
-      formData.append('file', this.formData.file)
-
-      try {
-        const response = await axios.post('/user/import-csv', formData, {
-          headers: {
-            'Content-Type': 'multipart/form-data'
+      Papa.parse(file, {
+        header: true, // Parse the CSV with headers
+        skipEmptyLines: true,
+        complete: (result) => {
+          if (result?.data?.length > 0) {
+            const data = result.data; // Parsed CSV data
+            const headers = result?.meta?.fields;
+            const missingHeaders = this.requiredHeaders.filter((header) => !headers.includes(header));
+            if (missingHeaders.length > 0) {
+              this.$message.error(this.$t('message.missing-headers', { headers: missingHeaders.join(', ') }));
+              this.isLoading = false;
+              return;
+            }
+            this.isShowModal = false;
+            this.$refs.previewCsvDialog.open(data);
+          } else {
+            this.$message.error(this.$t('message.no-data-in-file'));
           }
-        })
-        if (response?.data?.status_code === 200) {
-          const dataRes = response?.data?.data
-          if (dataRes?.length > 0) {
-            this.isShowModal = false
-            this.$refs.previewCsvDialog.open(dataRes)
-          }
-          this.$refs.fileImport.value = ''
-          this.formData.file = null
-        }
-      } catch (error) {
-        this.$message.error(error?.response?.data?.message || this.$t('message.something-wrong'))
-      }
-    }
+          this.$refs.fileImport.value = '';
+          this.formData.file = null;
+          this.isLoading = false;
+        },
+        error: (error) => {
+          console.error('Error parsing CSV file:', error);
+          this.isLoading = false;
+          this.$message.error(this.$t('message.invalid-file'));
+        },
+      });
+    },
   }
 }
 </script>

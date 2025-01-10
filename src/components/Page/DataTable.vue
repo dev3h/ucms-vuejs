@@ -11,6 +11,9 @@
             @sort-change="sortChange"
             @selection-change="handleSelectionChange"
             @row-click="rowClick"
+            :lazy="true"
+            :reserve-selection="true"
+            :row-key="rowKey"
         >
             <el-table-column v-if="enableExpand" type="expand" width="50">
                 <template #default="scope">
@@ -19,7 +22,7 @@
                     </slot>
                 </template>
             </el-table-column>
-            <el-table-column v-if="enableSelectBox" type="selection" width="55" />
+            <el-table-column v-if="enableSelectBox" type="selection" width="55" :reserve-selection="true" />
             <el-table-column v-if="enableIndex" type="index" fixed width="70" label="No." align="center" />
             <el-table-column
                 v-for="(field, index) in fields"
@@ -138,7 +141,8 @@ export default {
             }
         },
         tableHeight: {type: Number, default: 700},
-        pagerCount: {type: Number}
+        pagerCount: {type: Number},
+        rowKey: {type: String, default: 'id'},
     },
     emits: ['row-selected', 'page-change', 'size-change', 'sort-change', 'row-click'],
     data() {

@@ -8,7 +8,7 @@
   >
     <template #header>
       <DialogHeader
-        :title="$t('column.history-login')"
+        :title="$t('dialog.import-from-csv')"
         :isFullscreen="fullscreen"
         @toggleFullscreen="handleToggleFullScreen"
       />

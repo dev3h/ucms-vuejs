@@ -124,10 +124,14 @@
     "this-month": "This month",
     "this-year": "This year",
     "current": "Current",
-    "upload": "Upload"
+    "upload": "Upload",
+    "import-all": "Import all",
+    "export": "Export"
   },
   "dialog": {
-    "add": "Add {name}"
+    "add": "Add {name}",
+    "import-from-csv": "Import from CSV",
+    "choose-csv-file": "Choose CSV file"
   },
   "input": {
     "common": {
@@ -269,7 +273,9 @@
     "block-user-time": "Please try again after {time} minutes",
     "unknown_geo_location": "Unknown geo location",
     "no-file-selected": "No file selected",
-    "no-row-selected": "No row selected"
+    "no-row-selected": "No row selected",
+    "invalid-csv-template": "Invalid CSV template",
+    "missing-headers": "Missing headers {headers}"
   },
   "back-bar": {
     "create-user": "Create new user",

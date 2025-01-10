@@ -125,10 +125,14 @@
     "this-month": "Tháng này",
     "this-year": "Năm nay",
     "current": "Hiện tại",
-    "upload": "Tải lên"
+    "upload": "Tải lên",
+    "import-all": "Nhập tất cả",
+    "export": "Xuất"
   },
   "dialog": {
-    "add":"Thêm {name}"
+    "add": "Thêm {name}",
+    "import-from-csv": "Nhập từ CSV",
+    "choose-csv-file": "Chọn tệp CSV"
   },
   "input": {
     "common": {
@@ -272,7 +276,9 @@
     "block-user-time": "Làm ơn chờ {time} giây rồi thử lại",
     "unknown_geo_location": "không xác định",
     "no-file-selected": "Không có tệp nào được chọn",
-    "no-row-selected": "Không có hàng nào được chọn"
+    "no-row-selected": "Không có hàng nào được chọn",
+    "invalid-csv-template": "Mẫu CSV không hợp lệ",
+    "missing-headers": "Thiếu các cột: {headers}"
   },
   "back-bar": {
     "create-user": "Tạo mới người dùng",
