@@ -278,7 +278,8 @@
     "no-file-selected": "Không có tệp nào được chọn",
     "no-row-selected": "Không có hàng nào được chọn",
     "invalid-csv-template": "Mẫu CSV không hợp lệ",
-    "missing-headers": "Thiếu các cột: {headers}"
+    "missing-headers": "Thiếu các cột: {headers}",
+    "job": "Đang chạy job thêm {count} người dùng"
   },
   "back-bar": {
     "create-user": "Tạo mới người dùng",

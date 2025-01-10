@@ -58,16 +58,18 @@
     </template>
   </el-dialog>
   <ResultImportCsvDialog ref="resultImportCsvDialog" />
+  <JobImportCsvDialog ref="jobImportCsvDialog" />
 </template>
 
 <script>
 import axios from '@/Plugins/axios'
 import DialogHeader from '@/components/Dialog/DialogHeader.vue'
 import DataTable from '@/components/Page/DataTable.vue'
-import ResultImportCsvDialog from './ResultImportCsvDialog.vue'
+import ResultImportCsvDialog from './ResultImportCsvDialog.vue';
+import JobImportCsvDialog from './JobImportCsvDialog.vue';
 
 export default {
-  components: { DialogHeader, DataTable, ResultImportCsvDialog },
+  components: { DialogHeader, DataTable, ResultImportCsvDialog, JobImportCsvDialog },
   emits: ['close-modal'],
   props: {
     fetchData: {
@@ -186,12 +188,14 @@ export default {
         const response = await axios.post('/user/create-multi', items)
         if (response?.data?.status_code === 200) {
           const dataRes = response?.data?.data
-          if (dataRes?.length > 0) {
+          if(dataRes?.length > 0 && items?.length <= 100) {
             this.isShowModal = false
             this.fetchData()
             this.$refs.resultImportCsvDialog.open(dataRes)
           } else {
             this.isShowModal = false
+            const itemCount = items?.length
+            this.$refs.jobImportCsvDialog.open(itemCount)
           }
         }
         type === 'selected' ? (this.isLoading = false) : (this.isLoad = false)

@@ -275,7 +275,8 @@
     "no-file-selected": "No file selected",
     "no-row-selected": "No row selected",
     "invalid-csv-template": "Invalid CSV template",
-    "missing-headers": "Missing headers {headers}"
+    "missing-headers": "Missing headers {headers}",
+    "job": "Running job insert {count} users"
   },
   "back-bar": {
     "create-user": "Create new user",
