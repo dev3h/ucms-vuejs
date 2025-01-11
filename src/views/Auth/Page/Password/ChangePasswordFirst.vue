@@ -45,6 +45,7 @@
                 size="large"
                 show-password
                 clearable
+                @input="(value) => filterInput(value, 'password')"
                 :placeholder="$t('input.common.enter', { name: $t('input.common.new-password') })"
               />
               <div v-if="formData.password" class="w-full">
@@ -72,6 +73,7 @@
                 size="large"
                 show-password
                 clearable
+                @input="(value) => filterInput(value, 'password_confirmation')"
                 :placeholder="
                   $t('input.common.enter', { name: $t('input.common.confirm-new-password') })
                 "
@@ -99,6 +101,7 @@ import form from '@/Mixins/form'
 import axios from '@/Plugins/axios'
 import ssoAxios from '@/Plugins/ssoAxios'
 import baseRuleValidate from '@/Store/Const/baseRuleValidate.js'
+import { filterPasswordInput } from '@/Store/Helper/helpers'
 import { useAuthStore } from '@/stores/auth'
 import zxcvbn from 'zxcvbn'
 
@@ -142,6 +145,9 @@ export default {
     }
   },
   methods: {
+    filterInput(value, field) {
+      this.formData[field] = filterPasswordInput(value)
+    },
     async submit() {
       this.loadingForm = true
       const isPathAdmin = this.pathSub[1] === 'admin'

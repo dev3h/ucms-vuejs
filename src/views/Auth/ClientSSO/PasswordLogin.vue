@@ -35,6 +35,7 @@
                 type="password"
                 show-password
                 clearable
+                @input="(value) => filterInput(value, 'password')"
                 :placeholder="$t('input.common.enter', { name: $t('input.common.password') })"
               />
             </el-form-item>
@@ -79,6 +80,7 @@
 import form from '@/Mixins/form'
 import axios from '@/Plugins/ssoAxios.js'
 import baseRuleValidate from '@/Store/Const/baseRuleValidate.js'
+import { filterPasswordInput } from '@/Store/Helper/helpers';
 
 export default {
   name: 'admin-login',
@@ -131,6 +133,9 @@ export default {
     }
   },
   methods: {
+    filterInput(value, field) {
+      this.formData[field] = filterPasswordInput(value)
+    },
     async submit() {
       this.loadingForm = true
       const response = await axios.post('/auth/oauth-ucms/login', this.formData, {
@@ -142,7 +147,7 @@ export default {
           email: resData?.email,
           consent_token: resData?.consentToken,
           client_id: resData?.client_id,
-          redirect_uri: resData?.redirect_uri,
+          redirect_uri: resData?.redirect_uri
         }
         const twoFactor = resData?.two_factor
         if (twoFactor?.enable) {

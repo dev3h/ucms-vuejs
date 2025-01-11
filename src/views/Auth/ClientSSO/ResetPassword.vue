@@ -33,6 +33,7 @@
                   size="large"
                   show-password
                   clearable
+                  @input="(value) => filterInput(value, 'password')"
                   :placeholder="$t('input.common.enter', { name: $t('input.common.new-password') })"
                 />
                 <div v-if="formData.password" class="w-full">
@@ -53,6 +54,7 @@
                 prop="password_confirmation"
                 :inline-message="hasError('password_confirmation')"
                 :error="getError('password_confirmation')"
+                @input="(value) => filterInput(value, 'password_confirmation')"
               >
                 <el-input
                   v-model="formData.password_confirmation"
@@ -87,6 +89,7 @@
 import form from '@/Mixins/form'
 import axios from '@/Plugins/ssoAxios.js'
 import baseRuleValidate from '@/Store/Const/baseRuleValidate.js'
+import { filterPasswordInput } from '@/Store/Helper/helpers';
 import zxcvbn from 'zxcvbn'
 
 export default {
@@ -137,6 +140,9 @@ export default {
     }
   },
   methods: {
+    filterInput(value, field) {
+      this.formData[field] = filterPasswordInput(value)
+    },
     async submit() {
       this.loadingForm = true
       const response = await axios.post('/auth/sso-ucms/reset-password', this.formData, {

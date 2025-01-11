@@ -4,3 +4,6 @@ export const getCookie = (name) => {
     return parts[0] === name ? decodeURIComponent(parts[1]) : r
   }, '')
 }
+export const filterPasswordInput = (value) => {
+  return value.normalize('NFD').replace(/[\u0300-\u036f\s]/g, '');
+}

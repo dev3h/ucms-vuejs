@@ -47,6 +47,7 @@
                   type="password"
                   show-password
                   clearable
+                  @input="filterInput"
                   :placeholder="$t('input.common.enter', { name: $t('input.common.password') })"
                 />
               </el-form-item>
@@ -106,6 +107,7 @@
 import form from '@/Mixins/form'
 import axios from '@/Plugins/axios.js'
 import baseRuleValidate from '@/Store/Const/baseRuleValidate.js'
+import { filterPasswordInput } from '@/Store/Helper/helpers';
 import { useAuthStore } from '@/stores/auth'
 
 export default {
@@ -159,6 +161,9 @@ export default {
     }
   },
   methods: {
+    filterInput(value) {
+      this.formData.password = filterPasswordInput(value)
+    },
     async submit() {
       this.loadingForm = true
       console.log(axios.defaults.headers.common)

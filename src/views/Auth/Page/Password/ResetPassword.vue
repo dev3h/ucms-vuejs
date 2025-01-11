@@ -32,6 +32,7 @@
                 size="large"
                 show-password
                 clearable
+                @input="(value) => filterInput(value, 'password')"
                 :placeholder="$t('input.common.enter', { name: $t('input.common.new-password') })"
               />
               <div v-if="formData.password" class="w-full">
@@ -53,6 +54,7 @@
                 size="large"
                 show-password
                 clearable
+                @input="(value) => filterInput(value, 'password_confirmation')"
                 :placeholder="
                   $t('input.common.enter', { name: $t('input.common.confirm-new-password') })
                 "
@@ -87,6 +89,7 @@
 import form from '@/Mixins/form'
 import axios from '@/Plugins/axios'
 import baseRuleValidate from '@/Store/Const/baseRuleValidate.js'
+import { filterPasswordInput } from '@/Store/Helper/helpers';
 import zxcvbn from 'zxcvbn'
 
 export default {
@@ -126,6 +129,9 @@ export default {
     }
   },
   methods: {
+    filterInput(value, field) {
+      this.formData[field] = filterPasswordInput(value)
+    },
     async submit() {
       this.loadingForm = true
       const response = await axios.post('/auth/reset-password', this.formData)

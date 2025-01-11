@@ -86,6 +86,7 @@
                   type="password"
                   show-password
                   clearable
+                  @input="(value) => filterInput(value, 'password')"
                   :placeholder="$t('input.common.enter', { name: $t('input.common.password') })"
                 />
                 <div v-if="formData.password" class="w-full">
@@ -168,6 +169,7 @@ import form from '@/Mixins/form.js'
 import baseRuleValidate from '@/Store/Const/baseRuleValidate.js'
 import BackBar from '@/components/BackBar/Index.vue'
 import zxcvbn from 'zxcvbn'
+import { filterPasswordInput } from '@/Store/Helper/helpers'
 
 export default {
   components: { AdminLayout, BreadCrumbComponent, BackBar },
@@ -246,6 +248,9 @@ export default {
     this.fetchRoles()
   },
   methods: {
+    filterInput(value, field) {
+      this.formData[field] = filterPasswordInput(value)
+    },
     goBack() {
       this.$router.push({ name: 'user' })
     },
