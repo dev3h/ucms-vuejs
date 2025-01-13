@@ -16,6 +16,7 @@
     <div class="w-full">
       <DataTable
         v-loading="loadingForm"
+        ref="tablePreview"
         :fields="fields"
         :items="items"
         footer-center
@@ -132,7 +133,8 @@ export default {
       fields,
       selectedIndex: [],
       isLoading: false,
-      isLoad: false
+      isLoad: false,
+      tablePreview: null
     }
   },
   methods: {
@@ -163,20 +165,22 @@ export default {
     closeModal() {
       this.isShowModal = false
       this.items = []
+      this.fullItems = []
+      this.selectedIndex = []
       this.$emit('close-modal')
     },
     handleToggleFullScreen() {
       this.fullscreen = !this.fullscreen
     },
     handleSelectedRow(selected) {
-      this.selectedIndex = selected?.map((item, index) => index)
+      this.selectedIndex = selected?.map((item, index) => item?.email)
     },
     async handleImport() {
       if (this.selectedIndex.length === 0) {
         this.$message.error(this.$t('message.no-row-selected'))
         return
       }
-      const selectedItems = this.selectedIndex.map((index) => this.items[index])
+      const selectedItems = this.selectedIndex.map((value) => this.fullItems.find((item) => item.email === value))
       await this.importItems(selectedItems)
     },
     async handleImportAll() {
@@ -189,11 +193,13 @@ export default {
         if (response?.data?.status_code === 200) {
           const dataRes = response?.data?.data
           if(dataRes?.length > 0 && items?.length <= 100) {
-            this.isShowModal = false
+            this.$refs.tablePreview.clearAllSelected()
+            this.closeModal()
             this.fetchData()
             this.$refs.resultImportCsvDialog.open(dataRes)
           } else {
-            this.isShowModal = false
+            this.$refs.tablePreview.clearAllSelected()
+            this.closeModal()
             const itemCount = items?.length
             this.$refs.jobImportCsvDialog.open(itemCount)
           }

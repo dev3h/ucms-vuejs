@@ -93,7 +93,7 @@ export default {
                 console.log(error);
                 let message =
                     error.response?.data?.message ??
-                    "An error has occurred. please try again.";
+                    this.$t("message.something-wrong");
 
                 if (error.response?.status === 422 || error?.status === 422) {
                   this.setErrors(error?.response?.data?.errors ?? error?.data?.errors ?? {})

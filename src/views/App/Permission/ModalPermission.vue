@@ -210,8 +210,12 @@ export default {
       expandedKeys: []
     }
   },
-  created() {
-    this.getTemplateTreeCode()
+ watch: {
+    isShowModal(newVal) {
+      if (newVal) {
+        this.getTemplateTreeCode();
+      }
+    }
   },
   computed: {
     filteredPermissions() {

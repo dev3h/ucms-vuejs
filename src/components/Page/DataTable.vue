@@ -270,6 +270,9 @@ export default {
         handleSelectionChange(selectedItems) {
             this.$emit('row-selected', selectedItems)
         },
+        clearAllSelected() {
+            this.$refs.table.clearSelection()
+        },
         rowClick(row) {
             this.$emit('row-click', row);
         },
