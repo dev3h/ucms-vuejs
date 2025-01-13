@@ -31,6 +31,9 @@
       "click-here": "Nhấn vào đây",
       "reset-2fa": "để đặt lại xác thực hai yếu tố của bạn"
     },
+    "verify-account-page": {
+      "title":  "Xác minh tài khoản"
+    },
     "return-to-login": "Quay lại màn hình đăng nhập",
     "authorization-error": "Đã chặn quyền truy cập: Lỗi ủy quyền",
     "ucms-login": "Đăng nhập với UCMS",
@@ -127,7 +130,8 @@
     "current": "Hiện tại",
     "upload": "Tải lên",
     "import-all": "Nhập tất cả",
-    "export": "Xuất"
+    "export": "Xuất",
+    "setup2FA": "Thiết lập xác thực hai yếu tố"
   },
   "dialog": {
     "add": "Thêm {name}",

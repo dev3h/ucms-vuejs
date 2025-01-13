@@ -29,6 +29,9 @@
       "click-here": "Click here",
       "reset-2fa": "to reset 2FA"
     },
+    "verify-account-page": {
+      "title": "Verify your account"
+    },
     "return to login": "Return to login screen",
     "authorization-error": "Authorization Error"
   },
@@ -126,7 +129,8 @@
     "current": "Current",
     "upload": "Upload",
     "import-all": "Import all",
-    "export": "Export"
+    "export": "Export",
+    "setup2FA": "Setup 2FA"
   },
   "dialog": {
     "add": "Add {name}",
