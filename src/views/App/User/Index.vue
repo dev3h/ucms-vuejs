@@ -91,6 +91,17 @@
           <template #type="{ row }">
             <span>{{ row?.type === 1 ? $t('input.admin') : $t('input.user') }}</span>
           </template>
+          <template #status="{ row }">
+            <span
+              class="rounded-[50px] px-3 py-1 text-white"
+              :class="{
+                'bg-green-500': row?.status === 1,
+                'bg-red-500': row?.status === 2
+              }"
+            >
+              {{ row?.status === 1 ? $t('button.active') : $t('button.suspend') }}
+            </span>
+          </template>
           <template #two_factor_enable="{ row }">
             <span>{{ row?.two_factor_enable ? $t('button.enable') : $t('button.disable') }}</span>
           </template>
@@ -169,6 +180,13 @@ export default {
           key: 'email',
           'min-width': 200,
           label: this.$t('input.common.email'),
+          align: 'left',
+          headerAlign: 'left'
+        },
+        {
+          key: 'status',
+          'min-width': 200,
+          label: this.$t('column.common.status'),
           align: 'left',
           headerAlign: 'left'
         },

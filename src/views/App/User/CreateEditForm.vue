@@ -70,6 +70,7 @@
                   v-model="formData.phone_number"
                   clearable
                   :placeholder="$t('input.common.enter', { name: $t('input.phone-number') })"
+                  @input="onPhoneNumberInput"
                 />
               </el-form-item>
             </div>
@@ -297,7 +298,6 @@ export default {
       await axios
         .get(`user/${this.currentId}`)
         .then((response) => {
-          console.log(response)
           this.formData = {
             id: response?.data?.data?.id,
             name: response?.data?.data?.name,
@@ -313,7 +313,11 @@ export default {
           this.$message.error(error?.response?.data?.message || this.$t('message.something-wrong'))
           this.loadForm = false
         })
-    }
+    },
+    onPhoneNumberInput(value) {
+      const filteredValue = value.replace(/[^0-9]/g, ''); // Remove non-digit characters
+      this.formData.phone_number = filteredValue;
+    },
   }
 }
 </script>

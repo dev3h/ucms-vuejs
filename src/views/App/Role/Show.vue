@@ -16,23 +16,10 @@
           >
             {{ $t('button.general') }}
           </div>
-           <div
-            class="text-center px-[12px] py-[4px] rounded-t-[4px] cursor-pointer"
-            :class="{
-              'bg-primary text-white': tabActive === 2,
-              'bg-[#F4F4F4] text-[#8A8A8A]': tabActive !== 2
-            }"
-            @click="changeTab(2)"
-          >
-            {{ $t('sidebar.user') }}
-          </div>
         </div>
       </div>
       <div class="w-full" v-if="tabActive === 1">
         <DetailRole :item="item" />
-      </div>
-      <div class="w-full" v-if="tabActive === 2">
-        <UsersTab :id="id" />
       </div>
     </div>
   </AdminLayout>
@@ -42,10 +29,9 @@ import AdminLayout from '@/Layouts/AdminLayout.vue'
 import BreadCrumbComponent from '@/components/Page/BreadCrumb.vue'
 import { searchMenu } from '@/Mixins/breadcrumb.js'
 import axios from '@/Plugins/axios'
-import UsersTab from './UsersTab.vue'
 import DetailRole from './DetailRole.vue'
 export default {
-  components: { DetailRole,UsersTab, AdminLayout, BreadCrumbComponent },
+  components: { DetailRole, AdminLayout, BreadCrumbComponent },
   data() {
     return {
       id: this.$route.params.id,

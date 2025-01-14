@@ -29,10 +29,15 @@
       "title": "Nhập mã xác minh được cung cấp bởi ứng dụng xác thực.",
       "title-recovery": "Nhập một trong các mã khôi phục khẩn cấp của bạn.",
       "click-here": "Nhấn vào đây",
-      "reset-2fa": "để đặt lại xác thực hai yếu tố của bạn"
+      "reset-2fa": "để đặt lại xác thực hai yếu tố của bạn",
+      "recovery-code": "Mã khôi phục"
     },
     "verify-account-page": {
       "title":  "Xác minh tài khoản"
+    },
+    "recovery-code-save": {
+      "line1": "Mã khôi phục có thể được sử dụng để truy cập vào tài khoản của bạn trong trường hợp bạn mất thiết bị.",
+      "line2": "Hãy lưu mã khôi phục của bạn vào một chỗ an toàn."
     },
     "return-to-login": "Quay lại màn hình đăng nhập",
     "authorization-error": "Đã chặn quyền truy cập: Lỗi ủy quyền",
@@ -131,7 +136,11 @@
     "upload": "Tải lên",
     "import-all": "Nhập tất cả",
     "export": "Xuất",
-    "setup2FA": "Thiết lập xác thực hai yếu tố"
+    "setup2FA": "Thiết lập xác thực hai yếu tố",
+    "download": "Tải xuống",
+    "copy": "Sao chép",
+    "active": "Kích hoạt",
+    "suspend": "Tạm ngưng"
   },
   "dialog": {
     "add": "Thêm {name}",

@@ -32,8 +32,10 @@ const messages = {
   en,
   vi,
 };
+const savedLocale = localStorage.getItem('language') || 'vi'
+
 const i18n = createI18n({
-  locale: 'vi',
+  locale: savedLocale,
   fallbackLocale: 'en',
   messages: messages
 })

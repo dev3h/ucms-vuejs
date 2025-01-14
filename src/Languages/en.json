@@ -130,7 +130,11 @@
     "upload": "Upload",
     "import-all": "Import all",
     "export": "Export",
-    "setup2FA": "Setup 2FA"
+    "setup2FA": "Setup 2FA",
+    "download": "Download",
+    "copy": "Copy",
+    "active": "Active",
+    "suspend": "Suspend"
   },
   "dialog": {
     "add": "Add {name}",
@@ -146,7 +150,8 @@
       "initial-password": "Initial password",
       "old-password": "Old password",
       "current-password": "Current password",
-      "select": "Select"
+      "select": "Select",
+      "search": "Search"
     },
     "recovery-code": "Recovery code",
     "publish": {

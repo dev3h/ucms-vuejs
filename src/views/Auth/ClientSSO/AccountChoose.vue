@@ -68,12 +68,29 @@ export default {
           ...account
         })
         if (response?.data?.status_code === 200) {
-          const authTempCode = response?.data?.data
-          // Tạo URL với token trong fragment (dấu #)
-          const redirectUrl = `${this.redirect_uri}#auth_code=${authTempCode}&client_id=${this.client_id}&redirect_uri=${encodeURIComponent(this.redirect_uri)}`
-
-          // Redirect người dùng về URL mới với access token trong fragment
-          window.location.href = redirectUrl
+          const authTempCode = response?.data?.data?.authTempCode
+          if (authTempCode) {
+            const redirectUrl = `${this.redirect_uri}#auth_code=${authTempCode}&client_id=${this.client_id}&redirect_uri=${encodeURIComponent(this.redirect_uri)}`
+            window.location.href = redirectUrl
+          } else {
+            const resData = response?.data?.data
+            const query = {
+              email: resData?.email,
+              // consent_token: resData?.consentToken,
+              client_id: this.client_id,
+              redirect_uri: this.redirect_uri
+            }
+            const twoFactor = resData?.two_factor
+            if (twoFactor?.enable) {
+              if (twoFactor?.is_secret_token && twoFactor?.is_confirmed) {
+                this.$router.push({ name: 'sso-login-two-factor-challenge', query })
+              } else {
+                this.$router.push({ name: 'sso-login-setup-totp-mfa', query })
+              }
+            } else {
+              this.$router.push({ name: 'sso-login-confirm', query })
+            }
+          }
         }
       } catch (err) {
         this.$router.push({

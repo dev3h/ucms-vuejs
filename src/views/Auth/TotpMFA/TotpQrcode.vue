@@ -95,6 +95,7 @@
       </div>
     </el-card>
   </div>
+  <RecoveryCodeDialog ref="recoveryCodeDialog" @close-modal="handleNextStep" />
 </template>
 
 <script>
@@ -102,9 +103,12 @@ import axiosSSO from '@/Plugins/ssoAxios.js'
 import axios from '@/Plugins/axios.js'
 import form from '@/Mixins/form'
 import baseRuleValidate from '@/Store/Const/baseRuleValidate'
+import RecoveryCodeDialog from './RecoveryCodeDialog.vue';
+import { ElLoading } from 'element-plus';
 
 export default {
   mixins: [form],
+  components: { RecoveryCodeDialog },
   data() {
     return {
       qrCode: '',
@@ -162,11 +166,15 @@ export default {
         ...this.query
       })
       if (response.data?.status_code === 200) {
-        if(this.isAdminRoute) {
+        if (this.isAdminRoute) {
           this.$message.success(response.data?.message)
         }
-        const routeName = this.isAdminRoute ? 'admin-login' : 'sso-login-confirm'
-        this.$router.push({ name: routeName, query: this.query })
+        if (response?.data?.data?.recoveryCodes && response?.data?.data?.recoveryCodes.length > 0) {
+          this.$refs.recoveryCodeDialog.open(response.data.data.recoveryCodes)
+        } else {
+          const routeName = this.isAdminRoute ? 'admin-login' : 'sso-login-confirm'
+          this.$router.push({ name: routeName, query: this.query })
+        }
       } else {
         this.$message.error(response.data?.message || this.$t('message.something-wrong'))
       }
@@ -174,6 +182,10 @@ export default {
     },
     goBack() {
       this.$router.go(-1)
+    },
+    handleNextStep() {
+      const routeName = this.isAdminRoute ? 'admin-login' : 'sso-login-confirm'
+      this.$router.push({ name: routeName, query: this.query })
     },
     handleCopyToClipboard(value) {
       navigator.clipboard.writeText(value)

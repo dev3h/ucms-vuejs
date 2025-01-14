@@ -40,24 +40,27 @@
             autofocus
             autocomplete="one-time-code"
             clearable
+            :placeholder="$t('input.common.enter', { name: $t('column.common.code') })"
           />
         </el-form-item>
       </div>
 
       <div v-else>
         <el-form-item
-          label="Recovery Code"
-          prop="recovery_code"
-          :inline-message="hasError('recovery_code')"
-          :error="getError('recovery_code')"
+          :label="$t('input.recovery-code')"
+          prop="recoveryCode"
+          :inline-message="hasError('recoveryCode')"
+          :error="getError('recoveryCode')"
         >
           <el-input
-            id="recovery_code"
+            id="recoveryCode"
             ref="recoveryCodeInput"
-            v-model="formData.recovery_code"
+            v-model="formData.recoveryCode"
             type="text"
             class="mt-1 block w-full"
             autocomplete="one-time-code"
+            clearable
+            :placeholder="$t('input.common.enter', { name: $t('input.recovery-code') })"
           />
         </el-form-item>
       </div>
@@ -70,8 +73,8 @@
         >
           {{ $t('button.verify') }}
         </el-button>
-        <!-- <el-button
-          class="text-sm text-gray-600 hover:text-gray-900 cursor-pointer !ml-0"
+        <div
+          class="text-sm text-primary hover:text-gray-900 cursor-pointer text-center"
           @click.prevent="toggleRecovery"
         >
           <template v-if="!recovery">
@@ -80,7 +83,7 @@
           <template v-else>
             {{ $t('button.auth-code') }}
           </template>
-        </el-button> -->
+        </div>
       </div>
     </el-form>
   </AuthenticationCard>
@@ -102,20 +105,14 @@ export default {
       recovery: false,
       formData: {
         totpCode: '',
-        recovery_code: ''
+        recoveryCode: ''
       },
       query: this.$route.query,
       recoveryCodeInput: null,
       codeInput: null,
       rules: {
         totpCode: baseRuleValidate(this.$t)(this.$t('column.common.code')),
-        recovery_code: [
-          {
-            required: true,
-            message: this.$t('validate.required'),
-            trigger: ['blur', 'change']
-          }
-        ]
+        recoveryCode: baseRuleValidate(this.$t)(this.$t('input.recovery-code')),
       }
     }
   },
@@ -127,10 +124,10 @@ export default {
 
       if (this.recovery) {
         this.$refs.recoveryCodeInput.focus()
-        this.form.totpCode = ''
+        this.formData.totpCode = ''
       } else {
         this.$refs.codeInput.focus()
-        this.form.recovery_code = ''
+        this.formData.recoveryCode = ''
       }
     },
     async submit() {

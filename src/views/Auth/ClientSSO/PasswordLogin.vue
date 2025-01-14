@@ -145,7 +145,7 @@ export default {
         const resData = response?.data?.data
         const query = {
           email: resData?.email,
-          consent_token: resData?.consentToken,
+          // consent_token: resData?.consentToken,
           client_id: resData?.client_id,
           redirect_uri: resData?.redirect_uri
         }

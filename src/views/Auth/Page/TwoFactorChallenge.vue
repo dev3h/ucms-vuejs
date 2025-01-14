@@ -23,51 +23,55 @@
       label-position="top"
       @submit="(e) => e.preventDefault()"
     >
-      <!-- <div v-if="!recovery">
+      <div v-if="recovery">
         <el-form-item
-          :label="$t('column.common.code')"
-          prop="totpCode"
-          :inline-message="hasError('totpCode')"
-          :error="getError('totpCode')"
+          :label="$t('input.recovery-code')"
+          prop="recoveryCode"
+          :inline-message="hasError('recoveryCode')"
+          :error="getError('recoveryCode')"
         >
           <el-input
-            id="code"
-            ref="codeInput"
-            v-model="formData.totpCode"
+            id="recoveryCode"
+            ref="recoveryCodeInput"
+            v-model="formData.recoveryCode"
             type="text"
-            inputmode="numeric"
             class="mt-1 block w-full"
-            autofocus
             autocomplete="one-time-code"
-            clearable
           />
         </el-form-item>
       </div>
 
-      <div v-else>
-        <el-form-item
-          label="Recovery Code"
-          prop="recovery_code"
-          :inline-message="hasError('recovery_code')"
-          :error="getError('recovery_code')"
-        >
-          <el-input
-            id="recovery_code"
-            ref="recoveryCodeInput"
-            v-model="formData.recovery_code"
-            type="text"
-            class="mt-1 block w-full"
-            autocomplete="one-time-code"
-          />
-        </el-form-item>
-      </div> -->
-
-      <OtpInput ref="otpPad" class="mt-8" 
-        @enterCodeComplete="handleCode" 
+      <OtpInput
+        v-else
+        ref="otpPad"
+        class="mt-8"
+        @enterCodeComplete="handleCode"
         :isDisabled="loadingForm"
       />
+      <div>
+        <el-button
+          v-if="recovery"
+          type="primary"
+          :loading="loadingForm"
+          @click.prevent="handleSubmit"
+          class="w-full mt-5"
+        >
+          {{ $t('button.verify') }}
+        </el-button>
+        <div
+          class="text-sm text-primary hover:text-gray-900 cursor-pointer text-center mt-5"
+          @click.prevent="toggleRecovery"
+        >
+          <template v-if="!recovery">
+            {{ $t('button.recovery-code') }}
+          </template>
+          <template v-else>
+            {{ $t('button.auth-code') }}
+          </template>
+        </div>
+      </div>
 
-      <div class="flex justify-center mt-9 gap-1">
+      <div class="flex justify-center mt-3 gap-1">
         <router-link
           :to="{ name: 'login-setup-totp-mfa' }"
           class="text-sm text-gray-600 hover:text-gray-900 cursor-pointer underline"
@@ -77,20 +81,6 @@
         <span class="text-sm text-gray-600">{{
           $t('auth-page.2fa-challenge-page.reset-2fa')
         }}</span>
-        <!-- <el-button type="primary" :loading="loadingForm" @click.prevent="doSubmit">
-          {{ $t('button.verify') }}
-        </el-button> -->
-        <!-- <el-button
-          class="text-sm text-gray-600 hover:text-gray-900 cursor-pointer !ml-0"
-          @click.prevent="toggleRecovery"
-        >
-          <template v-if="!recovery">
-            {{ $t('button.recovery-code') }}
-          </template>
-          <template v-else>
-            {{ $t('button.auth-code') }}
-          </template>
-        </el-button> -->
       </div>
     </el-form>
   </AuthenticationCard>
@@ -116,7 +106,7 @@ export default {
       recovery: false,
       formData: {
         totpCode: '',
-        recovery_code: '',
+        recoveryCode: '',
         tempToken: sessionStorage.getItem('tempToken')
       },
       error: '',
@@ -126,7 +116,7 @@ export default {
       codeInput: null,
       rules: {
         totpCode: baseRuleValidate(this.$t)(this.$t('column.common.code')),
-        recovery_code: [
+        recoveryCode: [
           {
             required: true,
             message: this.$t('validate.required'),
@@ -151,10 +141,10 @@ export default {
 
       if (this.recovery) {
         this.$refs.recoveryCodeInput.focus()
-        this.form.totpCode = ''
+        this.formData.totpCode = ''
       } else {
         this.$refs.codeInput.focus()
-        this.form.recovery_code = ''
+        this.formData.recoveryCode = ''
       }
     },
     handleCode(code) {
@@ -167,7 +157,6 @@ export default {
         const response = await axios.post('/2fa/challenge', {
           ...this.formData
         })
-        console.log(response)
         if (response?.data?.status_code === 200) {
           const accessToken = response?.data?.access_token
           this.authStore.setAdminAccessToken(accessToken)
@@ -178,7 +167,7 @@ export default {
       } catch (error) {
         console.log(error)
         ElLoading.service().close()
-        if(error?.response?.status === 500) {
+        if (error?.response?.status === 500) {
           this.$message.error(error?.response?.message || this.$t('message.something-wrong'))
         }
         this.loadingForm = false

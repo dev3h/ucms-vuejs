@@ -30,6 +30,20 @@
         </span>
         <img :src="'/images/svg/notification-icon.svg'" class="ml-2" alt="" />
       </div> -->
+      <div>
+        <el-dropdown trigger="click" class="h-full" @command="handleCommand">
+          <div class="el-dropdown-link flex items-center justify-center text-white gap-1">
+            <img :src="'/images/svg/global.svg'" class="ml-2 w-8 h-8" alt="" />
+          </div>
+          <template #dropdown>
+            <el-dropdown-menu class="!p-4">
+              <el-dropdown-item v-for="lang in langList" :key="lang.value" :command="lang.value">
+                <img :src="lang.img" class="h-[32px] px-2" alt="" :class="langActive === lang.value ? 'border-2 border-primary' : ''" />
+              </el-dropdown-item>
+            </el-dropdown-menu>
+          </template>
+        </el-dropdown>
+      </div>
       <div class="mr-5">
         <el-dropdown trigger="click" class="h-full" @command="handleCommand">
           <div class="el-dropdown-link flex items-center justify-center text-white gap-1">
@@ -88,7 +102,18 @@ export default {
         page: 1,
         limit: 20
       },
-      authStore: useAuthStore()
+      langActive: localStorage.getItem('language') || 'vi',
+      authStore: useAuthStore(),
+      langList: [
+        {
+          img: '/images/flags/flag_vi.png',
+          value: 'vi'
+        },
+        {
+          img: '/images/flags/flag_en.png',
+          value: 'en'
+        }
+      ]
     }
   },
   computed: {
@@ -115,7 +140,7 @@ export default {
     async doLogout() {
       try {
         await this.authStore?.logout()
-        this.$router.push({name: 'admin-login'})
+        this.$router.push({ name: 'admin-login' })
       } catch (error) {
         this.$message({
           type: 'error',
@@ -136,6 +161,16 @@ export default {
           break
         case 'changeApplication':
           this.openApplicationForm()
+          break
+        case 'vi':
+          this.$i18n.locale = 'vi'
+          localStorage.setItem('language', 'vi');
+          this.langActive = 'vi'
+          break
+        case 'en':
+          this.$i18n.locale = 'en'
+          localStorage.setItem('language', 'en');
+          this.langActive = 'en'
           break
         default:
           break
