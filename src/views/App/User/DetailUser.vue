@@ -44,15 +44,36 @@
           </span>
         </div>
       </div>
+      <div class="box-content--item" v-if="item?.type !== 1">
+        <div class="flex gap-1 items-end h-full">
+          <el-button type="success" @click="handleResetTwoFactor">{{
+            $t('button.reset-2fa')
+          }}</el-button>
+        </div>
+      </div>
     </div>
   </div>
 </template>
 
 <script>
+import axios from '@/Plugins/axios'
+
 export default {
   props: {
     item: {
       type: Object
+    }
+  },
+  methods: {
+    async handleResetTwoFactor() {
+      try {
+        const response = await axios.post(`/user/${this.item.id}/reset-2fa`)
+        if (response?.data?.status_code === 200) {
+          this.$message.success(response?.data?.message)
+        }
+      } catch (err) {
+        this.$message.error(err?.response?.data?.message || this.$t('message.something-wrong'))
+      }
     }
   }
 }

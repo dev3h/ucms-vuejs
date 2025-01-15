@@ -134,7 +134,8 @@
     "download": "Download",
     "copy": "Copy",
     "active": "Active",
-    "suspend": "Suspend"
+    "suspend": "Suspend",
+    "reset-2fa": "Reset 2FA"
   },
   "dialog": {
     "add": "Add {name}",

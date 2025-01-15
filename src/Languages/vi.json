@@ -140,7 +140,8 @@
     "download": "Tải xuống",
     "copy": "Sao chép",
     "active": "Kích hoạt",
-    "suspend": "Tạm ngưng"
+    "suspend": "Tạm ngưng",
+    "reset-2fa": "Đặt lại xác thực hai yếu tố"
   },
   "dialog": {
     "add": "Thêm {name}",
