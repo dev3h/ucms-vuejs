@@ -190,7 +190,7 @@ export default {
         },
         {
           key: 'status',
-          'min-width': 200,
+          width: 180,
           label: this.$t('column.common.status'),
           align: 'left',
           headerAlign: 'left'

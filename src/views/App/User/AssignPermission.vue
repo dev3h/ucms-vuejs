@@ -52,10 +52,11 @@
           min-width="120"
           v-for="(action, index) in actionColumns"
           :key="index"
-          :label="action"
+          :label="action?.name"
         >
           <template v-slot="scope">
             <el-checkbox
+              :disabled="!action?.is_exist"
               v-if="scope.row.actions[index] !== undefined"
               v-model="scope.row.actions[index]"
               @change="updateCheckboxState(scope.row.module_name, index, scope.row.actions[index])"
@@ -185,7 +186,8 @@ export default {
                       permission_code: action?.permission_code,
                       granted: action?.granted,
                       status: action?.status,
-                      is_direct: action?.is_direct
+                      is_direct: action?.is_direct,
+                      is_exist: action?.is_exist
                     }
                   })
                 }
@@ -223,10 +225,10 @@ export default {
           }
 
           module.permissions.forEach((perm) => {
-            if (!this.actionColumns.includes(perm.name)) {
-              this.actionColumns.push(perm.name)
+            if (!this.actionColumns.some((action) => action?.name === perm?.name)) {
+              this.actionColumns.push({ name: perm.name, is_exist: perm?.is_exist })
             }
-            const actionIndex = this.actionColumns.indexOf(perm.name)
+            const actionIndex = this.actionColumns.findIndex(action => action.name === perm.name);
             moduleData.actions[actionIndex] =
               this.checkboxState[module.name]?.[actionIndex] ?? perm.granted
           })
@@ -291,7 +293,8 @@ export default {
                         permission_code: action.permission_code,
                         granted: this.checkboxState[module.name]?.[index] ?? action.granted,
                         status: action.status,
-                        is_direct: action.is_direct
+                        is_direct: action.is_direct,
+                        is_exist: action.is_exist
                       }
                     })
                   }

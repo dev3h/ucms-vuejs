@@ -62,7 +62,11 @@
       </div>
     </div>
     <DeleteForm ref="deleteForm" @delete-action="deleteItem" />
-    <ModalPermission ref="modalPermission" @add-success="fetchData()" @update-success="fetchData()" />
+    <ModalPermission
+      ref="modalPermission"
+      @add-success="fetchData()"
+      @update-success="fetchData()"
+    />
   </AdminLayout>
 </template>
 <script>
@@ -140,6 +144,7 @@ export default {
   },
   async created() {
     await this.fetchData()
+    await this.asyncPermission()
   },
   methods: {
     async fetchData(page = 1) {
@@ -157,6 +162,9 @@ export default {
           this.loadForm = false
           this.$message.error(error?.response?.data?.message || this.$t('message.something-wrong'))
         })
+    },
+    async asyncPermission() {
+      await axios.post('/permission/async')
     },
     changePage(page) {
       this.fetchData(page)
