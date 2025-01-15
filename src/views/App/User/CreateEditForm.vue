@@ -191,6 +191,7 @@ export default {
         two_factor_enable: false,
         password: null,
         phone_number: null,
+        status: 1
       },
       isEdit: false,
       currentId: this.$route.params?.id,

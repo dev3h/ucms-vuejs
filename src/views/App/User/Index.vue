@@ -92,15 +92,20 @@
             <span>{{ row?.type === 1 ? $t('input.admin') : $t('input.user') }}</span>
           </template>
           <template #status="{ row }">
-            <span
-              class="rounded-[50px] px-3 py-1 text-white"
-              :class="{
-                'bg-green-500': row?.status === 1,
-                'bg-red-500': row?.status === 2
-              }"
-            >
-              {{ row?.status === 1 ? $t('button.active') : $t('button.suspend') }}
-            </span>
+            <div v-if="row">
+              <el-select
+                v-model="row.status"
+                class="rounded-[50px] px-3 py-1 text-white"
+                @change="updateStatus(row?.id)"
+              >
+                <el-option
+                  v-for="status in statusList"
+                  :key="status.value"
+                  :label="status.label"
+                  :value="status.value"
+                ></el-option>
+              </el-select>
+            </div>
           </template>
           <template #two_factor_enable="{ row }">
             <span>{{ row?.two_factor_enable ? $t('button.enable') : $t('button.disable') }}</span>
@@ -251,7 +256,11 @@ export default {
         }
       ],
       paginate: {},
-      loadForm: false
+      loadForm: false,
+      statusList: [
+        { label: this.$t('button.active'), value: 1 },
+        { label: this.$t('button.suspend'), value: 2 }
+      ]
     }
   },
   computed: {
@@ -284,6 +293,18 @@ export default {
           console.log(error)
           // this.$message.error(error?.response?.data?.message || this.$t('message.something-wrong'))
           this.loadForm = false
+        })
+    },
+    async updateStatus(id) {
+      let user = this.items.find((item) => item.id === id)
+      await axios
+        .put(`user/${id}`, { status: user.status })
+        .then((response) => {
+          this.$message.success(response?.data?.message)
+        })
+        .catch((error) => {
+          console.log(error)
+          // this.$message.error(error?.response?.data?.message || this.$t('message.something-wrong'))
         })
     },
     async fetchRoles() {

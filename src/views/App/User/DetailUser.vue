@@ -33,6 +33,17 @@
           </span>
         </div>
       </div>
+      <div class="box-content--item">
+        <h3>{{ $t('column.common.status') }}</h3>
+        <div class="flex gap-1">
+          <span
+            class="rounded-[50px] px-4 py-1"
+            :class="item?.status === 1 ? 'bg-green-500' : 'bg-red-400'"
+          >
+            {{ item?.status === 1 ? $t('button.active') : $t('button.suspend') }}
+          </span>
+        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -41,7 +52,7 @@
 export default {
   props: {
     item: {
-      type: Object,
+      type: Object
     }
   }
 }
