@@ -146,7 +146,8 @@
   "dialog": {
     "add": "Thêm {name}",
     "import-from-csv": "Nhập từ CSV",
-    "choose-csv-file": "Chọn tệp CSV"
+    "choose-csv-file": "Chọn tệp CSV",
+    "code-info": "Thông tin mã quyền"
   },
   "input": {
     "common": {

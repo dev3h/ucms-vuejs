@@ -140,7 +140,8 @@
   "dialog": {
     "add": "Add {name}",
     "import-from-csv": "Import from CSV",
-    "choose-csv-file": "Choose CSV file"
+    "choose-csv-file": "Choose CSV file",
+    "code-info": "Code info"
   },
   "input": {
     "common": {

@@ -45,6 +45,12 @@
           paginate-background
           @page-change="changePage"
         >
+        <template #code="{row}">
+          <div @click="openCodeInfoDialog(row?.id)" class="cursor-pointer">
+            {{ row?.code }}
+          </div>
+
+        </template>
           <template #action="{ row }">
             <div class="flex justify-center items-center gap-x-[12px]">
               <!--                            <div class="cursor-pointer" @click="openShow(row?.id)">-->
@@ -67,6 +73,7 @@
       @add-success="fetchData()"
       @update-success="fetchData()"
     />
+    <CodeInfoDialog ref="codeInfoDialog" />
   </AdminLayout>
 </template>
 <script>
@@ -78,6 +85,7 @@ import axios from '@/Plugins/axios'
 import DeleteForm from '@/components/Page/DeleteForm.vue'
 import debounce from 'lodash.debounce'
 import ModalPermission from './ModalPermission.vue'
+import CodeInfoDialog from './Dialog/CodeInfoDialog.vue'
 // import ModalSubSystem from '@/Pages/SubSystem/ModalSubSystem.vue'
 export default {
   components: {
@@ -86,7 +94,8 @@ export default {
     AdminLayout,
     BreadCrumbComponent,
     DataTable,
-    DeleteForm
+    DeleteForm,
+    CodeInfoDialog
   },
   props: {
     roles: {
@@ -128,7 +137,8 @@ export default {
         }
       ],
       paginate: {},
-      loadForm: false
+      loadForm: false,
+      codeInfoDialog: null
     }
   },
   computed: {
@@ -180,6 +190,9 @@ export default {
     },
     openDeleteForm(id) {
       this.$refs.deleteForm.open(id)
+    },
+    openCodeInfoDialog(id) {
+      this.$refs.codeInfoDialog.open(id)
     },
     async deleteItem(id) {
       await axios

@@ -4,13 +4,10 @@ import { useAuthStore } from '@/stores/auth'
 /**
  * Axios default config
  */
-function getCookie(name) {
-  const value = `; ${document.cookie}`
-  const parts = value.split(`; ${name}=`)
-  if (parts.length === 2) return parts.pop().split(';').shift()
-}
-
-const csrfToken = getCookie('_csrf')
+// axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest'
+// axios.defaults.headers.common['X-CSRF-TOKEN'] = document
+//   .querySelector('meta[name="csrf-token"]')
+//   .getAttribute('content')
 
 export const defaultConfig = {
   baseURL:
@@ -20,8 +17,6 @@ export const defaultConfig = {
   timeout: 60000,
   headers: {
     'X-Requested-With': 'XMLHttpRequest',
-    'x-csrf-token': csrfToken
-    // 'XSRF-TOKEN': csrfToken
   },
   withCredentials: true,
   responseType: 'json',
