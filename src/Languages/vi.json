@@ -294,7 +294,8 @@
     "no-row-selected": "Không có hàng nào được chọn",
     "invalid-csv-template": "Mẫu CSV không hợp lệ",
     "missing-headers": "Thiếu các cột: {headers}",
-    "job": "Đang chạy job thêm {count} người dùng"
+    "job": "Đang chạy job thêm {count} người dùng",
+    "permission-choose-required": "Vui lòng chọn ít nhất một quyền"
   },
   "back-bar": {
     "create-user": "Tạo mới người dùng",

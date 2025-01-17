@@ -287,7 +287,8 @@
     "no-row-selected": "No row selected",
     "invalid-csv-template": "Invalid CSV template",
     "missing-headers": "Missing headers {headers}",
-    "job": "Running job insert {count} users"
+    "job": "Running job insert {count} users",
+    "permission-choose-required": "Please choose at least one permission"
   },
   "back-bar": {
     "create-user": "Create new user",

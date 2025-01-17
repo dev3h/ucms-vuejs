@@ -33,14 +33,15 @@
           </div>
         </template>
         <template #action="{ row }">
-          <div class="flex justify-center items-center gap-x-[12px]">
+          <div class="flex justify-center items-center gap-x-[12px]" v-if="isShowDelete">
             <!-- <div class="cursor-pointer" @click="openShow(row?.id)">
               <img src="/images/svg/eye-icon.svg" />
             </div> -->
             <div class="cursor-pointer" @click="openDeleteForm(row?.id)">
-              <img src="/images/svg/trash-icon.svg" />
+              <img src="/images/svg/trash-icon.svg" alt="" />
             </div>
           </div>
+          <div v-else></div>
         </template>
       </DataTable>
     </div>
@@ -92,6 +93,14 @@ export default {
     isCodeField: {
       type: Boolean,
       default: true
+    },
+    isActionField: {
+      type: Boolean,
+      default: true
+    },
+    isShowDelete: {
+      type: Boolean,
+      default: true
     }
   },
   emits: ['close-modal'],
@@ -103,9 +112,9 @@ export default {
         label: this.$t('column.common.name'),
         align: 'left',
         headerAlign: 'left'
-      },
+      }
     ]
-    if(this.isCodeField) {
+    if (this.isCodeField) {
       fields.push({
         key: 'code',
         'min-width': 400,
@@ -114,7 +123,7 @@ export default {
         headerAlign: 'left'
       })
     }
-    if(this.fieldsExtra) {
+    if (this.fieldsExtra) {
       fields.push(...this.fieldsExtra)
     }
 
@@ -127,15 +136,17 @@ export default {
         headerAlign: 'left'
       })
     }
+    if (this.isActionField) {
+      fields.push({
+        key: 'action',
+        width: 200,
+        label: '',
+        align: 'center',
+        headerAlign: 'center',
+        fixed: 'right'
+      })
+    }
 
-    fields.push({
-      key: 'action',
-      width: 200,
-      label: '',
-      align: 'center',
-      headerAlign: 'center',
-      fixed: 'right'
-    })
     return {
       isShowModal: false,
       current_id: null,

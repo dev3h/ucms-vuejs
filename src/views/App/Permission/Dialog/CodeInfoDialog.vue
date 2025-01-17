@@ -14,10 +14,10 @@
       />
     </template>
     <div class="w-full">
-      <div>{{ $t('sidebar.system') }}: {{ info.system }}</div>
-      <div>{{ $t('sidebar.subsystem') }}: {{ info.subsystem }}</div>
-      <div>{{ $t('sidebar.module') }}: {{ info.module }}</div>
-      <div>{{ $t('sidebar.action') }}: {{ info.action }}</div>
+      <div>{{ $t('sidebar.system') }}: {{ info?.system }}</div>
+      <div>{{ $t('sidebar.subsystem') }}: {{ info?.subsystem }}</div>
+      <div>{{ $t('sidebar.module') }}: {{ info?.module }}</div>
+      <div>{{ $t('sidebar.action') }}: {{ info?.action }}</div>
     </div>
     <template #footer>
       <div class="flex justify-center items-center">

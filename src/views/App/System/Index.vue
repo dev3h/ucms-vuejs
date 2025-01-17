@@ -70,7 +70,7 @@
           <template #action="{ row }">
             <div class="flex justify-center items-center gap-x-[12px]">
               <div class="cursor-pointer" @click="openShow(row?.id)">
-                <img src="/images/svg/eye-icon.svg" />
+                <img src="/images/svg/eye-icon.svg" alt="" />
               </div>
               <div class="cursor-pointer" @click="openEdit(row?.id)">
                 <img src="/images/svg/pen-icon.svg" alt="" />
@@ -89,6 +89,8 @@
       :title="$t('sidebar.subsystem')"
       fetchRoute="/system/:id/subsystems"
       deleteRoute="/system/:id/remove-subsystem/:childId"
+      :isShowDelete="false"
+      :isActionField="false"
       ref="modalList"
       showRoute="subsystem-show"
       @close-modal="fetchData()"
@@ -150,7 +152,7 @@ export default {
         },
         {
           key: 'subsystem_count',
-          'min-width': 300,
+          width: 200,
           label: this.$t('column.common.count', { name: this.$t('sidebar.subsystem') }),
           align: 'left',
           headerAlign: 'left'
@@ -248,4 +250,3 @@ export default {
   }
 }
 </script>
-<style></style>

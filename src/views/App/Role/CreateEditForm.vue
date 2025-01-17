@@ -64,7 +64,7 @@
             </el-form-item>
           </div>
         </el-form>
-        <div class="col-span-1 pl-1">
+        <div class="col-span-1 pl-1 mt-2">
           <h4 class="font-bold text-sm">
             {{ $t('sidebar.permission') }} <span class="text-red-500">*</span>
           </h4>
@@ -90,51 +90,51 @@
               </el-aside>
             </div>
             <el-table class="permission-table" v-if="tableData.length > 0" :data="tableData">
-                <!-- Dòng đầu tiên: Tên của Module -->
-                <el-table-column
-                  :label="$t('sidebar.module')"
-                  prop="module_name"
-                  :span-method="spanMethod"
-                  fixed="left"
-                  min-width="120"
-                ></el-table-column>
+              <!-- Dòng đầu tiên: Tên của Module -->
+              <el-table-column
+                :label="$t('sidebar.module')"
+                prop="module_name"
+                :span-method="spanMethod"
+                fixed="left"
+                min-width="120"
+              ></el-table-column>
 
-                <!-- Các dòng sau: Tên và checkbox của Action -->
-                <el-table-column
-                  v-for="(action, index) in actionColumns"
-                  :key="index"
-                  :label="action"
-                  min-width="120"
-                >
-                  <template v-slot="scope">
-                    <el-checkbox
-                      v-if="scope.row.actions[index] !== undefined"
-                      v-model="scope.row.actions[index]"
-                      @change="
-                        updateCheckboxState(scope.row.module_name, index, scope.row.actions[index])
-                      "
-                    ></el-checkbox>
-                  </template>
-                </el-table-column>
+              <!-- Các dòng sau: Tên và checkbox của Action -->
+              <el-table-column
+                v-for="(action, index) in actionColumns"
+                :key="index"
+                :label="action"
+                min-width="120"
+              >
+                <template v-slot="scope">
+                  <el-checkbox
+                    v-if="scope.row.actions[index] !== undefined"
+                    v-model="scope.row.actions[index]"
+                    @change="
+                      updateCheckboxState(scope.row.module_name, index, scope.row.actions[index])
+                    "
+                  ></el-checkbox>
+                </template>
+              </el-table-column>
 
-                <!-- Checkbox để chọn tất cả action của một module -->
-                <el-table-column
-                  :label="$t('column.common.select-all')"
-                  width="120"
-                  header-align="center"
-                  align="center"
-                  fixed="right"
-                >
-                  <template v-slot="scope">
-                    <el-checkbox
-                      :indeterminate="isIndeterminate(scope.row)"
-                      :checked="isAllChecked(scope.row)"
-                      @change="toggleAll(scope.row)"
-                    >
-                    </el-checkbox>
-                  </template>
-                </el-table-column>
-              </el-table>
+              <!-- Checkbox để chọn tất cả action của một module -->
+              <el-table-column
+                :label="$t('column.common.select-all')"
+                width="120"
+                header-align="center"
+                align="center"
+                fixed="right"
+              >
+                <template v-slot="scope">
+                  <el-checkbox
+                    :indeterminate="isIndeterminate(scope.row)"
+                    :checked="isAllChecked(scope.row)"
+                    @change="toggleAll(scope.row)"
+                  >
+                  </el-checkbox>
+                </template>
+              </el-table-column>
+            </el-table>
           </div>
         </div>
       </div>
@@ -240,6 +240,7 @@ export default {
     },
     async submit() {
       this.loadingForm = true
+      let hasGrantedPermission = false
       const updatedPermissions = this.dataList.map((system) => {
         return {
           id: system.id,
@@ -259,6 +260,10 @@ export default {
                   type: module.type,
                   code: module.code,
                   actions: module.permissions.map((action, index) => {
+                    const granted = this.checkboxState[module.name]?.[index] ?? action.granted
+                    if (granted) {
+                      hasGrantedPermission = true
+                    }
                     return {
                       id: action.id,
                       name: action.name,
@@ -275,6 +280,11 @@ export default {
           })
         }
       })
+      if (!hasGrantedPermission) {
+        this.$message.error(this.$t('message.permission-choose-required'))
+        this.loadingForm = false
+        return
+      }
       this.formData.permissions = updatedPermissions
       const { method, url } = this.prepareSubmit()
       await axios?.[method](url, this.formData).then((response) => {

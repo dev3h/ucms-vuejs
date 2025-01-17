@@ -74,12 +74,13 @@
         >
           <template #system="{ row }">
             <router-link
-              v-if="row?.system"
+              v-if="row?.system?.id"
               class="text-primary hover:opacity-80"
               :to="{ name: 'system-show', params: { id: row?.system?.id } }"
             >
               {{ row?.system?.name }}
             </router-link>
+            <span v-else></span>
           </template>
           <template #module_count="{ row }">
             <div class="flex gap-2 items-center">
@@ -102,10 +103,10 @@
                 <img src="/images/svg/eye-icon.svg" />
               </div> -->
               <div class="cursor-pointer" @click="openEdit(row?.id)">
-                <img src="/images/svg/pen-icon.svg" />
+                <img src="/images/svg/pen-icon.svg" alt=""/>
               </div>
               <div class="cursor-pointer" @click="openDeleteForm(row?.id)">
-                <img src="/images/svg/trash-icon.svg" />
+                <img src="/images/svg/trash-icon.svg" alt=""/>
               </div>
             </div>
           </template>
@@ -239,6 +240,7 @@ export default {
       await axios
         .get('/subsystem', { params })
         .then((response) => {
+          console.log(response)
           this.items = response?.data?.data
           this.paginate = response?.data?.meta
           this.loadForm = false

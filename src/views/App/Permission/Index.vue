@@ -154,7 +154,7 @@ export default {
   },
   async created() {
     await this.fetchData()
-    await this.asyncPermission()
+    // await this.asyncPermission()
   },
   methods: {
     async fetchData(page = 1) {
