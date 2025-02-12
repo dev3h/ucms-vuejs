@@ -24,6 +24,29 @@
       </BackBar>
       <div class="w-full px-4 mt-8 pb-8">
         <el-form class="w-full" ref="form" :model="formData" :rules="rules" label-position="top">
+          <div class="flex flex-col items-center mb-9">
+            <div class="upload-container" :class="{'!border-none': preview}" @click="triggerFileInput">
+                  <input
+                      type="file"
+                      ref="fileInput"
+                      accept="image/png, image/jpeg"
+                      @change="handleFileChange"
+                      style="display: none;"
+                  />
+                  <div class="upload-box">
+                      <div v-if="preview" class="image-preview">
+                          <img :src="preview" alt="Image Preview" />
+                          <button class="remove-btn" @click.stop="removeImage">×</button>
+                      </div>
+                      <div v-else class="upload-placeholder">
+                          <img src="/images/svg/plus.svg" alt=""/>
+                      </div>
+                  </div>
+              </div>
+              <div v-if="hasError('avatar')">
+                  <span class="text-red-500 text-xs">{{getError('avatar')}}</span>
+              </div>
+          </div>
           <div class="grid grid-col lg:grid-cols-3 gap-5">
             <div>
               <el-form-item
@@ -171,6 +194,7 @@ import baseRuleValidate from '@/Store/Const/baseRuleValidate.js'
 import BackBar from '@/components/BackBar/Index.vue'
 import zxcvbn from 'zxcvbn'
 import { filterPasswordInput } from '@/Store/Helper/helpers'
+import {ElMessage} from "element-plus";
 
 export default {
   components: { AdminLayout, BreadCrumbComponent, BackBar },
@@ -191,8 +215,11 @@ export default {
         two_factor_enable: false,
         password: null,
         phone_number: null,
-        status: 1
+        status: 1,
+        avatar: null,
       },
+      fileInput: null,
+      preview: null,
       isEdit: false,
       currentId: this.$route.params?.id,
       actions: [],
@@ -256,6 +283,31 @@ export default {
     goBack() {
       this.$router.push({ name: 'user' })
     },
+    triggerFileInput() {
+      this.$refs.fileInput.click();
+    },
+    handleFileChange(event) {
+      const file = event.target.files[0];
+      if (file && (file.type === "image/png" || file.type === "image/jpeg")) {
+          if (file.size > 2 * 1024 * 1024) {
+              ElMessage.error("The file size cannot exceed 2MB. ");
+              return;
+          }
+          const reader = new FileReader();
+          reader.onload = (e) => {
+              this.preview = e.target.result;
+              this.formData.avatar = file;
+          };
+          reader.readAsDataURL(file);
+      } else {
+          ElMessage.error("Only image files can be uploaded. ");
+      }
+    },
+    removeImage() {
+        this.preview = null;
+        this.$refs.fileInput.value = null;
+        this.formData.avatar = null;
+    },
     async submit() {
       // if(!this.isEdit) {
       //   if (this.passwordStrength < 2) {
@@ -266,7 +318,11 @@ export default {
       // }
       this.loadingForm = true
       const { method, url } = this.prepareSubmit()
-      await axios?.[method](url, this.formData).then((response) => {
+      await axios?.[method](url, this.formData, {
+           headers: {
+               'Content-Type': 'multipart/form-data'
+           }
+       }).then((response) => {
         this.$message({
           type: response?.data?.status_code === 200 ? 'success' : 'error',
           message: response.data.message
@@ -306,7 +362,8 @@ export default {
             type: response?.data?.data?.type,
             two_factor_enable: response?.data?.data?.two_factor_enable,
             role_id: response?.data?.data?.role_ids[0],
-            phone_number: response?.data?.data?.phone_number
+            phone_number: response?.data?.data?.phone_number,
+            avatar: response?.data?.data?.avatar
           }
           this.loadForm = false
         })
@@ -322,3 +379,55 @@ export default {
   }
 }
 </script>
+<style>
+.upload-container {
+    width: 200px;
+    height: 200px;
+    border: 2px dashed #C1C1C1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    position: relative;
+}
+
+.upload-box {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.upload-placeholder {
+    font-size: 48px;
+    color: #aaa;
+}
+
+.image-preview {
+    height: 100%;
+}
+
+.image-preview img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+.remove-btn {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    width: 24px;
+    height: 24px;
+    background-color: var(--tw-redD1);
+    border: none;
+    border-radius: 50%;
+    color: white;
+    font-size: 16px;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+}
+</style>
